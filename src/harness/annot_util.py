@@ -47,7 +47,10 @@ from six.moves import range
 from util2 import makePalRecordsConsistent, makePpaAndPalRecordsConsistent, assertContainsRequiredFields
 from reference_models.geo import utils
 
-def _decode_openssl_version(version):
+from typing import Dict, List, Tuple, Any, Optional, Union
+from types import FunctionType
+
+def _decode_openssl_version(version: str) -> int:
 	# From https://wiki.openssl.org/index.php/Versioning: version always in the
 	# form: 'OpenSSL 1.1.1j	16 Feb 2021'
 	m = re.search(r'^OpenSSL (\d)\.(\d)\.(\d)\w .*', version)
@@ -55,7 +58,7 @@ def _decode_openssl_version(version):
 	return int(m.group(1))*100 + int(m.group(2))*10 + int(m.group(3))
 
 
-def get_openssl_version():
+def get_openssl_version() -> int:
 	"""Returns the OpenSSL implementation version in an int form, like 111.
 	Returns -1 if not based on OpenSSL (like BoringSSL) or cannot be decoded.
 	"""
@@ -63,12 +66,12 @@ def get_openssl_version():
 			six.ensure_str(SSL.SSLeay_version(SSL.SSLEAY_VERSION)))
 
 
-def json_load(fname):
+def json_load(fname: str) -> Dict[str]:
 	with open(fname) as fd:
 		return json.load(fd)
 
 
-def _log_testcase_header(name, doc):
+def _log_testcase_header(name: str, doc: str):
 	if not len(logging.getLogger().handlers):
 		handler = logging.StreamHandler(sys.stdout)
 		handler.setFormatter(
@@ -80,7 +83,7 @@ def _log_testcase_header(name, doc):
 	logging.info(doc)
 
 
-def winnforum_testcase(testcase):
+def winnforum_testcase(testcase: FunctionType):
 	"""Decorator for common features (e.g. logging) for WinnForum test cases."""
 	def decorated_testcase(*args, **kwargs):
 		if not testcase:
@@ -92,14 +95,14 @@ def winnforum_testcase(testcase):
 	return decorated_testcase
 
 
-def configurable_testcase(default_config_function):
+def configurable_testcase(default_config_function: FunctionType):
 	"""Decorator to make a test case configurable."""
 
-	def internal_configurable_testcase(testcase):
+	def internal_configurable_testcase(testcase: FunctionType):
 
 		_log_testcase_header(testcase.__name__, testcase.__doc__)
 
-		def wrapper_function(func, name, config, generate_default_func):
+		def wrapper_function(func: FunctionType, name: str, config: str, generate_default_func: bool):
 			@wraps(func)
 			def _func(*a):
 				if generate_default_func:
@@ -110,7 +113,7 @@ def configurable_testcase(default_config_function):
 			_func.__name__ = name
 			return _func
 
-		def generate_default(func, default_filename):
+		def generate_default(func: FunctionType, default_filename: str):
 			@wraps(func)
 			def _func(*a):
 				return func(*a, filename=default_filename)
@@ -148,13 +151,13 @@ def configurable_testcase(default_config_function):
 	return internal_configurable_testcase
 
 
-def loadConfig(config_filename):
+def loadConfig(config_filename: str):
 	"""Loads a configuration file."""
 	with open(config_filename, 'rb') as f:
 		return json.loads(f.read())
 
 
-def writeConfig(config_filename, config):
+def writeConfig(config_filename: str, config: Dict):
 	"""Writes a configuration file."""
 	dir_name = os.path.dirname(config_filename)
 	if not os.path.exists(dir_name):
@@ -165,7 +168,7 @@ def writeConfig(config_filename, config):
 				json.dumps(config, indent=2, sort_keys=False, separators=(',', ': ')))
 
 
-def getRandomLatLongInPolygon(ppa):
+def getRandomLatLongInPolygon(ppa: Dict) -> Tuple[float, float]:
 	"""Generates a random point inside the PPA Polygon.
 
 	Note: since the generated point is NOT uniformly distributed within the PPA,
@@ -193,7 +196,7 @@ def getRandomLatLongInPolygon(ppa):
 		return getRandomLatLongInPolygon(ppa)
 
 
-def generateCpiRsaKeys():
+def generateCpiRsaKeys() -> Tuple[str, str]:
 	"""Generate a private/public RSA 2048 key pair.
 
 	Returns:
@@ -211,7 +214,7 @@ def generateCpiRsaKeys():
 	return six.ensure_text(rsa_private_key), six.ensure_text(rsa_public_key)
 
 
-def generateCpiEcKeys():
+def generateCpiEcKeys() -> Tuple[str, str]:
 	"""Generate a private/public EC SECP256R1 key pair.
 
 		Returns:
@@ -228,10 +231,13 @@ def generateCpiEcKeys():
 	return six.ensure_text(ec_private_key), six.ensure_text(ec_public_key)
 
 
-def convertRequestToRequestWithCpiSignature(private_key, cpi_id,
-	cpi_name, request,
-	jwt_algorithm='RS256'
-):
+def convertRequestToRequestWithCpiSignature(
+	private_key: str,
+	cpi_id: str,
+	cpi_name: str,
+	request: Dict,
+	jwt_algorithm: str = 'RS256'
+) -> None:
 	"""Converts a regular registration request to contain cpiSignatureData
 			 using the given JWT signature algorithm.
 
@@ -263,7 +269,11 @@ def convertRequestToRequestWithCpiSignature(private_key, cpi_id,
 	request['cpiSignatureData']['digitalSignature'] = jwt_message[2]
 
 
-def addIdsToRequests(ids, requests, id_field_name):
+def addIdsToRequests(
+	ids: List[str],
+	requests: List[Dict],
+	id_field_name: str # 'cbsdId' or 'grantId'
+) -> None:
 	"""Adds CBSD IDs or Grant IDs to any given request.
 
 	This function uses the following logic:
@@ -289,7 +299,10 @@ def addIdsToRequests(ids, requests, id_field_name):
 		# Else use the value that was provided in the config directly.
 
 
-def addCbsdIdsToRequests(cbsd_ids, requests):
+def addCbsdIdsToRequests(
+	cbsd_ids: List[str],
+	requests: List[Dict]
+) -> None:
 	"""Adds CBSD IDs to a given request. See addIdsToRequests() for more info.
 
 	Args:
@@ -299,7 +312,10 @@ def addCbsdIdsToRequests(cbsd_ids, requests):
 	addIdsToRequests(cbsd_ids, requests, 'cbsdId')
 
 
-def addGrantIdsToRequests(grant_ids, requests):
+def addGrantIdsToRequests(
+	grant_ids: List[str],
+	requests: List[Dict]
+) -> None:
 	"""Adds Grant IDs to a given request. See addIdsToRequests() for more info.
 
 	Args:
@@ -309,7 +325,9 @@ def addGrantIdsToRequests(grant_ids, requests):
 	addIdsToRequests(grant_ids, requests, 'grantId')
 
 
-def getCertificateFingerprint(certificate):
+def getCertificateFingerprint(
+	certificate: str # full file path to cert
+) -> str:
 	""" Get SHA1 hash of the input certificate.
 	Args:
 		certificate: The full path to the file containing the certificate
@@ -322,7 +340,10 @@ def getCertificateFingerprint(certificate):
 	return six.ensure_text(sha1_fingerprint)
 
 
-def filterChannelsByFrequencyRange(channels, freq_range):
+def filterChannelsByFrequencyRange(
+	channels: List,
+	freq_range: Dict
+) -> List:
 	"""Returns channels which partially or fully overlap with 'freq_range'.
 
 	Args:
@@ -348,7 +369,10 @@ def _orderAttributes(obj):
 		return obj
 
 
-def compareDictWithUnorderedLists(first_dict, second_dict):
+def compareDictWithUnorderedLists(
+	first_dict: Dict,
+	second_dict: Dict
+) -> bool:
 	""" Deep comparison of two dictionaries
 
 	Args:
@@ -359,7 +383,11 @@ def compareDictWithUnorderedLists(first_dict, second_dict):
 	return _orderAttributes(first_dict) == _orderAttributes(second_dict)
 
 
-def areTwoPpasEqual(first_ppa, second_ppa, delta=10):
+def areTwoPpasEqual(
+	first_ppa: Dict,
+	second_ppa: Dict,
+	delta: float = 10
+) -> bool:
 	""" Deep comparison of two PPAs considering
 
 	Args:
@@ -387,7 +415,9 @@ def areTwoPpasEqual(first_ppa, second_ppa, delta=10):
 	return result
 
 
-def buildDpaActivationMessage(dpa_config):
+def buildDpaActivationMessage(
+	dpa_config: Dict[str]
+) -> Dict[str]:
 	"""Constructs a dpa activation message."""
 	return {
 			'dpaId': dpa_config['dpaId'],
@@ -407,7 +437,9 @@ class TestComponentError(Exception):
 	pass
 
 
-def getFUGPoints(ppa):
+def getFUGPoints(
+	ppa: Dict
+) -> List[Tuple]:
 	"""This function returns FUG points list
 		Args:
 			ppa: (dictionary) A dictionary containing PPA/GWPZ Record.
@@ -433,7 +465,10 @@ def getFUGPoints(ppa):
 	return fug_points
 
 
-def getChannels(lowFrequency, highFrequency):
+def getChannels(
+	lowFrequency: int,
+	highFrequency: int
+) -> List[Tuple[int, int]]:
 	"""This function returns protected channels list"""
 	protection_channels = []
 	startFrequency = 3550
@@ -477,13 +512,13 @@ def getChannels(lowFrequency, highFrequency):
 	return protection_channels
 
 
-def ensureFileDirectoryExists(file_path):
+def ensureFileDirectoryExists(file_path: str):
 	dir_name = os.path.dirname(file_path)
 	if not os.path.exists(dir_name):
 		os.makedirs(dir_name)
 
 
-def getCertFilename(cert_name):
+def getCertFilename(cert_name: str) -> str:
 	"""Returns the file path corresponding to the given |cert_name|.
 	"""
 	return os.path.join('certs', cert_name)
@@ -516,14 +551,14 @@ def _GetSharedTestConfig():
 	return _test_config
 
 
-def getFqdnLocalhost():
+def getFqdnLocalhost() -> str:
 	"""Returns the fully qualified name of the host running the testcase.
 	To be used when starting peer SAS webserver or other database webserver.
 	"""
 	return _GetSharedTestConfig().hostname
 
 _ports = set()
-def getUnusedPort():
+def getUnusedPort() -> int:
 	"""Returns an unused TCP port on the local host inside the defined port range.
 	To be used when starting peer SAS webserver or other database webserver.
 	"""
