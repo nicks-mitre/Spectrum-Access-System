@@ -5,54 +5,54 @@ import os
 
 # Load in a schema file in the given filename.
 def loadSchema(filename):
-  with open(filename) as sfile:
-    schema = json.load(sfile)
-    jsonschema.Draft4Validator.check_schema(schema)
-    # print 'Loaded and verified schema in %s' % filename
-    print(f'Loaded and verified schema in {filename}')
-    return schema
+	with open(filename) as sfile:
+		schema = json.load(sfile)
+		jsonschema.Draft4Validator.check_schema(schema)
+		# print 'Loaded and verified schema in %s' % filename
+		print(f'Loaded and verified schema in {filename}')
+		return schema
 
 def loadJson(filename):
-  with open(filename) as jfile:
-    f = json.load(jfile)
-    return f
+	with open(filename) as jfile:
+		f = json.load(jfile)
+		return f
 
 def testJsonSchema(schema_file, test_file):
-  schema = loadSchema(schema_file)
-  data = loadJson(test_file)
+	schema = loadSchema(schema_file)
+	data = loadJson(test_file)
 
-  # print 'Loaded test validation JSON value from %s:' % test_file
-  print(f'Loaded test validation JSON value from {test_file}:')
+	# print 'Loaded test validation JSON value from %s:' % test_file
+	print(f'Loaded test validation JSON value from {test_file}:')
 
-  dir = os.path.dirname(os.path.realpath(__file__))
+	dir = os.path.dirname(os.path.realpath(__file__))
 
-  resolver = jsonschema.RefResolver(referrer=schema, base_uri='file://' + dir + '/')
+	resolver = jsonschema.RefResolver(referrer=schema, base_uri='file://' + dir + '/')
 
-  try:
-    jsonschema.validate(data, schema, resolver=resolver)
-  except jsonschema.exceptions.ValidationError as e:
-    # print e
-    print(e)
-    # print 'FAILED VALIDATION for %s' % test_file
-    print(f'FAILED VALIDATION for {test_file}')
-    pprint(data)
-    return 1
+	try:
+		jsonschema.validate(data, schema, resolver=resolver)
+	except jsonschema.exceptions.ValidationError as e:
+		# print e
+		print(e)
+		# print 'FAILED VALIDATION for %s' % test_file
+		print(f'FAILED VALIDATION for {test_file}')
+		pprint(data)
+		return 1
 
-  # print 'Validated.'
-  print('Validated.')
-  return 0
+	# print 'Validated.'
+	print('Validated.')
+	return 0
 
 def testJsonSchemaObject(schema_file, test_file, schemaObject):
-  schema = loadSchema(schema_file)
-  data = loadJson(test_file)
+	schema = loadSchema(schema_file)
+	data = loadJson(test_file)
 
-  # print 'Loaded test validation JSON value for %s:' % schemaObject
-  print(f'Loaded test validation JSON value for {schemaObject}:')
-  pprint (data)
+	# print 'Loaded test validation JSON value for %s:' % schemaObject
+	print(f'Loaded test validation JSON value for {schemaObject}:')
+	pprint (data)
 
-  jsonschema.validate(data, schema[schemaObject])
-  # print 'Validated.'
-  print('Validated.')
+	jsonschema.validate(data, schema[schemaObject])
+	# print 'Validated.'
+	print('Validated.')
 
 
 errors = 0
@@ -92,8 +92,8 @@ for t in tests:
 	errors += testJsonSchema(t[0], t[1])
 
 if errors == 0:
-  print 'PASS'
+	print 'PASS'
 else:
-  print 'FAIL: %d validation errors' % errors
+	print 'FAIL: %d validation errors' % errors
 
 
