@@ -30,6 +30,9 @@ from request_handler import HTTPError
 
 from typing import Dict, List, Tuple, Any, Optional, Union
 
+# Type alias for the FrequencyRange type's structure: {"lowFrequency": int, "highFrequency": int}
+FreqRange = Dict[str, int]
+
 
 class SasTestCase(unittest.TestCase):
 
@@ -40,7 +43,11 @@ class SasTestCase(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	def assertContainsRequiredFields(self, schema_filename, response):
+	def assertContainsRequiredFields(
+		self,
+		schema_filename: str,
+		response: Dict
+	):
 		"""Assertion of required fields in response, validating it with Schema.
 
 		Args:
@@ -51,7 +58,10 @@ class SasTestCase(unittest.TestCase):
 		"""
 		util.assertContainsRequiredFields(schema_filename, response)
 
-	def assertValidResponseFormatForApprovedGrant(self, grant_response):
+	def assertValidResponseFormatForApprovedGrant(
+		self,
+		grant_response: Dict
+	) -> None:
 		"""Validates an approved grant response.
 		
 		Checks presence and basic validity of each required field.
@@ -80,10 +90,10 @@ class SasTestCase(unittest.TestCase):
 
 	def assertRegistered(
 		self,
-		registration_request,
-		conditional_registration_data=None,
-		cert=None,
-		key=None
+		registration_request: List[Dict],
+		conditional_registration_data: Optional[List[Dict]] = None,
+		cert: Optional[str] = None,
+		key: Optional[str] = None
 	) -> List[str]:
 		"""Register a list of devices.
 
@@ -134,12 +144,12 @@ class SasTestCase(unittest.TestCase):
 
 	def assertRegisteredAndGranted(
 		self,
-		registration_request,
-		grant_request,
-		conditional_registration_data=None,
-		cert=None,
-		key=None
-	):
+		registration_request: List[Dict],
+		grant_request: Dict[str, List[Dict]],
+		conditional_registration_data: Optional[Dict] = None,
+		cert: Optional[str] = None,
+		key: Optional[str] = None
+	) -> Tuple[List[str], ...]:
 		"""Register and get grants for a list of devices.
 
 		Quickly register and grant N devices; assert SUCCESS for each step and
@@ -186,7 +196,12 @@ class SasTestCase(unittest.TestCase):
 		# Return cbsd_ids and grant_ids
 		return cbsd_ids, grant_ids
 
-	def assertHeartbeatsSuccessful(self, cbsd_ids, grant_ids, operation_states):
+	def assertHeartbeatsSuccessful(
+		self,
+		cbsd_ids: List[str],
+		grant_ids: List[str],
+		operation_states: List[str]
+	) -> List[str]:
 		"""Makes a heartbeat request for a list of devices with its grants and
 		operation states.
 
@@ -274,7 +289,11 @@ class SasTestCase(unittest.TestCase):
 			self.assertLess(datetime.now(), timeout, 'Timeout during CPAS execution.')
 			time.sleep(10)
 
-	def assertChannelsContainFrequencyRange(self, channels, frequency_range):
+	def assertChannelsContainFrequencyRange(
+		self,
+		channels: List[FreqRange],
+		frequency_range: FreqRange
+	):
 		channels.sort(
 				key = lambda ch: (ch['frequencyRange']['lowFrequency'],
 						ch['frequencyRange']['highFrequency']),
@@ -296,10 +315,10 @@ class SasTestCase(unittest.TestCase):
 
 	def assertChannelsOverlapFrequencyRange(
 		self,
-		channels,
-		frequency_range,
-		constrain_low=False,
-		constrain_high=False
+		channels: List[FreqRange],
+		frequency_range: FreqRange,
+		constrain_low: bool = False,
+		constrain_high: bool = False
 	):
 		"""Checks if the frequency range of all channels overlap
 			 the given frequency range.
@@ -348,7 +367,11 @@ class SasTestCase(unittest.TestCase):
 			self.assertGreaterEqual(channels[0]['frequencyRange']['highFrequency'],
 					frequency_range['highFrequency'])
 
-	def assertChannelIncludedInFrequencyRanges(self, channel, frequency_ranges):
+	def assertChannelIncludedInFrequencyRanges(
+		self,
+		channel: FreqRange,
+		frequency_ranges: List[FreqRange]
+	):
 		"""Checks if the channel lies within the list of frequency ranges.
 
 		Args:
@@ -367,7 +390,12 @@ class SasTestCase(unittest.TestCase):
 		self.assertTrue(is_frequency_included_in_range,
 				'Channel is not included in list of frequency ranges')
 
-	def assertValidConfig(self, config, required_fields, optional_fields={}):
+	def assertValidConfig(
+		self,
+		config: Dict,
+		required_fields: Dict,
+		optional_fields: Optional[Dict] = {}
+	):
 		"""Does basic checking of a testing config.
 
 		Checks that the given config contains the required fields of the correct
@@ -410,7 +438,11 @@ class SasTestCase(unittest.TestCase):
 					key in required_fields or key in optional_fields,
 					'Config field \'%s\' is neither required nor optional.' % key)
 
-	def TriggerFullActivityDumpAndWaitUntilComplete(self, server_cert, server_key):
+	def TriggerFullActivityDumpAndWaitUntilComplete(
+		self,
+		server_cert: str,
+		server_key: str
+	) -> Dict:
 		request_time = datetime.utcnow().replace(microsecond=0)
 		self._sas_admin.TriggerFullActivityDump()
 		# Timeout after 2 hours if it's not completed
@@ -431,7 +463,10 @@ class SasTestCase(unittest.TestCase):
 			time.sleep(10)
 		return dump_message
 
-	def triggerPpaCreationAndWaitUntilComplete(self, ppa_creation_request):
+	def triggerPpaCreationAndWaitUntilComplete(
+		self,
+		ppa_creation_request: Dict
+	) -> str:
 		"""Triggers PPA Creation Admin API and returns PPA ID if the creation status is completed.
 
 		Triggers PPA creation to the SAS UUT. Checks the status of the PPA creation
@@ -483,7 +518,10 @@ class SasTestCase(unittest.TestCase):
 
 		return ppa_id
 
-	def assertPpaCreationFailure(self, ppa_creation_request):
+	def assertPpaCreationFailure(
+		self,
+		ppa_creation_request: Dict
+	):
 		"""Trigger PPA Creation Admin API and asserts the failure response.
 
 		Triggers PPA creation to the SAS UUT and handles exception received if the
