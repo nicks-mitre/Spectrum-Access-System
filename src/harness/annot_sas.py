@@ -31,7 +31,7 @@ from typing import Dict, List, Tuple, Any, Optional, Union
 OptStr = Optional[str]
 
 
-def GetTestingSas():
+def GetTestingSas() -> SasImpl:
 	config_parser = configparser.RawConfigParser()
 	config_parser.read(['sas.cfg'])
 	admin_api_base_url = config_parser.get('SasConfig', 'AdminApiBaseUrl')
@@ -91,7 +91,7 @@ class SasImpl(sas_interface.SasInterface):
 
 	def Registration(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
@@ -99,63 +99,63 @@ class SasImpl(sas_interface.SasInterface):
 
 	def SpectrumInquiry(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._CbsdRequest('spectrumInquiry', request, ssl_cert, ssl_key)
 
 	def Grant(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._CbsdRequest('grant', request, ssl_cert, ssl_key)
 
 	def Heartbeat(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._CbsdRequest('heartbeat', request, ssl_cert, ssl_key)
 
 	def Relinquishment(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._CbsdRequest('relinquishment', request, ssl_cert, ssl_key)
 
 	def Deregistration(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._CbsdRequest('deregistration', request, ssl_cert, ssl_key)
 
 	def GetEscSensorRecord(
 		self,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._SasRequest('esc_sensor', request, ssl_cert, ssl_key)
 
 	def GetFullActivityDump(
 		self,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	):
+	) -> Dict:
 		return self._SasRequest('dump', None, ssl_cert, ssl_key)
 
 	def _SasRequest(
 		self,
 		method_name: str,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict: # Functions using _Request() return a dict repr. a JSON response
@@ -175,7 +175,7 @@ class SasImpl(sas_interface.SasInterface):
 	def _CbsdRequest(
 		self,
 		method_name: str,
-		request: str,
+		request: Dict,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
@@ -219,27 +219,27 @@ class SasImpl(sas_interface.SasInterface):
 class SasAdminImpl(sas_interface.SasAdminInterface):
 	"""Implementation of SasAdminInterface for SAS certification testing."""
 
-	def __init__(self, base_url):
+	def __init__(self, base_url: str):
 		self._base_url = base_url
 		self._tls_config = TlsConfig().WithClientCertificate(
 				self._GetDefaultAdminSSLCertPath(), self._GetDefaultAdminSSLKeyPath())
 		self.injected_fcc_ids = set()
 		self.injected_user_ids = set()
 
-	def Reset(self):
+	def Reset(self) -> None:
 		RequestPost('https://%s/admin/reset' % self._base_url, None, self._tls_config)
 
-	def InjectFccId(self, request):
+	def InjectFccId(self, request: Dict) -> None:
 		# Avoid injecting the same FCC ID twice in the same test case.
 		if request['fccId'] in self.injected_fcc_ids:
-			return
+			 return
 		if 'fccMaxEirp' not in request:
 			request['fccMaxEirp'] = 47
 		RequestPost('https://%s/admin/injectdata/fcc_id' % self._base_url, request,
 				self._tls_config)
 		self.injected_fcc_ids.add(request['fccId'])
 
-	def InjectUserId(self, request):
+	def InjectUserId(self, request: Dict) -> Dict:
 		# Avoid injecting the same user ID twice in the same test case.
 		if request['userId'] in self.injected_user_ids:
 			return
@@ -247,142 +247,142 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				self._tls_config)
 		self.injected_user_ids.add(request['userId'])
 
-	def InjectEscZone(self, request):
+	def InjectEscZone(self, request: Dict) -> Dict:
 		return RequestPost('https://%s/admin/injectdata/esc_zone' % self._base_url,
 				request, self._tls_config)
 
-	def InjectExclusionZone(self, request):
+	def InjectExclusionZone(self, request: Dict) -> Dict:
 		return RequestPost(
 				'https://%s/admin/injectdata/exclusion_zone' % self._base_url, request,
 				self._tls_config)
 
-	def InjectZoneData(self, request):
+	def InjectZoneData(self, request: Dict) -> Dict:
 		return RequestPost('https://%s/admin/injectdata/zone' % self._base_url,
 				request, self._tls_config)
 
-	def InjectPalDatabaseRecord(self, request):
+	def InjectPalDatabaseRecord(self, request: Dict) -> None:
 		RequestPost(
 				'https://%s/admin/injectdata/pal_database_record' % self._base_url,
 				request, self._tls_config)
 
-	def InjectClusterList(self, request):
+	def InjectClusterList(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/cluster_list' % self._base_url,
 				request, self._tls_config)
 
-	def BlacklistByFccId(self, request):
+	def BlacklistByFccId(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id' % self._base_url,
 				request, self._tls_config)
 
-	def BlacklistByFccIdAndSerialNumber(self, request):
+	def BlacklistByFccIdAndSerialNumber(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id_and_serial_number'
 				% self._base_url, request, self._tls_config)
 
-	def TriggerEscZone(self, request):
+	def TriggerEscZone(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/trigger/esc_detection' % self._base_url,
 				request, self._tls_config)
 
-	def ResetEscZone(self, request):
+	def ResetEscZone(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/trigger/esc_reset' % self._base_url, request,
 				self._tls_config)
 
-	def PreloadRegistrationData(self, request):
+	def PreloadRegistrationData(self, request: Dict) -> None:
 		RequestPost(
 				'https://%s/admin/injectdata/conditional_registration' % self._base_url,
 				request, self._tls_config)
 
-	def InjectFss(self, request):
+	def InjectFss(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/fss' % self._base_url, request,
 				self._tls_config)
 
-	def InjectWisp(self, request):
+	def InjectWisp(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/wisp' % self._base_url, request,
 				self._tls_config)
 
-	def InjectSasAdministratorRecord(self, request):
+	def InjectSasAdministratorRecord(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/sas_admin' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerMeasurementReportRegistration(self):
+	def TriggerMeasurementReportRegistration(self) -> None:
 		RequestPost('https://%s/admin/trigger/meas_report_in_registration_response'
 				% self._base_url, None, self._tls_config)
 
-	def TriggerMeasurementReportHeartbeat(self):
+	def TriggerMeasurementReportHeartbeat(self) -> None:
 		RequestPost('https://%s/admin/trigger/meas_report_in_heartbeat_response' %
 				self._base_url, None, self._tls_config)
 
-	def InjectEscSensorDataRecord(self, request):
+	def InjectEscSensorDataRecord(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/esc_sensor' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerPpaCreation(self, request):
+	def TriggerPpaCreation(self, request: Dict) -> Dict:
 		return RequestPost('https://%s/admin/trigger/create_ppa' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerDailyActivitiesImmediately(self):
+	def TriggerDailyActivitiesImmediately(self) -> None:
 		RequestPost('https://%s/admin/trigger/daily_activities_immediately' %
 				self._base_url, None, self._tls_config)
 
-	def TriggerEnableScheduledDailyActivities(self):
+	def TriggerEnableScheduledDailyActivities(self) -> None:
 		RequestPost('https://%s/admin/trigger/enable_scheduled_daily_activities' %
 				self._base_url, None, self._tls_config)
 
-	def QueryPropagationAndAntennaModel(self, request):
+	def QueryPropagationAndAntennaModel(self, request: Dict) -> Dict:
 		return RequestPost('https://%s/admin/query/propagation_and_antenna_model' %
 				self._base_url, request, self._tls_config)
 
-	def TriggerEnableNtiaExclusionZones(self):
+	def TriggerEnableNtiaExclusionZones(self) -> None:
 		RequestPost('https://%s/admin/trigger/enable_ntia_15_517' %
 				self._base_url, None, self._tls_config)
 
-	def GetDailyActivitiesStatus(self):
+	def GetDailyActivitiesStatus(self) -> Dict:
 		return RequestPost(
 				'https://%s/admin/get_daily_activities_status' % self._base_url, None,
 				self._tls_config)
 
-	def InjectCpiUser(self, request):
+	def InjectCpiUser(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/cpi_user' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerLoadDpas(self):
+	def TriggerLoadDpas(self) -> None:
 		RequestPost('https://%s/admin/trigger/load_dpas' % self._base_url, None,
 				self._tls_config)
 
-	def TriggerBulkDpaActivation(self, request):
+	def TriggerBulkDpaActivation(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/trigger/bulk_dpa_activation' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerDpaActivation(self, request):
+	def TriggerDpaActivation(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/trigger/dpa_activation' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerDpaDeactivation(self, request):
+	def TriggerDpaDeactivation(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/trigger/dpa_deactivation' % self._base_url,
 				request, self._tls_config)
 
-	def TriggerEscDisconnect(self):
+	def TriggerEscDisconnect(self) -> None:
 		RequestPost('https://%s/admin/trigger/disconnect_esc' % self._base_url,
 				None, self._tls_config)
 
-	def TriggerFullActivityDump(self):
+	def TriggerFullActivityDump(self) -> None:
 		RequestPost(
 				'https://%s/admin/trigger/create_full_activity_dump' % self._base_url,
 				None, self._tls_config)
 
-	def _GetDefaultAdminSSLCertPath(self):
+	def _GetDefaultAdminSSLCertPath(self) -> str:
 		return os.path.join('certs', 'admin.cert')
 
-	def _GetDefaultAdminSSLKeyPath(self):
+	def _GetDefaultAdminSSLKeyPath(self) -> str:
 		return os.path.join('certs', 'admin.key')
 
-	def InjectPeerSas(self, request):
+	def InjectPeerSas(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/peer_sas' % self._base_url,
 				request, self._tls_config)
 
-	def GetPpaCreationStatus(self):
+	def GetPpaCreationStatus(self) -> Dict:
 		return RequestPost(
 				'https://%s/admin/get_ppa_status' % self._base_url, None,
 				self._tls_config)
 
-	def InjectDatabaseUrl(self, request):
+	def InjectDatabaseUrl(self, request: Dict) -> None:
 		RequestPost('https://%s/admin/injectdata/database_url' % self._base_url,
 				request, self._tls_config)
