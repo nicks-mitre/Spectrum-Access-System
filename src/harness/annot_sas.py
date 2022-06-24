@@ -89,28 +89,67 @@ class SasImpl(sas_interface.SasInterface):
 		self._sas_admin_id = sas_admin_id
 		self.maximum_batch_size = int(maximum_batch_size)
 
-	def Registration(self, request, ssl_cert=None, ssl_key=None):
+	def Registration(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
 		return self._CbsdRequest('registration', request, ssl_cert, ssl_key)
 
-	def SpectrumInquiry(self, request, ssl_cert=None, ssl_key=None):
+	def SpectrumInquiry(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._CbsdRequest('spectrumInquiry', request, ssl_cert, ssl_key)
 
-	def Grant(self, request, ssl_cert=None, ssl_key=None):
+	def Grant(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._CbsdRequest('grant', request, ssl_cert, ssl_key)
 
-	def Heartbeat(self, request, ssl_cert=None, ssl_key=None):
+	def Heartbeat(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._CbsdRequest('heartbeat', request, ssl_cert, ssl_key)
 
-	def Relinquishment(self, request, ssl_cert=None, ssl_key=None):
+	def Relinquishment(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._CbsdRequest('relinquishment', request, ssl_cert, ssl_key)
 
-	def Deregistration(self, request, ssl_cert=None, ssl_key=None):
+	def Deregistration(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._CbsdRequest('deregistration', request, ssl_cert, ssl_key)
 
-	def GetEscSensorRecord(self, request, ssl_cert=None, ssl_key=None):
+	def GetEscSensorRecord(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._SasRequest('esc_sensor', request, ssl_cert, ssl_key)
 
-	def GetFullActivityDump(self, ssl_cert=None, ssl_key=None):
+	def GetFullActivityDump(
+		self,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
 		return self._SasRequest('dump', None, ssl_cert, ssl_key)
 
 	def _SasRequest(
@@ -118,8 +157,8 @@ class SasImpl(sas_interface.SasInterface):
 		method_name: str,
 		request: str,
 		ssl_cert: OptStr = None,
-		ssl_key = None
-	):
+		ssl_key: OptStr = None
+	) -> Dict: # Functions using _Request() return a dict repr. a JSON response
 		# url = 'https://%s/%s/%s' % (self.sas_sas_active_base_url, self.sas_sas_version, method_name)
 		url = f'https://{self.sas_sas_active_base_url}/{self.sas_sas_version}/{method_name}'
 		
@@ -129,12 +168,17 @@ class SasImpl(sas_interface.SasInterface):
 		
 		cert_path = ssl_cert or GetDefaultSasSSLCertPath() # if ssl_cert is None, then use default
 		key_path = ssl_key or GetDefaultSasSSLKeyPath()
-		
 		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path))
 		
 		return RequestGet(url, tlsconf)
 
-	def _CbsdRequest(self, method_name, request, ssl_cert=None, ssl_key=None):
+	def _CbsdRequest(
+		self,
+		method_name: str,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
 		# url = 'https://%s/%s/%s' % (self.cbsd_sas_active_base_url, self.cbsd_sas_version, method_name)
 		url = f'https://{self.cbsd_sas_active_base_url}/{self.cbsd_sas_version}/{method_name}'
 		
@@ -147,20 +191,25 @@ class SasImpl(sas_interface.SasInterface):
 			self._tls_config.WithClientCertificate(cert_path, key_path)
 		)
 
-	def DownloadFile(self, url, ssl_cert=None, ssl_key=None):
-		return RequestGet(url,
-				self._tls_config.WithClientCertificate(
-						ssl_cert if ssl_cert else
-						GetDefaultSasSSLCertPath(), ssl_key
-						if ssl_key else GetDefaultSasSSLKeyPath()))
-
-	def UpdateSasRequestUrl(self, cipher):
+	def DownloadFile(
+		self,
+		url: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
+		cert_path = ssl_cert or GetDefaultSasSSLCertPath()
+		key_path = ssl_key or GetDefaultSasSSLKeyPath()
+		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path)
+		
+		return RequestGet(url, tlsconf)
+	
+	def UpdateSasRequestUrl(self, cipher) -> None:
 		if 'ECDSA' in cipher:
 			self.sas_sas_active_base_url = self._sas_sas_ec_base_url
 		else:
 			self.sas_sas_active_base_url = self._sas_sas_rsa_base_url
 
-	def UpdateCbsdRequestUrl(self, cipher):
+	def UpdateCbsdRequestUrl(self, cipher) -> None:
 		if 'ECDSA' in cipher:
 			self.cbsd_sas_active_base_url = self._cbsd_sas_ec_base_url
 		else:
