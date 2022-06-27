@@ -430,6 +430,7 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 		# Returns path and value
 		return '/'.join(splitted_url[0:2]), '/'.join(splitted_url[2:])
 
+	# noinspection PyUnboundLocalVariable
 	def do_POST(self) -> None:
 		"""Handles POST requests."""
 

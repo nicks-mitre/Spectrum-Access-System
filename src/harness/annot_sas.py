@@ -70,7 +70,6 @@ def GetDefaultSasSSLKeyPath() -> str:
 	return os.path.join('certs', 'sas.key')
 
 
-
 class SasImpl(sas_interface.SasInterface):
 	"""Implementation of SasInterface for SAS certification testing."""
 
@@ -155,7 +154,7 @@ class SasImpl(sas_interface.SasInterface):
 	def _SasRequest(
 		self,
 		method_name: str,
-		request: Dict,
+		request: Optional[Dict],
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict: # Functions using _Request() return a dict repr. a JSON response
@@ -165,11 +164,11 @@ class SasImpl(sas_interface.SasInterface):
 		if request is not None:
 			# url += '/%s' % request
 			url = str.join(url, f'/{request}')
-		
+
 		cert_path = ssl_cert or GetDefaultSasSSLCertPath() # if ssl_cert is None, then use default
 		key_path = ssl_key or GetDefaultSasSSLKeyPath()
-		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path))
-		
+		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path)
+
 		return RequestGet(url, tlsconf)
 
 	def _CbsdRequest(
@@ -232,14 +231,14 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 	def InjectFccId(self, request: Dict) -> None:
 		# Avoid injecting the same FCC ID twice in the same test case.
 		if request['fccId'] in self.injected_fcc_ids:
-			 return
+			return
 		if 'fccMaxEirp' not in request:
 			request['fccMaxEirp'] = 47
 		RequestPost('https://%s/admin/injectdata/fcc_id' % self._base_url, request,
 				self._tls_config)
 		self.injected_fcc_ids.add(request['fccId'])
 
-	def InjectUserId(self, request: Dict) -> Dict:
+	def InjectUserId(self, request: Dict) -> None:
 		# Avoid injecting the same user ID twice in the same test case.
 		if request['userId'] in self.injected_user_ids:
 			return

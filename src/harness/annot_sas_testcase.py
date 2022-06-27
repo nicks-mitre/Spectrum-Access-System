@@ -572,9 +572,10 @@ class SasTestCase(unittest.TestCase):
 
 		# Expect the withError flag in status response should be toggled on to True
 		# to indicate PPA creation failure.
-		self.assertTrue(self._sas_admin.GetPpaCreationStatus()['withError'],
-				msg='Expected:There is an error in create PPA. But '
-						'PPA creation status indicates no error')
+		self.assertTrue(
+			self._sas_admin.GetPpaCreationStatus()['withError'],
+			msg='Expected:There is an error in create PPA. But PPA creation status indicates no error'
+		)
 
 
 	def ShutdownServers(self):
@@ -584,7 +585,10 @@ class SasTestCase(unittest.TestCase):
 				logging.info('Stopping %s' % thread.name)
 				thread.shutdown()
 
-	def InjectTestHarnessFccIds(self, cbsd_records):
+	def InjectTestHarnessFccIds(
+		self,
+		cbsd_records: List[Dict]
+	):
 		logging.info('Injecting FCC IDs for CBSDs in the SAS test harness into the SAS UUT.')
 		for cbsd_record in cbsd_records:
 			self._sas_admin.InjectFccId({'fccId': cbsd_record['registration']['fccId']})
