@@ -108,7 +108,12 @@ class FakeSas(sas_interface.SasInterface):
 		self.maximum_batch_size = 100
 		pass
 
-	def Registration(self, request, ssl_cert=None, ssl_key=None):
+	def Registration(
+		self,
+		request,
+		ssl_cert = None,
+		ssl_key = None
+	):
 		response = {'registrationResponse': []}
 		for req in request['registrationRequest']:
 			if 'fccId' not in req or 'cbsdSerialNumber' not in req:
@@ -122,7 +127,12 @@ class FakeSas(sas_interface.SasInterface):
 			})
 		return response
 
-	def SpectrumInquiry(self, request, ssl_cert=None, ssl_key=None):
+	def SpectrumInquiry(
+		self,
+		request,
+		ssl_cert=None,
+		ssl_key=None
+	):
 		response = {'spectrumInquiryResponse': []}
 		for req in request['spectrumInquiryRequest']:
 			response['spectrumInquiryResponse'].append({
@@ -139,7 +149,12 @@ class FakeSas(sas_interface.SasInterface):
 			})
 		return response
 
-	def Grant(self, request, ssl_cert=None, ssl_key=None):
+	def Grant(
+		self,
+		request,
+		ssl_cert=None,
+		ssl_key=None
+	):
 		response = {'grantResponse': []}
 		for req in request['grantRequest']:
 			if ('cbsdId' not in req) :
@@ -162,7 +177,12 @@ class FakeSas(sas_interface.SasInterface):
 					})
 		return response
 
-	def Heartbeat(self, request, ssl_cert=None, ssl_key=None):
+	def Heartbeat(
+		self,
+		request,
+		ssl_cert=None,
+		ssl_key=None
+	):
 		response = {'heartbeatResponse': []}
 		for req in request['heartbeatRequest']:
 			transmit_expire_time = datetime.utcnow().replace(
@@ -175,7 +195,12 @@ class FakeSas(sas_interface.SasInterface):
 			})
 		return response
 
-	def Relinquishment(self, request, ssl_cert=None, ssl_key=None):
+	def Relinquishment(
+		self,
+		request,
+		ssl_cert=None,
+		ssl_key=None
+	):
 		response = {'relinquishmentResponse': []}
 		for req in request['relinquishmentRequest']:
 			response['relinquishmentResponse'].append({
