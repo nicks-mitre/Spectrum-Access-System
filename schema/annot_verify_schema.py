@@ -3,55 +3,58 @@ import jsonschema
 from pprint import pprint
 import os
 
+from typing import Dict, List, Tuple, Optional, Union, NoReturn
+
 # Load in a schema file in the given filename.
-def loadSchema(filename):
+def loadSchema(filename: str) -> Dict:
 	with open(filename) as sfile:
 		schema = json.load(sfile)
 		jsonschema.Draft4Validator.check_schema(schema)
-		# print 'Loaded and verified schema in %s' % filename
 		print(f'Loaded and verified schema in {filename}')
 		return schema
 
-def loadJson(filename):
+def loadJson(filename: str) -> Dict:
 	with open(filename) as jfile:
 		f = json.load(jfile)
 		return f
 
-def testJsonSchema(schema_file, test_file):
+def testJsonSchema(
+	schema_file: str,
+	test_file: str
+) -> int: # int(bool)
 	schema = loadSchema(schema_file)
 	data = loadJson(test_file)
 
-	# print 'Loaded test validation JSON value from %s:' % test_file
 	print(f'Loaded test validation JSON value from {test_file}:')
 
 	dir = os.path.dirname(os.path.realpath(__file__))
-
+	
 	resolver = jsonschema.RefResolver(referrer=schema, base_uri='file://' + dir + '/')
 
 	try:
 		jsonschema.validate(data, schema, resolver=resolver)
 	except jsonschema.exceptions.ValidationError as e:
-		# print e
 		print(e)
-		# print 'FAILED VALIDATION for %s' % test_file
 		print(f'FAILED VALIDATION for {test_file}')
 		pprint(data)
 		return 1
-
-	# print 'Validated.'
+	
 	print('Validated.')
 	return 0
 
-def testJsonSchemaObject(schema_file, test_file, schemaObject):
+def testJsonSchemaObject(
+	schema_file: str,
+	test_file: str,
+	schemaObject: str
+) -> NoReturn:
 	schema = loadSchema(schema_file)
 	data = loadJson(test_file)
-
-	# print 'Loaded test validation JSON value for %s:' % schemaObject
+	
 	print(f'Loaded test validation JSON value for {schemaObject}:')
-	pprint (data)
+	pprint(data)
 
 	jsonschema.validate(data, schema[schemaObject])
-	# print 'Validated.'
+	
 	print('Validated.')
 
 
@@ -92,8 +95,8 @@ for t in tests:
 	errors += testJsonSchema(t[0], t[1])
 
 if errors == 0:
-	print 'PASS'
+	print('PASS')
 else:
-	print 'FAIL: %d validation errors' % errors
+	print(f'FAIL: {errors} validation errors')
 
 
