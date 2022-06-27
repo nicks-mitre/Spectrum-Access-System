@@ -296,7 +296,7 @@ class FakeSas(sas_interface.SasInterface):
 	) -> Dict:
 		"""SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:
-			the message as an "json data" object specified in WINNF-16-S-0096
+			the message as a "json data" object specified in WINNF-16-S-0096
 		"""
 		pass
 

@@ -23,7 +23,6 @@ import abc
 import six
 
 
-	
 # Type aliases for convenience of type annotating request/response objects
 Request = Dict[str, List[Dict]]
 Response = Dict[str, List[Dict]]
@@ -249,7 +248,7 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	) -> Dict: # The JSON data should probably be represented in a Python Dictionary
 		""" SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:
-			the message as an "json data" object specified in WINNF-16-S-0096
+			the message as a "json data" object specified in WINNF-16-S-0096
 		"""
 		pass
 
@@ -261,7 +260,6 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Reset(self):
 		"""SAS admin interface to reset the SAS between test cases."""
 		pass
-		
 		
 	@abc.abstractmethod
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
@@ -309,7 +307,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	# def BlacklistByFccIdAndSerialNumber(self, fccId: str, serialNumber: str):
 	def BlacklistByFccIdAndSerialNumber(self, request: Dict[str, str]):
 		"""Inject an (FCC ID, serial number) pair which will be blacklisted by the
-			 SAS under test.
+			SAS under test.
 
 		Args:
 			request: A dictionary with the following key-value pairs:
@@ -402,13 +400,15 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def InjectWisp(
 		self,
-		request: Dict[str, Union[Dict, GeoJSON]]
+		request: Dict[str, Dict]
 	):
 		"""SAS admin interface to inject WISP information into SAS under test.
 
 		Args:
-			request: A dictionary with two key-value pairs where the keys are "record" and "zone" with the values IncumbentProtectionData object (specified in SAS-SAS TS) and a GeoJSON Object respectively
-		Note: Required Field in IncumbentProtectionData are id, type, 	deploymentParam->operationParam->operationFrequencyRange->lowFrequency, highFrequency
+			request: A dictionary with two key-value pairs where the keys are "record" and "zone" with the values
+					IncumbentProtectionData object (specified in SAS-SAS TS) and a GeoJSON Object respectively
+		Note: Required Field in IncumbentProtectionData are id, type,
+				deploymentParam->operationParam->operationFrequencyRange->lowFrequency, highFrequency
 		"""
 		pass
 
@@ -514,7 +514,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 
 	@abc.abstractmethod
 	def GetDailyActivitiesStatus(self):
-		"""SAS admin interface to get the daily activities status
+		"""SAS admin interface to get the daily activities' status
 		Returns:
 			A dictionary with a single key-value pair where the key is "completed" and the
 			value is a boolean with value as true if the daily activities is completed and
@@ -525,7 +525,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerEnableScheduledDailyActivities(self):
 		"""SAS admin interface to trigger the daily activities according to the 
-			 schedule agreed upon by SAS admins.			 
+			schedule agreed upon by SAS admins.
 		"""
 		pass
 
@@ -560,7 +560,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerBulkDpaActivation(self, request: Dict[str, bool]):
 		"""SAS admin interface to bulk DPA activation/deactivation
-		 Args:
+		Args:
 			request: A dictionary with the following key-value pairs:
 				"activate": (boolean) if True, activate all ESC-monitored DPAs on all channels
 						else deactivate all ESC-monitored DPAs on all channels
@@ -573,7 +573,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		request: Dict[str, U[str, Dict]]
 	):
 		"""SAS admin interface to activate specific DPA on specific channel
-		 Args:
+		Args:
 			request: A dictionary with the following key-value pairs:
 				"dpaId": (string) it represents the field "name" in the kml file of DPAs
 				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
@@ -584,10 +584,10 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerDpaDeactivation(
 		self,
-		request-> Dict[str, U[str, Dict]]
-	):
+		request: Dict[str, U[str, Dict]]
+	) -> Dict[str, U[str, Dict]]:
 		"""SAS admin interface to deactivate specific DPA on specific channel
-		 Args:
+		Args:
 			request: A dictionary with the following key-value pairs:
 				"dpaId": (string) it represents the field "name" in the kml file of DPAs
 				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
@@ -649,7 +649,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 			"withError". The values are of boolean type. The value for "completed" flag
 			set to True if the ppa creation(for the most recent ppa creation) has completed or
 			to False if the PPA creation is still in progress. The value for "withError" flag is
-			is set to True if the PPA creation has completed with error(s) else it is set to False.
+			set to True if the PPA creation has completed with error(s) else it is set to False.
 		"""
 		pass
 
