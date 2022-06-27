@@ -110,10 +110,10 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Registration(
 		self,
-		request,
-		ssl_cert = None,
-		ssl_key = None
-	):
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'registrationResponse': []}
 		for req in request['registrationRequest']:
 			if 'fccId' not in req or 'cbsdSerialNumber' not in req:
@@ -129,10 +129,10 @@ class FakeSas(sas_interface.SasInterface):
 
 	def SpectrumInquiry(
 		self,
-		request,
-		ssl_cert=None,
-		ssl_key=None
-	):
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'spectrumInquiryResponse': []}
 		for req in request['spectrumInquiryRequest']:
 			response['spectrumInquiryResponse'].append({
@@ -151,19 +151,19 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Grant(
 		self,
-		request,
-		ssl_cert=None,
-		ssl_key=None
-	):
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'grantResponse': []}
 		for req in request['grantRequest']:
-			if ('cbsdId' not in req) :
+			if 'cbsdId' not in req:
 				response['grantResponse'].append({
 					'response': self._GetMissingParamResponse()
 				})
-			else :
-				if (('highFrequency' not in req['operationParam']['operationFrequencyRange']) or \
-					('lowFrequency' not in req['operationParam']['operationFrequencyRange'])) :
+			else:
+				if (('highFrequency' not in req['operationParam']['operationFrequencyRange']) or
+						('lowFrequency' not in req['operationParam']['operationFrequencyRange'])):
 					response['grantResponse'].append({
 						'cbsdId': req['cbsdId'],
 						'response': self._GetMissingParamResponse()
@@ -179,10 +179,10 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Heartbeat(
 		self,
-		request,
-		ssl_cert=None,
-		ssl_key=None
-	):
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'heartbeatResponse': []}
 		for req in request['heartbeatRequest']:
 			transmit_expire_time = datetime.utcnow().replace(
@@ -197,10 +197,10 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Relinquishment(
 		self,
-		request,
-		ssl_cert=None,
-		ssl_key=None
-	):
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'relinquishmentResponse': []}
 		for req in request['relinquishmentRequest']:
 			response['relinquishmentResponse'].append({
@@ -210,10 +210,15 @@ class FakeSas(sas_interface.SasInterface):
 			})
 		return response
 
-	def Deregistration(self, request, ssl_cert=None, ssl_key=None):
+	def Deregistration(
+		self,
+		request: Request,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Response:
 		response = {'deregistrationResponse': []}
 		for req in request['deregistrationRequest']:
-			if ('cbsdId' not in req) :
+			if 'cbsdId' not in req:
 				response['deregistrationResponse'].append({
 					'response': self._GetMissingParamResponse()
 				})
@@ -224,7 +229,12 @@ class FakeSas(sas_interface.SasInterface):
 				})
 		return response
 
-	def GetEscSensorRecord(self, request, ssl_cert=None, ssl_key=None):
+	def GetEscSensorRecord(
+		self,
+		request: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
 		# Get the Esc Sensor record
 		with open(os.path.join('testcases', 'testdata', 'esc_sensor_record_0.json')) as fd:
 			esc_sensor_record = json.load(fd)
@@ -235,41 +245,58 @@ class FakeSas(sas_interface.SasInterface):
 			# Return Empty if invalid Id
 			return {}
 
-	def GetFullActivityDump(self, version, ssl_cert=None, ssl_key=None):
+	def GetFullActivityDump(
+		self,
+		version,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
 		response = json.loads(json.dumps({'files': [
 			{'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/' +
 					'Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-			'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'size': 19,
-			'version': version, 'recordType': "cbsd"},
+			'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+			'size': 19,
+			'version': version,
+			'recordType': "cbsd"},
 			{
 				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'size': 19,
-				'version': version, 'recordType': "zone"},
+				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+				'size': 19,
+				'version': version,
+			'recordType': "zone"},
 			{
 				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'size': 19,
-				'version': version, 'recordType': "esc_sensor"},
+				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+				'size': 19,
+				'version': version,
+			'recordType': "esc_sensor"},
 			{
 				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'size': 19,
-				'version': version, 'recordType': "coordination"}
+				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+				'size': 19,
+				'version': version,
+				'recordType': "coordination"}
 		],
 			'generationDateTime': datetime.utcnow().strftime(
 					'%Y-%m-%dT%H:%M:%SZ'),
 			'description': "Full activity dump files"}))
 		return response
 
-	def _GetSuccessResponse(self):
+	def _GetSuccessResponse(self) -> Dict:
 		return {'responseCode': 0}
 
-	def _GetMissingParamResponse(self):
+	def _GetMissingParamResponse(self) -> Dict:
 		return {'responseCode': MISSING_PARAM}
 
-	def DownloadFile(self, url, ssl_cert=None, ssl_key=None):
-		"""SAS-SAS Get data from json files after generate the
-		 Full Activity Dump Message
+	def DownloadFile(
+		self,
+		url: str,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> Dict:
+		"""SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:
-		 the message as an "json data" object specified in WINNF-16-S-0096
+			the message as an "json data" object specified in WINNF-16-S-0096
 		"""
 		pass
 
@@ -299,7 +326,20 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 	def InjectExclusionZone(self, request, ssl_cert=None, ssl_key=None):
 		pass
 
-	def InjectZoneData(self, request, ssl_cert=None, ssl_key=None):
+	def InjectZoneData(
+		self,
+		request: Dict[str, Dict],
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	):
+		"""Inject PPA or NTIA zone information into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"record" and the value is ZoneData object to be injected into
+				SAS under test. For more information about ZoneData please see
+				the SAS-SAS TS (WINNF-16-S-0096) - Section 8.7.
+		"""
 		return request['record']['id']
 
 	def InjectPalDatabaseRecord(self, request):
@@ -326,7 +366,12 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 	def TriggerMeasurementReportHeartbeat(self):
 		pass
 
-	def TriggerPpaCreation(self, request, ssl_cert=None, ssl_key=None):
+	def TriggerPpaCreation(
+		self,
+		request: Dict,
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
+	) -> str:
 		return 'zone/ppa/fake_sas/%s/%s' % (request['palIds'][0],
 				uuid.uuid4().hex)
 
@@ -339,17 +384,17 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 	def TriggerEnableScheduledDailyActivities(self):
 		pass
 
-	def QueryPropagationAndAntennaModel(self, request):
+	def QueryPropagationAndAntennaModel(self, request) -> Dict:
 		from testcases.WINNF_FT_S_PAT_testcase import computePropagationAntennaModel
 		return computePropagationAntennaModel(request)
 
-	def GetDailyActivitiesStatus(self):
+	def GetDailyActivitiesStatus(self) -> Dict[str, bool]:
 		return {'completed': True}
 
-	def GetPpaCreationStatus(self):
+	def GetPpaCreationStatus(self) -> Dict[str, bool]:
 		return {'completed': True, 'withError': False}
 
-	def GetDailyActivitiesStatus(self):
+	def GetDailyActivitiesStatus(self) -> Dict[str, bool]:
 		return {'completed': True}
 
 	def TriggerLoadDpas(self):
@@ -375,17 +420,17 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 
 class FakeSasHandler(BaseHTTPRequestHandler):
 	@classmethod
-	def SetVersion(cls, cbsd_sas_version, sas_sas_version):
+	def SetVersion(cls, cbsd_sas_version: str, sas_sas_version: str):
 		cls.cbsd_sas_version = cbsd_sas_version
 		cls.sas_sas_version = sas_sas_version
 
-	def _parseUrl(self, url):
+	def _parseUrl(self, url: str) -> Tuple[str, str]:
 		"""Parse the Url into the path and value."""
 		splitted_url = url.split('/')[1:]
 		# Returns path and value
 		return '/'.join(splitted_url[0:2]), '/'.join(splitted_url[2:])
 
-	def do_POST(self):
+	def do_POST(self) -> None:
 		"""Handles POST requests."""
 
 		length = int(self.headers.getheader('content-length'))
@@ -455,7 +500,7 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.wfile.write(json.dumps(response))
 
-	def do_GET(self):
+	def do_GET(self) -> None:
 		"""Handles GET requests."""
 		path, value = self._parseUrl(self.path)
 		if path == '%s/esc_sensor' % self.sas_sas_version:
@@ -470,13 +515,18 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.wfile.write(json.dumps(response))
 
-def ParseCrlIndex(index_filename):
+def ParseCrlIndex(index_filename: str) -> List[str]:
 	"""Returns the list of CRL filenames from a CRL index file."""
 	dirname = os.path.dirname(index_filename)
 	return [os.path.join(dirname, line.rstrip())
 			for line in open(index_filename)]
 
-def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
+def RunFakeServer(
+	cbsd_sas_version: str,
+	sas_sas_version: str,
+	is_ecc: bool,
+	crl_index: str
+) -> None:
 	FakeSasHandler.SetVersion(cbsd_sas_version, sas_sas_version)
 	if is_ecc:
 		assert ssl.HAS_ECDH
@@ -499,7 +549,7 @@ def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
 		# file, so we must convert it first.
 		for f in crl_files:
 			try:
-				with file(f) as handle:
+				with open(f) as handle:
 					der = handle.read()
 					try:
 						crl = crypto.load_crl(crypto.FILETYPE_ASN1, der)

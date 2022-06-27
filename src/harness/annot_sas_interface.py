@@ -30,6 +30,8 @@ Response = Dict[str, List[Dict]]
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
 OptStr = Optional[str]
+Opt = Optional
+U = Union
 
 
 class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
@@ -223,8 +225,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def GetFullActivityDump(
 		self,
-		ssl_cert = None,
-		ssl_key = None
+		ssl_cert: OptStr = None,
+		ssl_key: OptStr = None
 	) -> Dict:
 		"""SAS-SAS Full Activity Dump interface.
 
@@ -245,10 +247,9 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict: # The JSON data should probably be represented in a Python Dictionary
-		"""SAS-SAS Get data from json files after generate the
-		 Full Activity Dump Message
+		""" SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:
-		 the message as an "json data" object specified in WINNF-16-S-0096
+			the message as an "json data" object specified in WINNF-16-S-0096
 		"""
 		pass
 
@@ -263,9 +264,12 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		
 		
 	@abc.abstractmethod
-	# def InjectFccId(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
-	def InjectFccId(self, fccId: str, fccMaxEirp: Optional[float]):
+	# def InjectFccId(self, fccId: str, fccMaxEirp: Optional[float]):
+	def InjectFccId(
+		self,
+		request: Dict[str, Union[str, float]]
+	):
 		"""SAS admin interface to inject fcc id information into SAS under test.
 
 		Args:
@@ -276,9 +280,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def InjectUserId(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
-	def InjectUserId(self, userId: str):
+	# def InjectUserId(self, userId: str):
+	def InjectUserId(self, request: Dict[str, str]):
 		"""SAS admin interface to whitelist a user ID in the SAS under test.
 
 		Args:
@@ -289,9 +293,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def BlacklistByFccId(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
-	def BlacklistByFccId(self, fccId: str):
+	# def BlacklistByFccId(self, fccId: str):
+	def BlacklistByFccId(self, request: Dict[str, str]):
 		"""Inject an FCC ID which will be blacklisted by the SAS under test.
 
 		Args:
@@ -301,9 +305,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def BlacklistByFccIdAndSerialNumber(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
-	def BlacklistByFccIdAndSerialNumber(self, fccId: str, serialNumber: str):
+	# def BlacklistByFccIdAndSerialNumber(self, fccId: str, serialNumber: str):
+	def BlacklistByFccIdAndSerialNumber(self, request: Dict[str, str]):
 		"""Inject an (FCC ID, serial number) pair which will be blacklisted by the
 			 SAS under test.
 
@@ -332,12 +336,15 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def InjectExclusionZone(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs
+	# def InjectExclusionZone(
+		# self,
+		# zone: GeoJSON,
+		# frequencyRanges: List
+	# ):
 	def InjectExclusionZone(
 		self,
-		zone: GeoJSON,
-		frequencyRanges: List
+		request: Dict[str, Union[Dict, List[Dict]]]
 	):
 		"""Inject exclusion zone information into SAS under test.
 
@@ -351,7 +358,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def InjectZoneData(
 		self,
-		request: Dict[str, ZoneData]
+		request: Dict[str, Dict] # value is type dict?
 	):
 		"""Inject PPA or NTIA zone information into SAS under test.
 
@@ -380,15 +387,15 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def InjectFss(
 		self,
-		request: Dict[str, Union[str, List]]
+		request: Dict[str, Dict]
 	):
 		"""SAS admin interface to inject FSS information into SAS under test.
 
 		Args:
-				request: A dictionary with a single key-value pair where the key is
-				"record" and the value is a fixed satellite service object
-				(which is itself a dictionary). The dictionary is an
-				IncumbentProtectionData object (specified in SAS-SAS TS) -- WINNF-16-S-0096: Section 8.5.
+			request: A dictionary with a single key-value pair where the key is
+			"record" and the value is a fixed satellite service object
+			(which is itself a dictionary). The dictionary is an
+			IncumbentProtectionData object (specified in SAS-SAS TS) -- WINNF-16-S-0096: Section 8.5.
 		"""
 		pass
 
@@ -400,12 +407,8 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		"""SAS admin interface to inject WISP information into SAS under test.
 
 		Args:
-			request: A dictionary with two key-value pairs where the keys are
-				"record" and "zone" with the values IncumbentProtectionData
-				object (specified in SAS-SAS TS) and a GeoJSON Object respectively
-		Note: Required Field in IncumbentProtectionData are id, type,
-		deploymentParam->operationParam->operationFrequencyRange->
-		lowFrequency, highFrequency
+			request: A dictionary with two key-value pairs where the keys are "record" and "zone" with the values IncumbentProtectionData object (specified in SAS-SAS TS) and a GeoJSON Object respectively
+		Note: Required Field in IncumbentProtectionData are id, type, 	deploymentParam->operationParam->operationFrequencyRange->lowFrequency, highFrequency
 		"""
 		pass
 
@@ -425,14 +428,17 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def InjectEscSensorDataRecord(self, request: Dict[str, Dict]):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
+	# def InjectEscSensorDataRecord(
+		# self,
+		# esc_sensor_id: str,
+		# installationParam: InstallationParam,
+		# protectionLevel: float # dBm/MHz
+	# )
 	def InjectEscSensorDataRecord(
 		self,
-		esc_sensor_id: str,
-		installationParam: InstallationParam,
-		protectionLevel: float # dBm/MHz
-	)
+		request: Dict[str, Dict]
+	):
 		"""SAS admin interface to inject ESC Sensor Data Record into SAS under test.
 
 		Args:
@@ -465,16 +471,18 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def TriggerPpaCreation(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
+	# def TriggerPpaCreation(
+		# self,
+		# cbsdIds: List[str],
+		# palIds: List[str],
+		# providedContour: Optional[GeoJSON]
+	# ) -> str:
 	def TriggerPpaCreation(
 		self,
-		cbsdIds: List[str],
-		palIds: List[str],
-		providedContour: Optional[GeoJSON]
+		request: Dict[str, U[List, Dict]]
 	) -> str:
-		"""SAS admin interface to trigger PPA creation based on the CBSD Ids,
-		Pal Ids and Provided Contour
+		"""SAS admin interface to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
 
 		Args:
 			request: A dictionary with multiple key-value pairs where the keys are
@@ -517,18 +525,21 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerEnableScheduledDailyActivities(self):
 		"""SAS admin interface to trigger the daily activities according to the 
-			 schedule agreed upon by SAS admins.												 
+			 schedule agreed upon by SAS admins.			 
 		"""
 		pass
 
 	@abc.abstractmethod
-	# def InjectCpiUser(self, request):
 	# We could just make dictionary ourselves with the fixed, typed kv pairs:
+	# def InjectCpiUser(
+		# self,
+		# cpiId: str,
+		# cpiName: str,
+		# cpiPublicKey: str
+	# ):
 	def InjectCpiUser(
 		self,
-		cpiId: str,
-		cpiName: str,
-		cpiPublicKey: str
+		request: Dict[str, str]
 	):
 		"""SAS admin interface to add a CPI User as if it came directly from the CPI database.
 
@@ -547,11 +558,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def TriggerBulkDpaActivation(self, request):
-	def TriggerBulkDpaActivation(
-		self,
-		activate: bool
-	):
+	def TriggerBulkDpaActivation(self, request: Dict[str, bool]):
 		"""SAS admin interface to bulk DPA activation/deactivation
 		 Args:
 			request: A dictionary with the following key-value pairs:
@@ -561,13 +568,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def TriggerDpaActivation(self, request):
 	def TriggerDpaActivation(
 		self,
-		dpaId: str,
-		# frequencyRange: Dict
-		lowFrequency: float,
-		highFrequency: float
+		request: Dict[str, U[str, Dict]]
 	):
 		"""SAS admin interface to activate specific DPA on specific channel
 		 Args:
@@ -579,13 +582,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def TriggerDpaDeactivation(self, request):
 	def TriggerDpaDeactivation(
 		self,
-		dpaId: str,
-		# frequencyRange: Dict
-		lowFrequency: float,
-		highFrequency: float
+		request-> Dict[str, U[str, Dict]]
 	):
 		"""SAS admin interface to deactivate specific DPA on specific channel
 		 Args:
@@ -610,12 +609,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def InjectPeerSas(self, request):
-	def InjectPeerSas(
-		self,
-		certificateHash: str,
-		url: str
-	):
+	def InjectPeerSas(self, request: Dict[str, str]):
 		"""SAS admin interface to inject a peer SAS into the SAS UUT.
 
 		Args:
@@ -626,14 +620,10 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def QueryPropagationAndAntennaModel(self, request):
 	def QueryPropagationAndAntennaModel(
 		self,
-		reliabilityLevel: float, # annotate that permitted values are -1, 0.05, or 0.9
-		cbsd: Dict,
-		fss: Optional[Dict],
-		ppa: Optional[GeoJSON],
-	) -> List[float, ...]:
+		request: Dict[str, U[float, Dict]]
+	) -> Tuple[float, ...]:
 		"""SAS admin interface to query propagation and antenna gains for CBSD and FSS	or Provided PPA Contour
 
 		Args:
@@ -664,11 +654,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# def InjectDatabaseUrl(self, request):
-	def InjectDatabaseUrl(
-		self,
-		db_url: str
-	):
+	def InjectDatabaseUrl(self, request: Dict):
 		"""Inject the Database URL into SAS.
 
 		Args:
