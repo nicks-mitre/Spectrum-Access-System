@@ -357,7 +357,7 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 
 	def Reset(self) -> None:
 		"""SAS admin interface implementation to reset the SAS between test cases."""
-		RequestPost('https://%s/admin/reset' % self._base_url, None, self._tls_config)
+		RequestPost(f'https://{self._base_url}/admin/reset', None, self._tls_config)
 
 	def InjectFccId(self, request: Dict) -> None:
 		"""SAS admin interface implementation to inject fcc id information into SAS under test.
@@ -489,8 +489,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			(which is itself a dictionary). The dictionary is an
 			IncumbentProtectionData object (specified in SAS-SAS TS) -- WINNF-16-S-0096: Section 8.5.
 		"""
-		RequestPost('https://%s/admin/injectdata/fss' % self._base_url, request,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/fss'
+		RequestPost(url, request, self._tls_config)
 
 	def InjectWisp(self, request: Dict) -> None:
 		"""SAS admin interface implementation to inject WISP information into SAS under test.
@@ -501,8 +501,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Note: Required Field in IncumbentProtectionData are id, type,
 				deploymentParam->operationParam->operationFrequencyRange->lowFrequency, highFrequency
 		"""
-		RequestPost('https://%s/admin/injectdata/wisp' % self._base_url, request,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/wisp'
+		RequestPost(url, request, self._tls_config)
 
 	def InjectSasAdministratorRecord(self, request: Dict) -> None:
 		"""SAS admin interface implementation to inject SAS Administrator Record into SAS under test.
@@ -513,8 +513,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				itself a dictionary). The dictionary is an SASAdministrator object
 				(Specified in SAS-SAS TS WINNF-16-S-0096) - Section 8.1.
 		"""
-		RequestPost('https://%s/admin/injectdata/sas_admin' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/sas_admin' 
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerMeasurementReportRegistration(self) -> None:
 		"""SAS admin interface implementation to trigger measurement report request for all subsequent
@@ -523,8 +523,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Note: The SAS should request a measurement report in the RegistrationResponse
 		(if status == 0)
 		"""
-		RequestPost('https://%s/admin/trigger/meas_report_in_registration_response'
-				% self._base_url, None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/meas_report_in_registration_response'
+		RequestPost(url, None, self._tls_config)
 
 	def TriggerMeasurementReportHeartbeat(self) -> None:
 		"""SAS admin interface implementation to trigger measurement report request for all subsequent
@@ -533,8 +533,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Note: The SAS should request a measurement report in the HeartbeatResponse
 		(if status == 0)
 		"""
-		RequestPost('https://%s/admin/trigger/meas_report_in_heartbeat_response' %
-				self._base_url, None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/meas_report_in_heartbeat_response'
+		RequestPost(url, None, self._tls_config)
 
 	def InjectEscSensorDataRecord(self, request: Dict) -> None:
 		"""SAS admin interface implementation to inject ESC Sensor Data Record into SAS under test.
@@ -546,8 +546,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Behavior: SAS should act as if it is connected to an ESC sensor with
 		the provided parameters.
 		"""
-		RequestPost('https://%s/admin/injectdata/esc_sensor' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/esc_sensor'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerPpaCreation(self, request: Dict) -> Dict:
 		"""SAS admin interface implementation to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
@@ -561,8 +561,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Returns:
 			PPA Id in string format
 		"""
-		return RequestPost('https://%s/admin/trigger/create_ppa' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/create_ppa'
+		return RequestPost(url, request, self._tls_config)
 
 	def TriggerDailyActivitiesImmediately(self) -> None:
 		"""SAS admin interface implementation to trigger daily activities immediately which will
@@ -572,15 +572,15 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			2. Run IAP and DPA Calculations
 			3. Apply EIRP updates to devices
 		"""
-		RequestPost('https://%s/admin/trigger/daily_activities_immediately' %
-				self._base_url, None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/daily_activities_immediately'
+		RequestPost(url, None, self._tls_config)
 
 	def TriggerEnableScheduledDailyActivities(self) -> None:
 		"""SAS admin interface implementation to trigger the daily activities according to the 
 			schedule agreed upon by SAS admins.
 		"""
-		RequestPost('https://%s/admin/trigger/enable_scheduled_daily_activities' %
-				self._base_url, None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/enable_scheduled_daily_activities'
+		RequestPost(url, None, self._tls_config)
 
 	def QueryPropagationAndAntennaModel(self, request: Dict) -> Dict:
 		"""SAS admin interface implementation to query propagation and antenna gains for CBSD and FSS	or Provided PPA Contour
@@ -598,14 +598,14 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			double rxAntennaGainDbi (optional) (receiver antenna gain in dBi in the direction of the transmitter)
 
 		"""
-		return RequestPost('https://%s/admin/query/propagation_and_antenna_model' %
-				self._base_url, request, self._tls_config)
+		url = f'https://{self._base_url}/admin/query/propagation_and_antenna_model'
+		return RequestPost(url, request, self._tls_config)
 
 	def TriggerEnableNtiaExclusionZones(self) -> None:
 		"""SAS admin interface implementation to trigger enforcement of the NTIA exclusion zones 
 		"""
-		RequestPost('https://%s/admin/trigger/enable_ntia_15_517' %
-				self._base_url, None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/enable_ntia_15_517'
+		RequestPost(url, None, self._tls_config)
 
 	def GetDailyActivitiesStatus(self) -> Dict:
 		"""SAS admin interface implementation to get the daily activities' status
@@ -614,9 +614,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			value is a boolean with value as true if the daily activities is completed and
 			false if the daily activities is running/failing.
 		"""
-		return RequestPost(
-				'https://%s/admin/get_daily_activities_status' % self._base_url, None,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/get_daily_activities_status'
+		return RequestPost(url, None, self._tls_config)
 
 	def InjectCpiUser(self, request: Dict) -> None:
 		"""SAS admin interface implementation to add a CPI User as if it came directly from the CPI database.
@@ -627,14 +626,14 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"cpiName": (string) valid name for cpi user to be injected into SAS under test
 				"cpiPublicKey": (string) public key value for cpi user to be injected into SAS under test
 		"""
-		RequestPost('https://%s/admin/injectdata/cpi_user' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/cpi_user'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerLoadDpas(self) -> None:
 		"""SAS admin interface implementation to load all ESC-monitored DPAs and immediately activate all of them.
 		"""
-		RequestPost('https://%s/admin/trigger/load_dpas' % self._base_url, None,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/load_dpas'
+		RequestPost(url, None, self._tls_config)
 
 	def TriggerBulkDpaActivation(self, request: Dict) -> None:
 		"""SAS admin interface implementation to bulk DPA activation/deactivation
@@ -643,8 +642,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"activate": (boolean) if True, activate all ESC-monitored DPAs on all channels
 						else deactivate all ESC-monitored DPAs on all channels
 		"""
-		RequestPost('https://%s/admin/trigger/bulk_dpa_activation' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/bulk_dpa_activation'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerDpaActivation(self, request: Dict) -> None:
 		"""SAS admin interface implementation to activate specific DPA on specific channel
@@ -654,8 +653,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
 
 		"""
-		RequestPost('https://%s/admin/trigger/dpa_activation' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/dpa_activation'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerDpaDeactivation(self, request: Dict) -> None:
 		"""SAS admin interface implementation to deactivate specific DPA on specific channel
@@ -664,13 +663,13 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"dpaId": (string) it represents the field "name" in the kml file of DPAs
 				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
 		"""
-		RequestPost('https://%s/admin/trigger/dpa_deactivation' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/dpa_deactivation'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerEscDisconnect(self) -> None:
 		"""Simulates the ESC (ESC-DE) being disconnected from the SAS UUT."""
-		RequestPost('https://%s/admin/trigger/disconnect_esc' % self._base_url,
-				None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/disconnect_esc'
+		RequestPost(url, None, self._tls_config)
 
 	def TriggerFullActivityDump(self) -> None:
 		"""SAS admin interface implementation to trigger generation of a Full Activity Dump.
@@ -678,9 +677,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Note: SAS does not need to complete generation before returning HTTP 200.
 		See the testing API specification for more details.
 		"""
-		RequestPost(
-				'https://%s/admin/trigger/create_full_activity_dump' % self._base_url,
-				None, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/create_full_activity_dump'
+		RequestPost(url, None, self._tls_config)
 
 	def _GetDefaultAdminSSLCertPath(self) -> str:
 		return os.path.join('certs', 'admin.cert')
@@ -696,8 +694,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"certificateHash": the sha1 fingerprint of the certificate
 				"url": base URL of the peer SAS.
 		"""
-		RequestPost('https://%s/admin/injectdata/peer_sas' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/peer_sas'
+		RequestPost(url, request, self._tls_config)
 
 	def GetPpaCreationStatus(self) -> Dict:
 		"""SAS admin interface implementation to get the most recent PPA creation status
@@ -708,9 +706,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			to False if the PPA creation is still in progress. The value for "withError" flag is
 			set to True if the PPA creation has completed with error(s) else it is set to False.
 		"""
-		return RequestPost(
-				'https://%s/admin/get_ppa_status' % self._base_url, None,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/get_ppa_status'
+		return RequestPost(url, None, self._tls_config)
 
 	def InjectDatabaseUrl(self, request: Dict) -> None:
 		"""Inject the Database URL into SAS.
@@ -718,5 +715,5 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		Args:
 			request: Contains database url to be injected.
 		"""
-		RequestPost('https://%s/admin/injectdata/database_url' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/database_url'
+		RequestPost(url, request, self._tls_config)
