@@ -188,7 +188,7 @@ class FakeSas(sas_interface.SasInterface):
 				else:
 					response['grantResponse'].append({
 						'cbsdId': req['cbsdId'],
-						'grantId': 'fake_grant_id_%s' % datetime.utcnow().isoformat(),
+						'grantId': f'fake_grant_id_{datetime.utcnow().isoformat()}',
 						'channelType': 'GAA',
 						'response': self._GetSuccessResponse()
 					})
@@ -294,8 +294,7 @@ class FakeSas(sas_interface.SasInterface):
 				'version': version,
 				'recordType': "coordination"}
 		],
-			'generationDateTime': datetime.utcnow().strftime(
-					'%Y-%m-%dT%H:%M:%SZ'),
+			'generationDateTime': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
 			'description': "Full activity dump files"}))
 		return response
 
@@ -400,8 +399,9 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 		Returns:
 			PPA Id in string format
 		"""
-		return 'zone/ppa/fake_sas/%s/%s' % (request['palIds'][0],
-				uuid.uuid4().hex)
+		pal_id = request['palIds'][0]
+		uuid = uuid.uuid4().hex
+		return f'zone/ppa/fake_sas/{pal_id}/{uuid}'
 
 	def TriggerDailyActivitiesImmediately(self):
 		pass
@@ -489,17 +489,17 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 		length = int(self.headers.getheader('content-length'))
 		if length > 0:
 			request = json.loads(self.rfile.read(length))
-		if self.path == '/%s/registration' % self.cbsd_sas_version:
+		if self.path == f'/{self.cbsd_sas_version}/registration':
 			response = FakeSas().Registration(request)
-		elif self.path == '/%s/spectrumInquiry' % self.cbsd_sas_version:
+		elif self.path == f'/{self.cbsd_sas_version}/spectrumInquiry':
 			response = FakeSas().SpectrumInquiry(request)
-		elif self.path == '/%s/grant' % self.cbsd_sas_version:
+		elif self.path == f'/{self.cbsd_sas_version}/grant':
 			response = FakeSas().Grant(request)
-		elif self.path == '/%s/heartbeat' % self.cbsd_sas_version:
+		elif self.path == f'/{self.cbsd_sas_version}/heartbeat':
 			response = FakeSas().Heartbeat(request)
-		elif self.path == '/%s/relinquishment' % self.cbsd_sas_version:
+		elif self.path == f'/{self.cbsd_sas_version}/relinquishment':
 			response = FakeSas().Relinquishment(request)
-		elif self.path == '/%s/deregistration' % self.cbsd_sas_version:
+		elif self.path == f'/{self.cbsd_sas_version}/deregistration':
 			response = FakeSas().Deregistration(request)
 		elif self.path == '/admin/injectdata/zone':
 			response = FakeSasAdmin().InjectZoneData(request)
@@ -556,9 +556,9 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 	def do_GET(self) -> None:
 		"""Handles GET requests."""
 		path, value = self._parseUrl(self.path)
-		if path == '%s/esc_sensor' % self.sas_sas_version:
+		if path == f'{self.sas_sas_version}/esc_sensor':
 			response = FakeSas().GetEscSensorRecord(value)
-		elif path == '%s/dump' % self.sas_sas_version:
+		elif path == f'{self.sas_sas_version}/dump':
 			response = FakeSas().GetFullActivityDump(self.sas_sas_version)
 		else:
 			self.send_response(404)
@@ -595,7 +595,7 @@ def RunFakeServer(
 		try:
 			crl_files = ParseCrlIndex(crl_index)
 		except IOError as e:
-			print("Failed to parse CRL index file %r: %s" % (crl_index, e))
+			print(f"Failed to parse CRL index file {crl_index}: {e}"))
 
 		# https://tools.ietf.org/html/rfc5280#section-4.2.1.13 specifies that
 		# CRLs MUST be DER-encoded, but SSLContext expects the name of a PEM-encoded
@@ -607,15 +607,15 @@ def RunFakeServer(
 					try:
 						crl = crypto.load_crl(crypto.FILETYPE_ASN1, der)
 					except crypto.Error as e:
-						print("Failed to parse CRL file %r as DER format: %s" % (f, e))
+						print(f"Failed to parse CRL file {f} as DER format: {e}")
 						return
 					with tempfile.NamedTemporaryFile() as tmp:
 						tmp.write(crypto.dump_crl(crypto.FILETYPE_PEM, crl))
 						tmp.flush()
 						ssl_context.load_verify_locations(cafile=tmp.name)
-				print("Loaded CRL file: %r" % f)
+				print(f"Loaded CRL file: {f}")
 			except IOError as e:
-				print("Failed to load CRL file %r: %s" % (f, e))
+				print(f"Failed to load CRL file {f}: {e}")
 				return
 
 	ssl_context.load_verify_locations(cafile=CA_CERT)
@@ -625,18 +625,15 @@ def RunFakeServer(
 	ssl_context.set_ciphers(':'.join(ECC_CIPHERS if is_ecc else CIPHERS))
 	ssl_context.verify_mode = ssl.CERT_REQUIRED
 	server.socket = ssl_context.wrap_socket(server.socket, server_side=True)
-	print('Will start server at localhost:%d, use <Ctrl-C> to stop.' % PORT)
+	print(f'Will start server at localhost:{PORT}, use <Ctrl-C> to stop.')
 	server.serve_forever()
 
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument(
-			'--ecc', help='Use ECDSA certificate', action='store_true')
-	parser.add_argument(
-			'--crl_index',
-			help=('Read a text file containing one DER-encoded CRL file per line, '
-						'and enable revocation checking.'),
+	parser.add_argument('--ecc', help='Use ECDSA certificate', action='store_true')
+	parser.add_argument('--crl_index', 
+			help=('Read a text file containing one DER-encoded CRL file per line, and enable revocation checking.'),
 			dest='crl_index', action='store')
 	try:
 		args = parser.parse_args()
