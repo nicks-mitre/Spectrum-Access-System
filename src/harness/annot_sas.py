@@ -286,14 +286,13 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict: # Functions using _Request() return a dict repr. a JSON response
-		# url = 'https://%s/%s/%s' % (self.sas_sas_active_base_url, self.sas_sas_version, method_name)
 		url = f'https://{self.sas_sas_active_base_url}/{self.sas_sas_version}/{method_name}'
 		
 		if request is not None:
-			# url += '/%s' % request
 			url = str.join(url, f'/{request}')
-
-		cert_path = ssl_cert or GetDefaultSasSSLCertPath() # if ssl_cert is None, then use default
+		
+		# if ssl_cert or key_path is None, then use default
+		cert_path = ssl_cert or GetDefaultSasSSLCertPath()
 		key_path = ssl_key or GetDefaultSasSSLKeyPath()
 		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path)
 
@@ -306,17 +305,14 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
-		# url = 'https://%s/%s/%s' % (self.cbsd_sas_active_base_url, self.cbsd_sas_version, method_name)
 		url = f'https://{self.cbsd_sas_active_base_url}/{self.cbsd_sas_version}/{method_name}'
 		
+		# if ssl_cert or key_path is None, then use default
 		cert_path = ssl_cert or GetDefaultDomainProxySSLCertPath()
 		key_path = ssl_key or GetDefaultDomainProxySSLKeyPath()
+		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path)
 		
-		return RequestPost(
-			url, 
-			request, 
-			self._tls_config.WithClientCertificate(cert_path, key_path)
-		)
+		return RequestPost(url, request, tlsconf)
 
 	def DownloadFile(
 		self,
@@ -353,7 +349,9 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 	def __init__(self, base_url: str):
 		self._base_url = base_url
 		self._tls_config = TlsConfig().WithClientCertificate(
-				self._GetDefaultAdminSSLCertPath(), self._GetDefaultAdminSSLKeyPath())
+			self._GetDefaultAdminSSLCertPath(),
+			self._GetDefaultAdminSSLKeyPath()
+		)
 		self.injected_fcc_ids = set()
 		self.injected_user_ids = set()
 
@@ -374,8 +372,10 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			return
 		if 'fccMaxEirp' not in request:
 			request['fccMaxEirp'] = 47
-		RequestPost('https://%s/admin/injectdata/fcc_id' % self._base_url, request,
-				self._tls_config)
+		
+		url = f'https://{self._base_url}/admin/injectdata/fcc_id'
+		RequestPost(url, request, self._tls_config)
+		
 		self.injected_fcc_ids.add(request['fccId'])
 
 	def InjectUserId(self, request: Dict) -> None:
@@ -389,13 +389,15 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		# Avoid injecting the same user ID twice in the same test case.
 		if request['userId'] in self.injected_user_ids:
 			return
-		RequestPost('https://%s/admin/injectdata/user_id' % self._base_url, request,
-				self._tls_config)
+		
+		url = f'https://{self._base_url}/admin/injectdata/user_id'
+		RequestPost(url, request, self._tls_config)
+		
 		self.injected_user_ids.add(request['userId'])
 
 	def InjectEscZone(self, request: Dict) -> Dict:
-		return RequestPost('https://%s/admin/injectdata/esc_zone' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/esc_zone'
+		return RequestPost(url, request, self._tls_config)
 
 	def InjectExclusionZone(self, request: Dict) -> Dict:
 		"""Inject exclusion zone information into SAS under test.
@@ -405,9 +407,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"zone": A GeoJSON object defining the exclusion zone to be injected to SAS UUT.
 				"frequencyRanges": A list of frequency ranges for the exclusion zone.
 		"""
-		return RequestPost(
-				'https://%s/admin/injectdata/exclusion_zone' % self._base_url, request,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/exclusion_zone'
+		return RequestPost(url, request, self._tls_config)
 
 	def InjectZoneData(self, request: Dict) -> Dict:
 		"""Inject PPA or NTIA zone information into SAS under test.
@@ -418,8 +419,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				SAS under test. For more information about ZoneData please see
 				the SAS-SAS TS (WINNF-16-S-0096) - Section 8.7.
 		"""
-		return RequestPost('https://%s/admin/injectdata/zone' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/zone'
+		return RequestPost(url, request, self._tls_config)
 
 	def InjectPalDatabaseRecord(self, request: Dict) -> None:
 		"""Inject a PAL Database record into the SAS under test.
@@ -429,13 +430,12 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			For the contents of this request, please refer to the PAL Database TS
 			(WINNF-16-S-0245) - Section 6.x.
 		"""
-		RequestPost(
-				'https://%s/admin/injectdata/pal_database_record' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/pal_database_record'
+		RequestPost(url, request, self._tls_config)
 
 	def InjectClusterList(self, request: Dict) -> None:
-		RequestPost('https://%s/admin/injectdata/cluster_list' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/cluster_list'
+		RequestPost(url, request, self._tls_config)
 
 	def BlacklistByFccId(self, request: Dict) -> None:
 		"""Inject an FCC ID which will be blacklisted by the SAS under test.
@@ -444,8 +444,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 			request: A dictionary with a single key-value pair where the key is
 				"fccId" and the value is the FCC ID (string) to be blacklisted.
 		"""
-		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/blacklist_fcc_id'
+		RequestPost(url, request, self._tls_config)
 
 	def BlacklistByFccIdAndSerialNumber(self, request: Dict) -> None:
 		"""Inject an (FCC ID, serial number) pair which will be blacklisted by the SAS under test.
@@ -455,16 +455,16 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				"fccId": (string) blacklisted FCC ID
 				"serialNumber": (string) blacklisted serial number
 		"""
-		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id_and_serial_number'
-				% self._base_url, request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/blacklist_fcc_id_and_serial_number'
+		RequestPost(url, request, self._tls_config)
 
 	def TriggerEscZone(self, request: Dict) -> None:
-		RequestPost('https://%s/admin/trigger/esc_detection' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/esc_detection'
+		RequestPost(url, request, self._tls_config)
 
 	def ResetEscZone(self, request: Dict) -> None:
-		RequestPost('https://%s/admin/trigger/esc_reset' % self._base_url, request,
-				self._tls_config)
+		url = f'https://{self._base_url}/admin/trigger/esc_reset'
+		RequestPost(url, request, self._tls_config)
 
 	def PreloadRegistrationData(self, request: Dict) -> None:
 		"""SAS admin interface implementation to preload registration data into SAS under test.
@@ -477,8 +477,8 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				the fccId and cbsdSerialNumber fields are required, other fields are
 				optional.
 		"""
-		RequestPost('https://%s/admin/injectdata/conditional_registration' % self._base_url,
-				request, self._tls_config)
+		url = f'https://{self._base_url}/admin/injectdata/conditional_registration'
+		RequestPost(url, request, self._tls_config)
 
 	def InjectFss(self, request: Dict) -> None:
 		"""SAS admin interface implementation to inject FSS information into SAS under test.
