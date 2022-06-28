@@ -66,7 +66,7 @@ from OpenSSL import crypto
 
 import sas_interface
 
-from typing import Dict, List, Tuple, Any, Optional, Union
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 
 # Type aliases for convenience of type annotating request/response objects
 Request = Dict[str, List[Dict]]
@@ -139,7 +139,7 @@ class FakeSas(sas_interface.SasInterface):
 				})
 				continue
 			response['registrationResponse'].append({
-				'cbsdId': req['fccId'] + '/' + req['cbsdSerialNumber'],
+				'cbsdId': f"{req['fccId']}/{req['cbsdSerialNumber']}",
 				'response': self._GetSuccessResponse()
 			})
 		return response
@@ -179,8 +179,8 @@ class FakeSas(sas_interface.SasInterface):
 					'response': self._GetMissingParamResponse()
 				})
 			else:
-				if (('highFrequency' not in req['operationParam']['operationFrequencyRange']) or
-						('lowFrequency' not in req['operationParam']['operationFrequencyRange'])):
+				if ('highFrequency' not in req['operationParam']['operationFrequencyRange'])
+						or ('lowFrequency' not in req['operationParam']['operationFrequencyRange']):
 					response['grantResponse'].append({
 						'cbsdId': req['cbsdId'],
 						'response': self._GetMissingParamResponse()
@@ -207,7 +207,7 @@ class FakeSas(sas_interface.SasInterface):
 			response['heartbeatResponse'].append({
 					'cbsdId': req['cbsdId'],
 					'grantId': req['grantId'],
-					'transmitExpireTime': transmit_expire_time.isoformat() + 'Z',
+					'transmitExpireTime': f"{transmit_expire_time.isoformat()}Z",
 					'response': self._GetSuccessResponse()
 			})
 		return response
@@ -253,7 +253,8 @@ class FakeSas(sas_interface.SasInterface):
 		ssl_key: OptStr = None
 	) -> Dict:
 		# Get the Esc Sensor record
-		with open(os.path.join('testcases', 'testdata', 'esc_sensor_record_0.json')) as fd:
+		record_path = os.path.join('testcases', 'testdata', 'esc_sensor_record_0.json')
+		with open(record_path) as fd:
 			esc_sensor_record = json.load(fd)
 
 		if request == esc_sensor_record['id']:
@@ -268,34 +269,40 @@ class FakeSas(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
-		response = json.loads(json.dumps({'files': [
-			{'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/' +
-					'Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-			'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-			'size': 19,
-			'version': version,
-			'recordType': "cbsd"},
-			{
-				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-				'size': 19,
-				'version': version,
-			'recordType': "zone"},
-			{
-				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-				'size': 19,
-				'version': version,
-			'recordType': "esc_sensor"},
-			{
-				'url': 'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json',
-				'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-				'size': 19,
-				'version': version,
-				'recordType': "coordination"}
-		],
-			'generationDateTime': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-			'description': "Full activity dump files"}))
+		empty_activity_dump_file_url = 	'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json'
+		
+		response = json.loads(
+			json.dumps(
+				{'files': [
+					{
+						'url': empty_activity_dump_file_url,
+						'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+						'size': 19,
+						'version': version,
+						'recordType': "cbsd"},
+					{
+						'url': empty_activity_dump_file_url,
+						'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+						'size': 19,
+						'version': version,
+						'recordType': "zone"},
+					{
+						'url': empty_activity_dump_file_url,
+						'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+						'size': 19,
+						'version': version,
+						'recordType': "esc_sensor"},
+					{
+						'url': empty_activity_dump_file_url,
+						'checksum': 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+						'size': 19,
+						'version': version,
+						'recordType': "coordination"}
+					],
+				'generationDateTime': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+				'description': "Full activity dump files"}
+			)
+		)
 		return response
 
 	def _GetSuccessResponse(self) -> Dict:
@@ -571,15 +578,14 @@ class FakeSasHandler(BaseHTTPRequestHandler):
 def ParseCrlIndex(index_filename: str) -> List[str]:
 	"""Returns the list of CRL filenames from a CRL index file."""
 	dirname = os.path.dirname(index_filename)
-	return [os.path.join(dirname, line.rstrip())
-			for line in open(index_filename)]
+	return [os.path.join(dirname, line.rstrip()) for line in open(index_filename)]
 
 def RunFakeServer(
 	cbsd_sas_version: str,
 	sas_sas_version: str,
 	is_ecc: bool,
 	crl_index: str
-) -> None:
+) -> NoReturn:
 	FakeSasHandler.SetVersion(cbsd_sas_version, sas_sas_version)
 	if is_ecc:
 		assert ssl.HAS_ECDH
