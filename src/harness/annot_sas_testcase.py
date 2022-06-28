@@ -124,8 +124,8 @@ class SasTestCase(unittest.TestCase):
 			})
 
 		# Pass the correct client cert and key in Registration request
-		ssl_cert = cert if cert is not None else self._sas._tls_config.client_cert
-		ssl_key = key if key is not None else self._sas._tls_config.client_key
+		ssl_cert = cert or self._sas._tls_config.client_cert
+		ssl_key = key or self._sas._tls_config.client_key
 
 		request = {'registrationRequest': registration_request}
 		response = self._sas.Registration(
@@ -178,8 +178,8 @@ class SasTestCase(unittest.TestCase):
 			grant_req['cbsdId'] = cbsd_id
 
 		# Pass the correct client cert and key in Grant request
-		ssl_cert = cert if cert is not None else self._sas._tls_config.client_cert
-		ssl_key = key if key is not None else self._sas._tls_config.client_key
+		ssl_cert = cert or self._sas._tls_config.client_cert
+		ssl_key = key or self._sas._tls_config.client_key
 
 		grant_ids = []
 		request = {'grantRequest': grant_request}
@@ -220,7 +220,8 @@ class SasTestCase(unittest.TestCase):
 		self.assertEqual(len(cbsd_ids), len(grant_ids))
 		self.assertEqual(len(cbsd_ids), len(operation_states))
 		heartbeat_requests = []
-		for cbsd_id, grant_id, operation_state in zip(cbsd_ids, grant_ids, operation_states):
+		for cbsd_id, grant_id, operation_state in 
+				zip(cbsd_ids, grant_ids, operation_states):
 			heartbeat_requests.append({
 					'cbsdId': cbsd_id,
 					'grantId': grant_id,
@@ -420,23 +421,21 @@ class SasTestCase(unittest.TestCase):
 				return a_type[0].__name__
 
 		for key, field_type in six.iteritems(required_fields):
-			self.assertTrue(key in config,
-					'Required config field \'%s\' is not present.' % key)
-			self.assertTrue(
-					isinstance(config[key], field_type),
-					'Required config field \'%s\' is of type(%s) when it should be type(%s).'
-					% (key, type(config[key]).__name__, TypeName(field_type)))
+			self.assertTrue(key in config, f"Required config field '{key}' is not present.")
+			
+			self.assertTrue(isinstance(config[key], field_type),
+					f"Required config field {key} is of type({type(config[key]).__name__}) when it should be type({TypeName(field_type)}).")
+		
 		for key, field_type in six.iteritems(optional_fields):
 			if key in config:
-				self.assertTrue(
-						isinstance(config[key], field_type),
-						'Optional config field \'%s\' is of type(%s) when it should be type(%s).'
-						% (key, type(config[key]).__name__, TypeName(field_type)))
+				self.assertTrue(isinstance(config[key], field_type),
+						f"Optional config field {key} is of type({type(config[key]).__name__}) when it should be type({TypeName(field_type)})."
+		
 		# Check the config only contains the checked fields
 		for key in config:
-			self.assertTrue(
-					key in required_fields or key in optional_fields,
-					'Config field \'%s\' is neither required nor optional.' % key)
+			self.assertTrue(key in required_fields or key in optional_fields,
+					f"Config field {key} is neither required nor optional.")
+	
 
 	def TriggerFullActivityDumpAndWaitUntilComplete(
 		self,
@@ -450,7 +449,7 @@ class SasTestCase(unittest.TestCase):
 		# Check generation date of full activity dump
 		while True:
 			try:
-				dump_message = self._sas.GetFullActivityDump( server_cert, server_key)
+				dump_message = self._sas.GetFullActivityDump(server_cert, server_key)
 				dump_time = datetime.strptime(
 					dump_message['generationDateTime'],
 					'%Y-%m-%dT%H:%M:%SZ'
