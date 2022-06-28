@@ -94,6 +94,24 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD Registration interface implementation for SAS Certification testing.
+
+		Registers CBSDs.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"registrationRequest" and the value is a list of individual CBSD
+				registration requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"registrationResponse" and the value is a list of individual CBSD
+			registration responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('registration', request, ssl_cert, ssl_key)
 
 	def SpectrumInquiry(
@@ -102,6 +120,24 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD SpectrumInquiry interface implementation for SAS Certification testing.
+
+		Performs spectrum inquiry for CBSDs.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"spectrumInquiryRequest" and the value is a list of individual CBSD
+				spectrum inquiry requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"spectrumInquiryResponse" and the value is a list of individual CBSD
+			spectrum inquiry responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('spectrumInquiry', request, ssl_cert, ssl_key)
 
 	def Grant(
@@ -110,6 +146,22 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD Grant interface implementation for SAS Certification testing.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"grantRequest" and the value is a list of individual CBSD
+				grant requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"grantResponse" and the value is a list of individual CBSD
+			grant responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('grant', request, ssl_cert, ssl_key)
 
 	def Heartbeat(
@@ -118,6 +170,24 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD Heartbeat interface implementation for SAS Certification testing.
+
+		Requests heartbeat for a grant for CBSDs.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"heartbeatRequest" and the value is a list of individual CBSD
+				heartbeat requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"heartbeatResponse" and the value is a list of individual CBSD
+			heartbeat responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('heartbeat', request, ssl_cert, ssl_key)
 
 	def Relinquishment(
@@ -126,6 +196,24 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD Relinquishment interface implementation for SAS Certification testing.
+
+		Relinquishes grant for CBSDs.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"relinquishmentRequest" and the value is a list of individual CBSD
+				relinquishment requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"relinquishmentResponse" and the value is a list of individual CBSD
+			relinquishment responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('relinquishment', request, ssl_cert, ssl_key)
 
 	def Deregistration(
@@ -134,6 +222,24 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-CBSD Deregistration interface implementation for SAS Certification testing.
+
+		Deregisters CBSDs.
+
+		Request and response are both lists of dictionaries. Each dictionary
+		contains all fields of a single request/response.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"deregistrationRequest" and the value is a list of individual CBSD
+				deregistration requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"deregistrationResponse" and the value is a list of individual CBSD
+			deregistration responses (each of which is itself a dictionary).
+		"""
 		return self._CbsdRequest('deregistration', request, ssl_cert, ssl_key)
 
 	def GetEscSensorRecord(
@@ -142,6 +248,18 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-SAS ESC Sensor Record Exchange interface implementation for SAS Certification testing.
+
+		Requests a Pull Command to get the ESC Sensor Data Message
+
+		Args:
+			request: A string containing Esc Sensor Record Id
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary of Esc Sensor Data Message object specified in
+			WINNF-16-S-0096
+		"""
 		return self._SasRequest('esc_sensor', request, ssl_cert, ssl_key)
 
 	def GetFullActivityDump(
@@ -149,6 +267,16 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		"""SAS-SAS Full Activity Dump interface implementation for SAS Certification testing.
+
+		Requests a Pull Command to get Full Activity Dump Message.
+
+		Args:
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary containing the FullActivityDump object specified in WINNF-16-S-0096
+		"""
 		return self._SasRequest('dump', None, ssl_cert, ssl_key)
 
 	def _SasRequest(
@@ -196,6 +324,10 @@ class SasImpl(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
+		""" SAS-SAS Get data from json files after generate the Full Activity Dump Message
+		Returns:
+			the message as a "json data" object specified in WINNF-16-S-0096
+		"""
 		cert_path = ssl_cert or GetDefaultSasSSLCertPath()
 		key_path = ssl_key or GetDefaultSasSSLKeyPath()
 		tlsconf = self._tls_config.WithClientCertificate(cert_path, key_path)
@@ -226,9 +358,17 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		self.injected_user_ids = set()
 
 	def Reset(self) -> None:
+		"""SAS admin interface implementation to reset the SAS between test cases."""
 		RequestPost('https://%s/admin/reset' % self._base_url, None, self._tls_config)
 
 	def InjectFccId(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject fcc id information into SAS under test.
+
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"fccId": (string) valid fccId to be injected into SAS under test
+				"fccMaxEirp": (double) optional; default value of 47 dBm/10 MHz
+		"""
 		# Avoid injecting the same FCC ID twice in the same test case.
 		if request['fccId'] in self.injected_fcc_ids:
 			return
@@ -239,6 +379,13 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		self.injected_fcc_ids.add(request['fccId'])
 
 	def InjectUserId(self, request: Dict) -> None:
+		"""SAS admin interface implementation to whitelist a user ID in the SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"userId" and the value is a string of valid userId to be whitelisted by
+				the SAS under test.
+		"""
 		# Avoid injecting the same user ID twice in the same test case.
 		if request['userId'] in self.injected_user_ids:
 			return
@@ -251,15 +398,37 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				request, self._tls_config)
 
 	def InjectExclusionZone(self, request: Dict) -> Dict:
+		"""Inject exclusion zone information into SAS under test.
+
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"zone": A GeoJSON object defining the exclusion zone to be injected to SAS UUT.
+				"frequencyRanges": A list of frequency ranges for the exclusion zone.
+		"""
 		return RequestPost(
 				'https://%s/admin/injectdata/exclusion_zone' % self._base_url, request,
 				self._tls_config)
 
 	def InjectZoneData(self, request: Dict) -> Dict:
+		"""Inject PPA or NTIA zone information into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"record" and the value is ZoneData object to be injected into
+				SAS under test. For more information about ZoneData please see
+				the SAS-SAS TS (WINNF-16-S-0096) - Section 8.7.
+		"""
 		return RequestPost('https://%s/admin/injectdata/zone' % self._base_url,
 				request, self._tls_config)
 
 	def InjectPalDatabaseRecord(self, request: Dict) -> None:
+		"""Inject a PAL Database record into the SAS under test.
+
+		Args:
+			request:
+			For the contents of this request, please refer to the PAL Database TS
+			(WINNF-16-S-0245) - Section 6.x.
+		"""
 		RequestPost(
 				'https://%s/admin/injectdata/pal_database_record' % self._base_url,
 				request, self._tls_config)
@@ -269,10 +438,23 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				request, self._tls_config)
 
 	def BlacklistByFccId(self, request: Dict) -> None:
+		"""Inject an FCC ID which will be blacklisted by the SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"fccId" and the value is the FCC ID (string) to be blacklisted.
+		"""
 		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id' % self._base_url,
 				request, self._tls_config)
 
 	def BlacklistByFccIdAndSerialNumber(self, request: Dict) -> None:
+		"""Inject an (FCC ID, serial number) pair which will be blacklisted by the SAS under test.
+		
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"fccId": (string) blacklisted FCC ID
+				"serialNumber": (string) blacklisted serial number
+		"""
 		RequestPost('https://%s/admin/injectdata/blacklist_fcc_id_and_serial_number'
 				% self._base_url, request, self._tls_config)
 
@@ -285,84 +467,217 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 				self._tls_config)
 
 	def PreloadRegistrationData(self, request: Dict) -> None:
-		RequestPost(
-				'https://%s/admin/injectdata/conditional_registration' % self._base_url,
+		"""SAS admin interface implementation to preload registration data into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"registrationData" and the value is a list of individual CBSD
+				registration data which need to be preloaded into SAS (each of which is
+				itself a dictionary). The dictionary is a RegistrationRequest object,
+				the fccId and cbsdSerialNumber fields are required, other fields are
+				optional.
+		"""
+		RequestPost('https://%s/admin/injectdata/conditional_registration' % self._base_url,
 				request, self._tls_config)
 
 	def InjectFss(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject FSS information into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+			"record" and the value is a fixed satellite service object
+			(which is itself a dictionary). The dictionary is an
+			IncumbentProtectionData object (specified in SAS-SAS TS) -- WINNF-16-S-0096: Section 8.5.
+		"""
 		RequestPost('https://%s/admin/injectdata/fss' % self._base_url, request,
 				self._tls_config)
 
 	def InjectWisp(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject WISP information into SAS under test.
+
+		Args:
+			request: A dictionary with two key-value pairs where the keys are "record" and "zone" with the values
+					IncumbentProtectionData object (specified in SAS-SAS TS) and a GeoJSON Object respectively
+		Note: Required Field in IncumbentProtectionData are id, type,
+				deploymentParam->operationParam->operationFrequencyRange->lowFrequency, highFrequency
+		"""
 		RequestPost('https://%s/admin/injectdata/wisp' % self._base_url, request,
 				self._tls_config)
 
 	def InjectSasAdministratorRecord(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject SAS Administrator Record into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"record" and the value is a SAS Administrator information (which is
+				itself a dictionary). The dictionary is an SASAdministrator object
+				(Specified in SAS-SAS TS WINNF-16-S-0096) - Section 8.1.
+		"""
 		RequestPost('https://%s/admin/injectdata/sas_admin' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerMeasurementReportRegistration(self) -> None:
+		"""SAS admin interface implementation to trigger measurement report request for all subsequent
+		registration request
+
+		Note: The SAS should request a measurement report in the RegistrationResponse
+		(if status == 0)
+		"""
 		RequestPost('https://%s/admin/trigger/meas_report_in_registration_response'
 				% self._base_url, None, self._tls_config)
 
 	def TriggerMeasurementReportHeartbeat(self) -> None:
+		"""SAS admin interface implementation to trigger measurement report request for all subsequent
+		heartbeat request
+
+		Note: The SAS should request a measurement report in the HeartbeatResponse
+		(if status == 0)
+		"""
 		RequestPost('https://%s/admin/trigger/meas_report_in_heartbeat_response' %
 				self._base_url, None, self._tls_config)
 
 	def InjectEscSensorDataRecord(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject ESC Sensor Data Record into SAS under test.
+
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"record" and the value is a EscSensorData object (which is
+				itself a dictionary specified in SAS-SAS TS WINNF-16-S-0096) - Section 8.6.
+		Behavior: SAS should act as if it is connected to an ESC sensor with
+		the provided parameters.
+		"""
 		RequestPost('https://%s/admin/injectdata/esc_sensor' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerPpaCreation(self, request: Dict) -> Dict:
+		"""SAS admin interface implementation to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
+
+		Args:
+			request: A dictionary with multiple key-value pairs where the keys are
+				cbsdIds: array of string containing CBSD Id
+				palIds: array of string containing PAL Id
+				providedContour(optional): GeoJSON Object
+
+		Returns:
+			PPA Id in string format
+		"""
 		return RequestPost('https://%s/admin/trigger/create_ppa' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerDailyActivitiesImmediately(self) -> None:
+		"""SAS admin interface implementation to trigger daily activities immediately which will
+		execute the following activities:
+			1. Pull from all External Database and other SASes (URLs will be injected to
+			SAS UUT using another RPC Call)
+			2. Run IAP and DPA Calculations
+			3. Apply EIRP updates to devices
+		"""
 		RequestPost('https://%s/admin/trigger/daily_activities_immediately' %
 				self._base_url, None, self._tls_config)
 
 	def TriggerEnableScheduledDailyActivities(self) -> None:
+		"""SAS admin interface implementation to trigger the daily activities according to the 
+			schedule agreed upon by SAS admins.
+		"""
 		RequestPost('https://%s/admin/trigger/enable_scheduled_daily_activities' %
 				self._base_url, None, self._tls_config)
 
 	def QueryPropagationAndAntennaModel(self, request: Dict) -> Dict:
+		"""SAS admin interface implementation to query propagation and antenna gains for CBSD and FSS	or Provided PPA Contour
+
+		Args:
+			request: A dictionary with multiple key-value pairs where the keys are
+				reliabilityLevel: (permitted values: -1, 0.05, 0.95)
+				cbsd: dictionary defining cbsd
+				fss(optional): dictionary defining fss
+				ppa(optional): GeoJSON Object
+
+		Returns:
+			double pathlossDb (pathloss in dB)
+			double txAntennaGainDbi (transmitter antenna gain in dBi in the direction of the receiver)
+			double rxAntennaGainDbi (optional) (receiver antenna gain in dBi in the direction of the transmitter)
+
+		"""
 		return RequestPost('https://%s/admin/query/propagation_and_antenna_model' %
 				self._base_url, request, self._tls_config)
 
 	def TriggerEnableNtiaExclusionZones(self) -> None:
+		"""SAS admin interface implementation to trigger enforcement of the NTIA exclusion zones 
+		"""
 		RequestPost('https://%s/admin/trigger/enable_ntia_15_517' %
 				self._base_url, None, self._tls_config)
 
 	def GetDailyActivitiesStatus(self) -> Dict:
+		"""SAS admin interface implementation to get the daily activities' status
+		Returns:
+			A dictionary with a single key-value pair where the key is "completed" and the
+			value is a boolean with value as true if the daily activities is completed and
+			false if the daily activities is running/failing.
+		"""
 		return RequestPost(
 				'https://%s/admin/get_daily_activities_status' % self._base_url, None,
 				self._tls_config)
 
 	def InjectCpiUser(self, request: Dict) -> None:
+		"""SAS admin interface implementation to add a CPI User as if it came directly from the CPI database.
+
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"cpiId": (string) valid cpiId to be injected into SAS under test
+				"cpiName": (string) valid name for cpi user to be injected into SAS under test
+				"cpiPublicKey": (string) public key value for cpi user to be injected into SAS under test
+		"""
 		RequestPost('https://%s/admin/injectdata/cpi_user' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerLoadDpas(self) -> None:
+		"""SAS admin interface implementation to load all ESC-monitored DPAs and immediately activate all of them.
+		"""
 		RequestPost('https://%s/admin/trigger/load_dpas' % self._base_url, None,
 				self._tls_config)
 
 	def TriggerBulkDpaActivation(self, request: Dict) -> None:
+		"""SAS admin interface implementation to bulk DPA activation/deactivation
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"activate": (boolean) if True, activate all ESC-monitored DPAs on all channels
+						else deactivate all ESC-monitored DPAs on all channels
+		"""
 		RequestPost('https://%s/admin/trigger/bulk_dpa_activation' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerDpaActivation(self, request: Dict) -> None:
+		"""SAS admin interface implementation to activate specific DPA on specific channel
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"dpaId": (string) it represents the field "name" in the kml file of DPAs
+				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
+
+		"""
 		RequestPost('https://%s/admin/trigger/dpa_activation' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerDpaDeactivation(self, request: Dict) -> None:
+		"""SAS admin interface implementation to deactivate specific DPA on specific channel
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"dpaId": (string) it represents the field "name" in the kml file of DPAs
+				"frequencyRange": frequencyRange of DPA Channel with lowFrequency, highFrequency
+		"""
 		RequestPost('https://%s/admin/trigger/dpa_deactivation' % self._base_url,
 				request, self._tls_config)
 
 	def TriggerEscDisconnect(self) -> None:
+		"""Simulates the ESC (ESC-DE) being disconnected from the SAS UUT."""
 		RequestPost('https://%s/admin/trigger/disconnect_esc' % self._base_url,
 				None, self._tls_config)
 
 	def TriggerFullActivityDump(self) -> None:
+		"""SAS admin interface implementation to trigger generation of a Full Activity Dump.
+
+		Note: SAS does not need to complete generation before returning HTTP 200.
+		See the testing API specification for more details.
+		"""
 		RequestPost(
 				'https://%s/admin/trigger/create_full_activity_dump' % self._base_url,
 				None, self._tls_config)
@@ -374,14 +689,34 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		return os.path.join('certs', 'admin.key')
 
 	def InjectPeerSas(self, request: Dict) -> None:
+		"""SAS admin interface implementation to inject a peer SAS into the SAS UUT.
+
+		Args:
+			request: A dictionary with the following key-value pairs:
+				"certificateHash": the sha1 fingerprint of the certificate
+				"url": base URL of the peer SAS.
+		"""
 		RequestPost('https://%s/admin/injectdata/peer_sas' % self._base_url,
 				request, self._tls_config)
 
 	def GetPpaCreationStatus(self) -> Dict:
+		"""SAS admin interface implementation to get the most recent PPA creation status
+		Returns:
+			A dictionary with a two key-value pairs where the keys are "completed" and
+			"withError". The values are of boolean type. The value for "completed" flag
+			set to True if the ppa creation(for the most recent ppa creation) has completed or
+			to False if the PPA creation is still in progress. The value for "withError" flag is
+			set to True if the PPA creation has completed with error(s) else it is set to False.
+		"""
 		return RequestPost(
 				'https://%s/admin/get_ppa_status' % self._base_url, None,
 				self._tls_config)
 
 	def InjectDatabaseUrl(self, request: Dict) -> None:
+		"""Inject the Database URL into SAS.
+
+		Args:
+			request: Contains database url to be injected.
+		"""
 		RequestPost('https://%s/admin/injectdata/database_url' % self._base_url,
 				request, self._tls_config)
