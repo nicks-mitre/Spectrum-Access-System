@@ -3,7 +3,7 @@ import jsonschema
 from pprint import pprint
 import os
 
-from typing import Dict, List, Tuple, Optional, Union, NoReturn
+from typing import Dict, List, Tuple, Optional, Union
 
 # Load in a schema file in the given filename.
 def loadSchema(filename: str) -> Dict:
@@ -46,7 +46,7 @@ def testJsonSchemaObject(
 	schema_file: str,
 	test_file: str,
 	schemaObject: str
-) -> NoReturn:
+) -> None:
 	schema = loadSchema(schema_file)
 	data = loadJson(test_file)
 	
