@@ -98,10 +98,9 @@ INVALID_PARAM = 103
 
 class FakeSas(sas_interface.SasInterface):
 	"""A fake implementation of SasInterface.
-
+	
 	Returns success for all requests with plausible fake values for all required
 	response fields.
-
 	"""
 
 	def __init__(self):
@@ -114,6 +113,24 @@ class FakeSas(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
+		"""SAS-CBSD Registration implementation.
+
+		Registers CBSDs.
+		
+		Request and response are both lists of dictionaries. Each dictionary 
+		contains all fields of a single request/response.
+		
+		Args:
+			request: A dictionary with a single key-value pair where the key is
+				"registrationRequest" and the value is a list of individual CBSD
+				registration requests (each of which is itself a dictionary).
+			ssl_cert: Path to SSL cert file, if None, will use default cert file.
+			ssl_key: Path to SSL key file, if None, will use default key file.
+		Returns:
+			A dictionary with a single key-value pair where the key is
+			"registrationResponse" and the value is a list of individual CBSD
+			registration responses (each of which is itself a dictionary).
+		"""
 		response = {'registrationResponse': []}
 		for req in request['registrationRequest']:
 			if 'fccId' not in req or 'cbsdSerialNumber' not in req:
@@ -372,6 +389,17 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> str:
+		"""SAS admin interface implementation to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
+
+		Args:
+			request: A dictionary with multiple key-value pairs where the keys are
+				cbsdIds: array of string containing CBSD Id
+				palIds: array of string containing PAL Id
+				providedContour(optional): GeoJSON Object
+
+		Returns:
+			PPA Id in string format
+		"""
 		return 'zone/ppa/fake_sas/%s/%s' % (request['palIds'][0],
 				uuid.uuid4().hex)
 
@@ -385,17 +413,41 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 		pass
 
 	def QueryPropagationAndAntennaModel(self, request) -> Dict:
+		"""SAS admin interface implementation to query propagation and antenna gains for CBSD and FSS	or Provided PPA Contour
+
+		Args:
+			request: A dictionary with multiple key-value pairs where the keys are
+				reliabilityLevel: (permitted values: -1, 0.05, 0.95)
+				cbsd: dictionary defining cbsd
+				fss(optional): dictionary defining fss
+				ppa(optional): GeoJSON Object
+
+		Returns:
+			double pathlossDb (pathloss in dB)
+			double txAntennaGainDbi (transmitter antenna gain in dBi in the direction of the receiver)
+			double rxAntennaGainDbi (optional) (receiver antenna gain in dBi in the direction of the transmitter)
+
+		"""
 		from testcases.WINNF_FT_S_PAT_testcase import computePropagationAntennaModel
 		return computePropagationAntennaModel(request)
 
 	def GetDailyActivitiesStatus(self) -> Dict[str, bool]:
+		"""
+		Fake SAS admin implementation to get the daily activities' status (always successful).
+		Returns:
+			A dictionary with a single, fixed key-value pair: {"completed":True},
+			indicating that the daily activities have completed successfully.
+		"""
 		return {'completed': True}
 
 	def GetPpaCreationStatus(self) -> Dict[str, bool]:
+		"""Fake SAS admin interface implementation to indicated that the most recent PPA creation task
+		completed successfully.
+		Returns:
+			A dictionary with a two key-value pairs where the keys are "completed" and
+			"withError". The values for these keys are True and False, respectively.
+		"""
 		return {'completed': True, 'withError': False}
-
-	def GetDailyActivitiesStatus(self) -> Dict[str, bool]:
-		return {'completed': True}
 
 	def TriggerLoadDpas(self):
 		pass
@@ -588,7 +640,7 @@ if __name__ == '__main__':
 			dest='crl_index', action='store')
 	try:
 		args = parser.parse_args()
-	except:
+	except argparse.ArgumentError:
 		parser.print_help()
 		sys.exit(0)
 	config_parser = configparser.RawConfigParser()
