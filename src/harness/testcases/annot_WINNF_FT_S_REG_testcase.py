@@ -48,13 +48,27 @@ class RegistrationTestcase(sas_testcase.SasTestCase):
     The response should be SUCCESS.
 	
 	Release 1 Instructions:
-		Ensure no cbsdId exists in the SAS for the CBSDs being tested. 
-		All REG-Conditional parameters for the three CBSDs (a combination 
-		of both Cat A and Cat B) shall already be pre-loaded into the SAS
+		Step - 1: 
+			Ensure no cbsdId exists in the SAS for the CBSDs being tested. 
+			All REG-Conditional parameters for the three CBSDs (a combination 
+			of both Cat A and Cat B) shall already be pre-loaded into the SAS
+		Step - CHECK:
+			
+		
 	
 	Release 2 Instructions:
-		a) Ensure no cbsdIds exists in the SAS for the CBSD being tested.
-		b) REG-Conditional parameters for the CBSD shall be pre-loaded into the SAS UUT.
+		Step - 1:
+			a) Ensure no cbsdIds exists in the SAS for the CBSD being tested.
+			b) REG-Conditional parameters for the CBSD shall be pre-loaded into the SAS UUT.
+		
+		Step - CHECK:
+			SAS UUT approves the request and sends a Registration Response as follows: 
+				CBSD 1
+				- Includes valid cbsdId for the CBSD.	
+				- The responseCode parameter is 0 (SUCCESS) indicating an approved Registration	
+				- sasFeatureCapabilityList shall be included with FID list containing atleast FID: WF_GRANT_UPDATE
+				
+			If any of the above conditions are not met, the SAS UUT FAILS this test. Otherwise, it PASSES.
     """
 
     # Load Devices
