@@ -445,8 +445,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 			request: A dictionary with a single key-value pair where the key is
 				"record" and the value is a EscSensorData object (which is
 				itself a dictionary specified in SAS-SAS TS WINNF-16-S-0096) - Section 8.6.
-		Behavior: SAS should act as if it is connected to an ESC sensor with
-		the provided parameters.
+		Behavior: SAS should act as if it is connected to an ESC sensor with the provided parameters.
 		"""
 		pass
 

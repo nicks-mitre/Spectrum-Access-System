@@ -220,7 +220,7 @@ class SasTestCase(unittest.TestCase):
 		self.assertEqual(len(cbsd_ids), len(grant_ids))
 		self.assertEqual(len(cbsd_ids), len(operation_states))
 		heartbeat_requests = []
-		for cbsd_id, grant_id, operation_state in 
+		for cbsd_id, grant_id, operation_state in \
 				zip(cbsd_ids, grant_ids, operation_states):
 			heartbeat_requests.append({
 					'cbsdId': cbsd_id,
@@ -429,7 +429,7 @@ class SasTestCase(unittest.TestCase):
 		for key, field_type in six.iteritems(optional_fields):
 			if key in config:
 				self.assertTrue(isinstance(config[key], field_type),
-						f"Optional config field {key} is of type({type(config[key]).__name__}) when it should be type({TypeName(field_type)})."
+						f"Optional config field {key} is of type({type(config[key]).__name__}) when it should be type({TypeName(field_type)}).")
 		
 		# Check the config only contains the checked fields
 		for key in config:

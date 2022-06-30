@@ -179,7 +179,7 @@ class FakeSas(sas_interface.SasInterface):
 					'response': self._GetMissingParamResponse()
 				})
 			else:
-				if ('highFrequency' not in req['operationParam']['operationFrequencyRange'])
+				if ('highFrequency' not in req['operationParam']['operationFrequencyRange'])\
 						or ('lowFrequency' not in req['operationParam']['operationFrequencyRange']):
 					response['grantResponse'].append({
 						'cbsdId': req['cbsdId'],
@@ -406,9 +406,7 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 		Returns:
 			PPA Id in string format
 		"""
-		pal_id = request['palIds'][0]
-		uuid = uuid.uuid4().hex
-		return f'zone/ppa/fake_sas/{pal_id}/{uuid}'
+		return f"zone/ppa/fake_sas/{request['palIds'][0]}/{uuid.uuid4().hex}"
 
 	def TriggerDailyActivitiesImmediately(self):
 		pass
@@ -601,7 +599,7 @@ def RunFakeServer(
 		try:
 			crl_files = ParseCrlIndex(crl_index)
 		except IOError as e:
-			print(f"Failed to parse CRL index file {crl_index}: {e}"))
+			print(f"Failed to parse CRL index file {crl_index}: {e}")
 
 		# https://tools.ietf.org/html/rfc5280#section-4.2.1.13 specifies that
 		# CRLs MUST be DER-encoded, but SSLContext expects the name of a PEM-encoded
