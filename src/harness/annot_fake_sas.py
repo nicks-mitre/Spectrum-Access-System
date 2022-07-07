@@ -68,9 +68,11 @@ import sas_interface
 
 from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 
-# Type aliases for convenience of type annotating request/response objects
-Request = Dict[str, List[Dict]]
-Response = Dict[str, List[Dict]]
+# Type alias for convenience of type hinting request/response objects: 
+# a dictionary with a single key-value pair, with the key being a string 
+# and the value being a list of dicts as specified by the docstring for the function this type alias is used in
+ListDictMsg = Dict[str, List[Dict]]
+
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
 OptStr = Optional[str]
@@ -109,7 +111,7 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Registration(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
@@ -117,8 +119,9 @@ class FakeSas(sas_interface.SasInterface):
 
 		Registers CBSDs.
 		
-		Request and response are both lists of dictionaries. Each dictionary 
-		contains all fields of a single request/response.
+		Request and response are both lists of dictionaries, which is type aliased to: 
+			ListDictMsg = Dict[str, List[Dict]].
+		Each dictionary contains all fields of a single request/response.
 		
 		Args:
 			request: A dictionary with a single key-value pair where the key is
@@ -146,7 +149,7 @@ class FakeSas(sas_interface.SasInterface):
 
 	def SpectrumInquiry(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
@@ -168,7 +171,7 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Grant(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
@@ -196,7 +199,7 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Heartbeat(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
@@ -214,7 +217,7 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Relinquishment(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Response:
@@ -229,10 +232,10 @@ class FakeSas(sas_interface.SasInterface):
 
 	def Deregistration(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		response = {'deregistrationResponse': []}
 		for req in request['deregistrationRequest']:
 			if 'cbsdId' not in req:

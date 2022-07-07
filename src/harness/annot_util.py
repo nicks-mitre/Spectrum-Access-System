@@ -67,7 +67,7 @@ def get_openssl_version() -> int:
 			six.ensure_str(SSL.SSLeay_version(SSL.SSLEAY_VERSION)))
 
 
-def json_load(fname: str) -> Dict[str]:
+def json_load(fname: str) -> Dict[str, Any]:
 	with open(fname) as fd:
 		return json.load(fd)
 
@@ -417,8 +417,8 @@ def areTwoPpasEqual(
 
 
 def buildDpaActivationMessage(
-	dpa_config: Dict[str]
-) -> Dict[str]:
+	dpa_config: Dict[str, Dict]
+) -> Dict[str, Dict]:
 	"""Constructs a dpa activation message."""
 	return {
 			'dpaId': dpa_config['dpaId'],

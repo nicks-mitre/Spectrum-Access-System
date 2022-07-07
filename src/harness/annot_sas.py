@@ -31,29 +31,6 @@ from typing import Dict, List, Tuple, Any, Optional, Union
 OptStr = Optional[str]
 
 
-def GetTestingSas() -> SasImpl:
-	config_parser = configparser.RawConfigParser()
-	config_parser.read(['sas.cfg'])
-	admin_api_base_url = config_parser.get('SasConfig', 'AdminApiBaseUrl')
-	cbsd_sas_rsa_base_url = config_parser.get('SasConfig', 'CbsdSasRsaBaseUrl')
-	cbsd_sas_ec_base_url = config_parser.get('SasConfig', 'CbsdSasEcBaseUrl')
-	sas_sas_rsa_base_url = config_parser.get('SasConfig', 'SasSasRsaBaseUrl')
-	sas_sas_ec_base_url = config_parser.get('SasConfig', 'SasSasEcBaseUrl')
-	cbsd_sas_version = config_parser.get('SasConfig', 'CbsdSasVersion')
-	sas_sas_version = config_parser.get('SasConfig', 'SasSasVersion')
-	sas_admin_id = config_parser.get('SasConfig', 'AdminId')
-	maximum_batch_size = config_parser.get('SasConfig', 'MaximumBatchSize')
-	return SasImpl(
-			cbsd_sas_rsa_base_url,
-			cbsd_sas_ec_base_url,
-			sas_sas_rsa_base_url,
-			sas_sas_ec_base_url,
-			cbsd_sas_version,
-			sas_sas_version,
-			sas_admin_id,
-			maximum_batch_size), SasAdminImpl(admin_api_base_url)
-
-
 def GetDefaultDomainProxySSLCertPath() -> str:
 	return os.path.join('certs', 'domain_proxy.cert')
 
@@ -717,3 +694,25 @@ class SasAdminImpl(sas_interface.SasAdminInterface):
 		"""
 		url = f'https://{self._base_url}/admin/injectdata/database_url'
 		RequestPost(url, request, self._tls_config)
+
+def GetTestingSas() -> SasImpl:
+	config_parser = configparser.RawConfigParser()
+	config_parser.read(['sas.cfg'])
+	admin_api_base_url = config_parser.get('SasConfig', 'AdminApiBaseUrl')
+	cbsd_sas_rsa_base_url = config_parser.get('SasConfig', 'CbsdSasRsaBaseUrl')
+	cbsd_sas_ec_base_url = config_parser.get('SasConfig', 'CbsdSasEcBaseUrl')
+	sas_sas_rsa_base_url = config_parser.get('SasConfig', 'SasSasRsaBaseUrl')
+	sas_sas_ec_base_url = config_parser.get('SasConfig', 'SasSasEcBaseUrl')
+	cbsd_sas_version = config_parser.get('SasConfig', 'CbsdSasVersion')
+	sas_sas_version = config_parser.get('SasConfig', 'SasSasVersion')
+	sas_admin_id = config_parser.get('SasConfig', 'AdminId')
+	maximum_batch_size = config_parser.get('SasConfig', 'MaximumBatchSize')
+	return SasImpl(
+			cbsd_sas_rsa_base_url,
+			cbsd_sas_ec_base_url,
+			sas_sas_rsa_base_url,
+			sas_sas_ec_base_url,
+			cbsd_sas_version,
+			sas_sas_version,
+			sas_admin_id,
+			maximum_batch_size), SasAdminImpl(admin_api_base_url)

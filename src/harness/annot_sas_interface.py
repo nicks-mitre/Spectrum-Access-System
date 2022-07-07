@@ -23,9 +23,10 @@ import abc
 import six
 
 
-# Type aliases for convenience of type annotating request/response objects
-Request = Dict[str, List[Dict]]
-Response = Dict[str, List[Dict]]
+# Type alias for convenience of type hinting request/response objects: 
+# a dictionary with a single key-value pair, with the key being a string 
+# and the value being a list of dicts as specified by the docstring for the function this type alias is used in
+ListDictMsg = Dict[str, List[Dict]]
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
 OptStr = Optional[str]
@@ -43,10 +44,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def Registration(
 		self, 
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Registration interface.
 
 		Registers CBSDs.
@@ -70,10 +71,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def SpectrumInquiry(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD SpectrumInquiry interface.
 
 		Performs spectrum inquiry for CBSDs.
@@ -97,10 +98,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def Grant(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Grant interface.
 
 		Request and response are both lists of dictionaries. Each dictionary
@@ -122,10 +123,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def Heartbeat(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Heartbeat interface.
 
 		Requests heartbeat for a grant for CBSDs.
@@ -149,10 +150,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def Relinquishment(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Relinquishment interface.
 
 		Relinquishes grant for CBSDs.
@@ -176,10 +177,10 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def Deregistration(
 		self,
-		request: Request,
+		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Deregistration interface.
 
 		Deregisters CBSDs.
@@ -319,7 +320,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def PreloadRegistrationData(
 		self,
-		request: Request
+		request: ListDictMsg
 	):
 		"""SAS admin interface to preload registration data into SAS under test.
 
