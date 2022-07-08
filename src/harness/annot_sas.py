@@ -307,13 +307,13 @@ class SasImpl(sas_interface.SasInterface):
 		
 		return RequestGet(url, tlsconf)
 	
-	def UpdateSasRequestUrl(self, cipher) -> None:
+	def UpdateSasRequestUrl(self, cipher: str) -> None:
 		if 'ECDSA' in cipher:
 			self.sas_sas_active_base_url = self._sas_sas_ec_base_url
 		else:
 			self.sas_sas_active_base_url = self._sas_sas_rsa_base_url
 
-	def UpdateCbsdRequestUrl(self, cipher) -> None:
+	def UpdateCbsdRequestUrl(self, cipher: str) -> None:
 		if 'ECDSA' in cipher:
 			self.cbsd_sas_active_base_url = self._cbsd_sas_ec_base_url
 		else:

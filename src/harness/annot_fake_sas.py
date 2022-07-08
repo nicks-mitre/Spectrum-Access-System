@@ -114,7 +114,7 @@ class FakeSas(sas_interface.SasInterface):
 		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		"""SAS-CBSD Registration implementation.
 
 		Registers CBSDs.
@@ -152,7 +152,7 @@ class FakeSas(sas_interface.SasInterface):
 		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		response = {'spectrumInquiryResponse': []}
 		for req in request['spectrumInquiryRequest']:
 			response['spectrumInquiryResponse'].append({
@@ -174,7 +174,7 @@ class FakeSas(sas_interface.SasInterface):
 		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		response = {'grantResponse': []}
 		for req in request['grantRequest']:
 			if 'cbsdId' not in req:
@@ -202,7 +202,7 @@ class FakeSas(sas_interface.SasInterface):
 		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		response = {'heartbeatResponse': []}
 		for req in request['heartbeatRequest']:
 			transmit_expire_time = datetime.utcnow().replace(
@@ -220,7 +220,7 @@ class FakeSas(sas_interface.SasInterface):
 		request: ListDictMsg,
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
-	) -> Response:
+	) -> ListDictMsg:
 		response = {'relinquishmentResponse': []}
 		for req in request['relinquishmentRequest']:
 			response['relinquishmentResponse'].append({
