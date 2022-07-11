@@ -50,9 +50,17 @@ def GetDefaultSasSSLKeyPath() -> str:
 class SasImpl(sas_interface.SasInterface):
 	"""Implementation of SasInterface for SAS certification testing."""
 
-	def __init__(self, cbsd_sas_rsa_base_url, cbsd_sas_ec_base_url,
-			sas_sas_rsa_base_url, sas_sas_ec_base_url, cbsd_sas_version,
-			sas_sas_version, sas_admin_id, maximum_batch_size):
+	def __init__(
+		self,
+		cbsd_sas_rsa_base_url: str,
+		cbsd_sas_ec_base_url: str,
+		sas_sas_rsa_base_url: str,
+		sas_sas_ec_base_url: str,
+		cbsd_sas_version: str,
+		sas_sas_version: str,
+		sas_admin_id: str,
+		maximum_batch_size: int
+	):
 		self._cbsd_sas_rsa_base_url = cbsd_sas_rsa_base_url
 		self._cbsd_sas_ec_base_url = cbsd_sas_ec_base_url
 		self._sas_sas_rsa_base_url = sas_sas_rsa_base_url
