@@ -1,0 +1,409 @@
+{
+  "sas_interface": {
+    "SasInterface": {
+      "Deregistration": "+ Deregistration(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "DownloadFile": "+ DownloadFile(url: str, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetEscSensorRecord": "+ GetEscSensorRecord(request: str, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetFullActivityDump": "+ GetFullActivityDump(ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Grant": "+ Grant(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Heartbeat": "+ Heartbeat(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Registration": "+ Registration(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Relinquishment": "+ Relinquishment(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "SpectrumInquiry": "+ SpectrumInquiry(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg"
+    },
+    "SasAdminInterface": {
+      "BlacklistByFccId": "+ BlacklistByFccId(request: Dict[str, str])",
+      "BlacklistByFccIdAndSerialNumber": "+ BlacklistByFccIdAndSerialNumber(request: Dict[str, str])",
+      "GetDailyActivitiesStatus": "+ GetDailyActivitiesStatus()",
+      "GetPpaCreationStatus": "+ GetPpaCreationStatus()",
+      "InjectCpiUser": "+ InjectCpiUser(request: Dict[str, str])",
+      "InjectDatabaseUrl": "+ InjectDatabaseUrl(request: Dict)",
+      "InjectEscSensorDataRecord": "+ InjectEscSensorDataRecord(request: Dict[str, Dict])",
+      "InjectExclusionZone": "+ InjectExclusionZone(request: Dict[str, Union[Dict, List[Dict]]])",
+      "InjectFccId": "+ InjectFccId(request: Dict[str, Union[str, float]])",
+      "InjectFss": "+ InjectFss(request: Dict[str, Dict])",
+      "InjectPalDatabaseRecord": "+ InjectPalDatabaseRecord(request: Dict)",
+      "InjectPeerSas": "+ InjectPeerSas(request: Dict[str, str])",
+      "InjectSasAdministratorRecord": "+ InjectSasAdministratorRecord(request: Dict[str, Dict[str, Union[str, List]]])",
+      "InjectUserId": "+ InjectUserId(request: Dict[str, str])",
+      "InjectWisp": "+ InjectWisp(request: Dict[str, Dict])",
+      "InjectZoneData": "+ InjectZoneData(request: Dict[str, Dict])",
+      "PreloadRegistrationData": "+ PreloadRegistrationData(request: ListDictMsg)",
+      "QueryPropagationAndAntennaModel": "+ QueryPropagationAndAntennaModel(request: Dict[str, Union[float, Dict]]): Tuple[float, ]",
+      "Reset": "+ Reset()",
+      "TriggerBulkDpaActivation": "+ TriggerBulkDpaActivation(request: Dict[str, bool])",
+      "TriggerDailyActivitiesImmediately": "+ TriggerDailyActivitiesImmediately()",
+      "TriggerDpaActivation": "+ TriggerDpaActivation(request: Dict[str, Union[str, Dict]])",
+      "TriggerDpaDeactivation": "+ TriggerDpaDeactivation(request: Dict[str, Union[str, Dict]]): Dict[str, Union[str, Dict]]",
+      "TriggerEnableNtiaExclusionZones": "+ TriggerEnableNtiaExclusionZones()",
+      "TriggerEnableScheduledDailyActivities": "+ TriggerEnableScheduledDailyActivities()",
+      "TriggerEscDisconnect": "+ TriggerEscDisconnect()",
+      "TriggerFullActivityDump": "+ TriggerFullActivityDump()",
+      "TriggerLoadDpas": "+ TriggerLoadDpas()",
+      "TriggerMeasurementReportHeartbeat": "+ TriggerMeasurementReportHeartbeat()",
+      "TriggerMeasurementReportRegistration": "+ TriggerMeasurementReportRegistration()",
+      "TriggerPpaCreation": "+ TriggerPpaCreation(request: Dict[str, Union[List, Dict]]): str"
+    }
+  },
+  "sas": {
+    "SasImpl": {
+      "Deregistration": "+ Deregistration(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "DownloadFile": "+ DownloadFile(url: str, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetEscSensorRecord": "+ GetEscSensorRecord(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetFullActivityDump": "+ GetFullActivityDump(ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Grant": "+ Grant(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Heartbeat": "+ Heartbeat(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Registration": "+ Registration(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Relinquishment": "+ Relinquishment(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "SpectrumInquiry": "+ SpectrumInquiry(request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "UpdateCbsdRequestUrl": "+ UpdateCbsdRequestUrl(cipher): None",
+      "UpdateSasRequestUrl": "+ UpdateSasRequestUrl(cipher): None",
+      "_CbsdRequest": "- _CbsdRequest(method_name: str, request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "_SasRequest": "- _SasRequest(method_name: str, request: Dict, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "__init__": "- __init__(cbsd_sas_rsa_base_url, cbsd_sas_ec_base_url, sas_sas_rsa_base_url, sas_sas_ec_base_url, cbsd_sas_version, sas_sas_version, sas_admin_id, maximum_batch_size)"
+    },
+    "SasAdminImpl": {
+      "BlacklistByFccId": "+ BlacklistByFccId(request: Dict): None",
+      "BlacklistByFccIdAndSerialNumber": "+ BlacklistByFccIdAndSerialNumber(request: Dict): None",
+      "GetDailyActivitiesStatus": "+ GetDailyActivitiesStatus(): Dict",
+      "GetPpaCreationStatus": "+ GetPpaCreationStatus(): Dict",
+      "InjectClusterList": "+ InjectClusterList(request: Dict): None",
+      "InjectCpiUser": "+ InjectCpiUser(request: Dict): None",
+      "InjectDatabaseUrl": "+ InjectDatabaseUrl(request: Dict): None",
+      "InjectEscSensorDataRecord": "+ InjectEscSensorDataRecord(request: Dict): None",
+      "InjectEscZone": "+ InjectEscZone(request: Dict): Dict",
+      "InjectExclusionZone": "+ InjectExclusionZone(request: Dict): Dict",
+      "InjectFccId": "+ InjectFccId(request: Dict): None",
+      "InjectFss": "+ InjectFss(request: Dict): None",
+      "InjectPalDatabaseRecord": "+ InjectPalDatabaseRecord(request: Dict): None",
+      "InjectPeerSas": "+ InjectPeerSas(request: Dict): None",
+      "InjectSasAdministratorRecord": "+ InjectSasAdministratorRecord(request: Dict): None",
+      "InjectUserId": "+ InjectUserId(request: Dict): None",
+      "InjectWisp": "+ InjectWisp(request: Dict): None",
+      "InjectZoneData": "+ InjectZoneData(request: Dict): Dict",
+      "PreloadRegistrationData": "+ PreloadRegistrationData(request: Dict): None",
+      "QueryPropagationAndAntennaModel": "+ QueryPropagationAndAntennaModel(request: Dict): Dict",
+      "Reset": "+ Reset(): None",
+      "ResetEscZone": "+ ResetEscZone(request: Dict): None",
+      "TriggerBulkDpaActivation": "+ TriggerBulkDpaActivation(request: Dict): None",
+      "TriggerDailyActivitiesImmediately": "+ TriggerDailyActivitiesImmediately(): None",
+      "TriggerDpaActivation": "+ TriggerDpaActivation(request: Dict): None",
+      "TriggerDpaDeactivation": "+ TriggerDpaDeactivation(request: Dict): None",
+      "TriggerEnableNtiaExclusionZones": "+ TriggerEnableNtiaExclusionZones(): None",
+      "TriggerEnableScheduledDailyActivities": "+ TriggerEnableScheduledDailyActivities(): None",
+      "TriggerEscDisconnect": "+ TriggerEscDisconnect(): None",
+      "TriggerEscZone": "+ TriggerEscZone(request: Dict): None",
+      "TriggerFullActivityDump": "+ TriggerFullActivityDump(): None",
+      "TriggerLoadDpas": "+ TriggerLoadDpas(): None",
+      "TriggerMeasurementReportHeartbeat": "+ TriggerMeasurementReportHeartbeat(): None",
+      "TriggerMeasurementReportRegistration": "+ TriggerMeasurementReportRegistration(): None",
+      "TriggerPpaCreation": "+ TriggerPpaCreation(request: Dict): Dict",
+      "_GetDefaultAdminSSLCertPath": "- _GetDefaultAdminSSLCertPath(): str",
+      "_GetDefaultAdminSSLKeyPath": "- _GetDefaultAdminSSLKeyPath(): str",
+      "__init__": "- __init__(base_url: str)"
+    }
+  },
+  "fake_sas": {
+    "BaseHTTPRequestHandler": {
+      "address_string": "+ address_string()",
+      "date_time_string": "+ date_time_string(timestamp=None)",
+      "end_headers": "+ end_headers()",
+      "flush_headers": "+ flush_headers()",
+      "handle": "+ handle()",
+      "handle_expect_100": "+ handle_expect_100()",
+      "handle_one_request": "+ handle_one_request()",
+      "log_date_time_string": "+ log_date_time_string()",
+      "log_error": "+ log_error(format, *args)",
+      "log_message": "+ log_message(format, *args)",
+      "log_request": "+ log_request(code='-', size='-')",
+      "parse_request": "+ parse_request()",
+      "send_error": "+ send_error(code, message=None, explain=None)",
+      "send_header": "+ send_header(keyword, value)",
+      "send_response": "+ send_response(code, message=None)",
+      "send_response_only": "+ send_response_only(code, message=None)",
+      "version_string": "+ version_string()"
+    },
+    "FakeSas": {
+      "Deregistration": "+ Deregistration(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "DownloadFile": "+ DownloadFile(url: str, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetEscSensorRecord": "+ GetEscSensorRecord(request: str, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "GetFullActivityDump": "+ GetFullActivityDump(version, ssl_cert: str = None, ssl_key: str = None): Dict",
+      "Grant": "+ Grant(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Heartbeat": "+ Heartbeat(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Registration": "+ Registration(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "Relinquishment": "+ Relinquishment(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "SpectrumInquiry": "+ SpectrumInquiry(request: ListDictMsg, ssl_cert: str = None, ssl_key: str = None): ListDictMsg",
+      "_GetMissingParamResponse": "- _GetMissingParamResponse(): Dict",
+      "_GetSuccessResponse": "- _GetSuccessResponse(): Dict",
+      "__init__": "- __init__()"
+    },
+    "FakeSasAdmin": {
+      "BlacklistByFccId": "+ BlacklistByFccId(request)",
+      "BlacklistByFccIdAndSerialNumber": "+ BlacklistByFccIdAndSerialNumber(request)",
+      "GetDailyActivitiesStatus": "+ GetDailyActivitiesStatus(): Dict[str, bool]",
+      "GetPpaCreationStatus": "+ GetPpaCreationStatus(): Dict[str, bool]",
+      "InjectCpiUser": "+ InjectCpiUser(request)",
+      "InjectDatabaseUrl": "+ InjectDatabaseUrl(request)",
+      "InjectEscSensorDataRecord": "+ InjectEscSensorDataRecord(request)",
+      "InjectExclusionZone": "+ InjectExclusionZone(request, ssl_cert=None, ssl_key=None)",
+      "InjectFccId": "+ InjectFccId(request)",
+      "InjectFss": "+ InjectFss(request)",
+      "InjectPalDatabaseRecord": "+ InjectPalDatabaseRecord(request)",
+      "InjectPeerSas": "+ InjectPeerSas(request)",
+      "InjectSasAdministratorRecord": "+ InjectSasAdministratorRecord(request)",
+      "InjectUserId": "+ InjectUserId(request)",
+      "InjectWisp": "+ InjectWisp(request)",
+      "InjectZoneData": "+ InjectZoneData(request: Dict[str, Dict], ssl_cert: str = None, ssl_key: str = None)",
+      "PreloadRegistrationData": "+ PreloadRegistrationData(request)",
+      "QueryPropagationAndAntennaModel": "+ QueryPropagationAndAntennaModel(request): Dict",
+      "Reset": "+ Reset()",
+      "TriggerBulkDpaActivation": "+ TriggerBulkDpaActivation(request)",
+      "TriggerDailyActivitiesImmediately": "+ TriggerDailyActivitiesImmediately()",
+      "TriggerDpaActivation": "+ TriggerDpaActivation(request)",
+      "TriggerDpaDeactivation": "+ TriggerDpaDeactivation(request)",
+      "TriggerEnableNtiaExclusionZones": "+ TriggerEnableNtiaExclusionZones()",
+      "TriggerEnableScheduledDailyActivities": "+ TriggerEnableScheduledDailyActivities()",
+      "TriggerEscDisconnect": "+ TriggerEscDisconnect()",
+      "TriggerFullActivityDump": "+ TriggerFullActivityDump()",
+      "TriggerLoadDpas": "+ TriggerLoadDpas()",
+      "TriggerMeasurementReportHeartbeat": "+ TriggerMeasurementReportHeartbeat()",
+      "TriggerMeasurementReportRegistration": "+ TriggerMeasurementReportRegistration()",
+      "TriggerPpaCreation": "+ TriggerPpaCreation(request: Dict, ssl_cert: str = None, ssl_key: str = None): str"
+    },
+    "FakeSasHandler": {
+      "_parseUrl": "- _parseUrl(url: str): Tuple[str, str]",
+      "do_GET": "+ do_GET(): None",
+      "do_POST": "+ do_POST(): None"
+    },
+    "HTTPServer": {
+      "server_bind": "+ server_bind()"
+    },
+    "datetime": null,
+    "timedelta": null
+  },
+  "sas_testcase": {
+    "HTTPError": {
+      "__init__": "- __init__(error_code)"
+    },
+    "SasTestCase": {
+      "InjectTestHarnessFccIds": "+ InjectTestHarnessFccIds(cbsd_records: List[Dict])",
+      "ShutdownServers": "+ ShutdownServers()",
+      "TriggerDailyActivitiesImmediatelyAndWaitUntilComplete": "+ TriggerDailyActivitiesImmediatelyAndWaitUntilComplete()",
+      "TriggerFullActivityDumpAndWaitUntilComplete": "+ TriggerFullActivityDumpAndWaitUntilComplete(server_cert: str, server_key: str): Dict",
+      "assertChannelIncludedInFrequencyRanges": "+ assertChannelIncludedInFrequencyRanges(channel: Dict[str, int], frequency_ranges: List[Dict[str, int]])",
+      "assertChannelsContainFrequencyRange": "+ assertChannelsContainFrequencyRange(channels: List[Dict[str, int]], frequency_range: Dict[str, int])",
+      "assertChannelsOverlapFrequencyRange": "+ assertChannelsOverlapFrequencyRange(channels: List[Dict[str, int]], frequency_range: Dict[str, int], constrain_low: bool = False, constrain_high: bool = False)",
+      "assertContainsRequiredFields": "+ assertContainsRequiredFields(schema_filename: str, response: Dict)",
+      "assertHeartbeatsSuccessful": "+ assertHeartbeatsSuccessful(cbsd_ids: List[str], grant_ids: List[str], operation_states: List[str]): List[str]",
+      "assertPpaCreationFailure": "+ assertPpaCreationFailure(ppa_creation_request: Dict)",
+      "assertRegistered": "+ assertRegistered(registration_request: List[Dict], conditional_registration_data: List[Dict] = None, cert: str = None, key: str = None): List[str]",
+      "assertRegisteredAndGranted": "+ assertRegisteredAndGranted(registration_request: List[Dict], grant_request: ListDictMsg, conditional_registration_data: Dict = None, cert: str = None, key: str = None): Tuple[List[str], ]",
+      "assertValidConfig": "+ assertValidConfig(config: Dict, required_fields: Dict, optional_fields: Dict = {})",
+      "assertValidResponseFormatForApprovedGrant": "+ assertValidResponseFormatForApprovedGrant(grant_response: Dict): None",
+      "setUp": "+ setUp()",
+      "tearDown": "+ tearDown()",
+      "triggerPpaCreationAndWaitUntilComplete": "+ triggerPpaCreationAndWaitUntilComplete(ppa_creation_request: Dict): str"
+    },
+    "datetime": null,
+    "timedelta": null,
+    "zip": null
+  },
+  "test_main": {},
+  "sas_test_harness": {
+    "HTTPServer": {
+      "server_bind": "+ server_bind()"
+    },
+    "SasHttpServer": {
+      "__init__": "- __init__(base_path, server_address, RequestHandlerClass, version_number)",
+      "readDumpFile": "+ readDumpFile(filename)"
+    },
+    "SasTestHarnessInterface": {
+      "Deregistration": "+ Deregistration(request, ssl_cert=None, ssl_key=None)",
+      "DownloadFile": "+ DownloadFile(url, ssl_cert=None, ssl_key=None)",
+      "GetEscSensorRecord": "+ GetEscSensorRecord(request, ssl_cert=None, ssl_key=None)",
+      "GetFullActivityDump": "+ GetFullActivityDump(ssl_cert=None, ssl_key=None)",
+      "Grant": "+ Grant(request, ssl_cert=None, ssl_key=None)",
+      "Heartbeat": "+ Heartbeat(request, ssl_cert=None, ssl_key=None)",
+      "Registration": "+ Registration(request, ssl_cert=None, ssl_key=None)",
+      "Relinquishment": "+ Relinquishment(request, ssl_cert=None, ssl_key=None)",
+      "SpectrumInquiry": "+ SpectrumInquiry(request, ssl_cert=None, ssl_key=None)",
+      "__init__": "- __init__(server)"
+    },
+    "SasTestHarnessServer": {
+      "_SasTestHarnessServer__createFadObject": "- __createFadObject(all_activity_dump, fad_generation_time)",
+      "_SasTestHarnessServer__createFadRecord": "- __createFadRecord(encoded_url, file_name)",
+      "_SasTestHarnessServer__getFullDumpFilePath": "- __getFullDumpFilePath(file_name)",
+      "_SasTestHarnessServer__verifyRecords": "- __verifyRecords(dump_records_list)",
+      "_SasTestHarnessServer__writeDumpFile": "- __writeDumpFile(file_name, data)",
+      "__del__": "- __del__()",
+      "__init__": "- __init__(name, host_name, port, cert_file=None, key_file=None, ca_cert_file=None)",
+      "cleanDumpFiles": "+ cleanDumpFiles()",
+      "generateTempDirectory": "+ generateTempDirectory()",
+      "getBaseUrl": "+ getBaseUrl()",
+      "getDumpFileDirectory": "+ getDumpFileDirectory()",
+      "getSasBaseUrl": "+ getSasBaseUrl()",
+      "getSasTestHarnessInterface": "+ getSasTestHarnessInterface()",
+      "getSasTestHarnessVersion": "+ getSasTestHarnessVersion()",
+      "run": "+ run()",
+      "shutdown": "+ shutdown()",
+      "writeFadRecords": "+ writeFadRecords(dump_records_list)"
+    },
+    "SasTestHarnessServerHandler": {
+      "translate_path": "+ translate_path(path)"
+    },
+    "SimpleHTTPRequestHandler": {
+      "__init__": "- __init__(*args, directory=None, **kwargs)",
+      "copyfile": "+ copyfile(source, outputfile)",
+      "do_GET": "+ do_GET()",
+      "do_HEAD": "+ do_HEAD()",
+      "guess_type": "+ guess_type(path)",
+      "list_directory": "+ list_directory(path)",
+      "send_head": "+ send_head()",
+      "translate_path": "+ translate_path(path)"
+    },
+    "datetime": null,
+    "timedelta": null,
+    "zip": null
+  },
+  "util2": {
+    "datetime": null,
+    "defaultdict": null
+  },
+  "simple_crl_server": {
+    "BaseHTTPRequestHandler": {
+      "address_string": "+ address_string()",
+      "date_time_string": "+ date_time_string(timestamp=None)",
+      "end_headers": "+ end_headers()",
+      "flush_headers": "+ flush_headers()",
+      "handle": "+ handle()",
+      "handle_expect_100": "+ handle_expect_100()",
+      "handle_one_request": "+ handle_one_request()",
+      "log_date_time_string": "+ log_date_time_string()",
+      "log_error": "+ log_error(format, *args)",
+      "log_message": "+ log_message(format, *args)",
+      "log_request": "+ log_request(code='-', size='-')",
+      "parse_request": "+ parse_request()",
+      "send_error": "+ send_error(code, message=None, explain=None)",
+      "send_header": "+ send_header(keyword, value)",
+      "send_response": "+ send_response(code, message=None)",
+      "send_response_only": "+ send_response_only(code, message=None)",
+      "version_string": "+ version_string()"
+    },
+    "CrlHttpServer": {
+      "__init__": "- __init__(crl_url_path, crl_directory, server_address, RequestHandlerClass)"
+    },
+    "CrlServerHttpHandler": {
+      "do_GET": "+ do_GET()"
+    },
+    "HTTPServer": {
+      "server_bind": "+ server_bind()"
+    },
+    "SimpleCrlServer": {
+      "__init__": "- __init__(crl_url, crl_directory)",
+      "run": "+ run()",
+      "stopServer": "+ stopServer()"
+    },
+    "zip": null
+  },
+  "test_harness_objects": {
+    "Cbsd": {
+      "__init__": "- __init__(cbsd_id, registration_request, grant_ids, grant_requests)",
+      "constructHeartbeatRequestForAllActiveGrants": "+ constructHeartbeatRequestForAllActiveGrants()",
+      "getAuthorizedGrants": "+ getAuthorizedGrants()",
+      "getCbsdId": "+ getCbsdId()",
+      "getGrantObject": "+ getGrantObject(grant_id)",
+      "getOperationParamsOfAllAuthorizedGrants": "+ getOperationParamsOfAllAuthorizedGrants()",
+      "getRegistrationRequest": "+ getRegistrationRequest()",
+      "hasActiveGrant": "+ hasActiveGrant()",
+      "hasAuthorizedGrant": "+ hasAuthorizedGrant()"
+    },
+    "DomainProxy": {
+      "__init__": "- __init__(testcase, ssl_cert=None, ssl_key=None)",
+      "_constructGrantRequest": "- _constructGrantRequest(heartbeat_response)",
+      "_grantRequestWithMaximumBatchSize": "- _grantRequestWithMaximumBatchSize(grant_requests)",
+      "_heartbeatRequestWithMaximumBatchSize": "- _heartbeatRequestWithMaximumBatchSize(heartbeat_requests)",
+      "_mapResponseCodeToGrantState": "- _mapResponseCodeToGrantState(heartbeat_response_code, grant_object)",
+      "_mergeConditionals": "- _mergeConditionals(registration_request, conditionals)",
+      "_relinquishmentRequestWithMaximumBatchSize": "- _relinquishmentRequestWithMaximumBatchSize(relinquishment_requests)",
+      "_tryRegistration": "- _tryRegistration(registration_request, conditional_registration_data=None, cert=None, key=None)",
+      "_tryRegistrationWithMaximumBatchSize": "- _tryRegistrationWithMaximumBatchSize(registration_requests, conditional_registration_data)",
+      "_withMaximumBatchSize": "- _withMaximumBatchSize(requests, request_name)",
+      "getCbsdObjectById": "+ getCbsdObjectById(cbsd_id)",
+      "getCbsdsWithAtLeastOneAuthorizedGrant": "+ getCbsdsWithAtLeastOneAuthorizedGrant()",
+      "heartbeatForAllActiveGrants": "+ heartbeatForAllActiveGrants()",
+      "performHeartbeatAndUpdateGrants": "+ performHeartbeatAndUpdateGrants()",
+      "registerCbsdsAndRequestGrants": "+ registerCbsdsAndRequestGrants(registration_requests, grant_requests, conditional_registration_data=None)",
+      "registerCbsdsAndRequestGrantsWithPpa": "+ registerCbsdsAndRequestGrantsWithPpa(registration_requests, grant_requests, ppa_record, cluster_list, conditional_registration_data=None)"
+    },
+    "Grant": {
+      "__init__": "- __init__(grant_id, grant_request)",
+      "constructHeartbeatRequest": "+ constructHeartbeatRequest()",
+      "getGrantId": "+ getGrantId()",
+      "getGrantRequest": "+ getGrantRequest()",
+      "getRequestOperationParam": "+ getRequestOperationParam()",
+      "isActive": "+ isActive()",
+      "isGrantAuthorizedInLastHeartbeat": "+ isGrantAuthorizedInLastHeartbeat()"
+    },
+    "ResponseCodes": {
+      "__new__": "- __new__(cls, value)",
+      "_generate_next_value_": "- _generate_next_value_(name, start, count, last_values)"
+    },
+    "zip": null
+  },
+  "database": {
+    "DatabaseHTTPServer": {
+      "__init__": "- __init__(server_address, RequestHandlerClass, name, authorization)"
+    },
+    "DatabaseHandler": {
+      "translate_path": "+ translate_path(path)"
+    },
+    "DatabaseServer": {
+      "__del__": "- __del__()",
+      "__init__": "- __init__(name, host_name, port, https=True, authorization=False)",
+      "getBaseUrl": "+ getBaseUrl()",
+      "run": "+ run()",
+      "setFileToServe": "+ setFileToServe(file_url, file_path)",
+      "setFilesToServe": "+ setFilesToServe(file_url_file_path_dict)",
+      "shutdown": "+ shutdown()"
+    },
+    "HTTPServer": {
+      "server_bind": "+ server_bind()"
+    },
+    "SimpleHTTPRequestHandler": {
+      "__init__": "- __init__(*args, directory=None, **kwargs)",
+      "copyfile": "+ copyfile(source, outputfile)",
+      "do_GET": "+ do_GET()",
+      "do_HEAD": "+ do_HEAD()",
+      "guess_type": "+ guess_type(path)",
+      "list_directory": "+ list_directory(path)",
+      "send_head": "+ send_head()",
+      "translate_path": "+ translate_path(path)"
+    }
+  },
+  "full_activity_dump": {
+    "FullActivityDump": {
+      "__init__": "- __init__(dump)",
+      "_getRecords": "- _getRecords(record_type, filters)",
+      "getCbsdRecords": "+ getCbsdRecords(filters=[])",
+      "getData": "+ getData()",
+      "getEscSensorRecords": "+ getEscSensorRecords(filters=[])",
+      "getZoneRecords": "+ getZoneRecords(filters=[])",
+      "setCbsdRecords": "+ setCbsdRecords(records)",
+      "setEscSensorRecords": "+ setEscSensorRecords(records)",
+      "setZoneRecords": "+ setZoneRecords(records)"
+    }
+  },
+  "request_handler": {
+    "CurlError": {
+      "__init__": "- __init__(message, error_code)"
+    },
+    "HTTPError": {
+      "__init__": "- __init__(error_code)"
+    },
+    "TlsConfig": {
+      "WithClientCertificate": "+ WithClientCertificate(client_cert, client_key)",
+      "__init__": "- __init__()"
+    },
+    "range": null
+  }
+}
