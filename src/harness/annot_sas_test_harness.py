@@ -174,10 +174,10 @@ class SasTestHarnessServer(threading.Thread):
 	def getDumpFileDirectory(self) -> str:
 		return self.dump_path
 
-	def getSasTestHarnessInterface(self):
+	def getSasTestHarnessInterface(self) -> SasHttpServer:
 		return SasTestHarnessInterface(self.server)
 
-	def run(self):
+	def run(self) -> NoReturn:
 		"""
 		Starts the HTTPServer as background thread.
 		The run() method is an overridden method from thread class and it gets invoked
@@ -203,7 +203,7 @@ class SasTestHarnessServer(threading.Thread):
 		logging.info('Shutting down Test Harness Server:%s at %s', self.name,
 				self.http_server_url)
 
-	def shutdown(self):
+	def shutdown(self) -> None:
 		"""
 		This method is used to stop HTTPServer Socket.
 		"""
@@ -213,7 +213,7 @@ class SasTestHarnessServer(threading.Thread):
 		logging.info('Stopped Test Harness Server:%s', self.name)
 	
 	
-	def cleanDumpFiles(self):
+	def cleanDumpFiles(self) -> None:
 		"""
 		Clean existing dump file if any.
 		"""
@@ -235,7 +235,7 @@ class SasTestHarnessServer(threading.Thread):
 		self,
 		all_activity_dump, # unknown type
 		fad_generation_time # unknown type
-	):
+	) -> Dict:
 		"""
 		Creates the FAD object format and embed the active dump file object of different recordtype.
 		"""
@@ -255,8 +255,8 @@ class SasTestHarnessServer(threading.Thread):
 	
 	def __createFadRecord(
 		self,
-		encoded_url,
-		file_name
+		encoded_url: str,
+		file_name: str
 	) -> Dict:
 		"""
 		Creates the files object that includes url, checksum, size, version and recordtype of record required to be packed in FAD.
@@ -289,7 +289,7 @@ class SasTestHarnessServer(threading.Thread):
 	def __verifyRecords(
 		self,
 		dump_records_list: List
-	):
+	) -> NoReturn: # or possibly None?
 		"""This method checks if given dump records [cbsd1,..,cbsdN] or
 			[pp1,..,ppaN] or [esc1,..,escN] is grouped with same record type
 			by using id field.
