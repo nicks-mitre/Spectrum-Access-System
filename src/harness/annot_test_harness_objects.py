@@ -59,11 +59,11 @@ class Grant(object):
 	def constructHeartbeatRequest(self):
 		"""Constructs heartbeat request for the grant object."""
 		heartbeat_request = {
-				'grantId': self.grant_id,
-				'cbsdId': self.grant_request['cbsdId'],
-				'operationState': 'GRANTED',
-				'grantRenew': True
-			}
+			'grantId': self.grant_id,
+			'cbsdId': self.grant_request['cbsdId'],
+			'operationState': 'GRANTED',
+			'grantRenew': True
+		}
 		return heartbeat_request
 
 	def isGrantAuthorizedInLastHeartbeat(self):
@@ -145,7 +145,12 @@ class DomainProxy(object):
 	CBSD objects belonging to this Domain Proxy. Bulk operations like registration, grant and heartbeat
 	procedures are performed on all of the CBSDs belonging to this Domain Proxy.
 	"""
-	def __init__(self, testcase, ssl_cert=None, ssl_key=None):
+	def __init__(
+		self,
+		testcase,
+		ssl_cert = None,
+		ssl_key = None
+	):
 		"""
 		Args:
 			ssl_cert: Path to SSL cert file.
@@ -157,10 +162,12 @@ class DomainProxy(object):
 		self.cbsd_objects = {}
 		self.testcase = testcase
 
-	def registerCbsdsAndRequestGrants(self,
-																		registration_requests,
-																		grant_requests,
-																		conditional_registration_data=None):
+	def registerCbsdsAndRequestGrants(
+		self,
+		registration_requests,
+		grant_requests,
+		conditional_registration_data = None
+	):
 		"""Construct CBSD object based on the result of registration and
 		grant requests.
 
@@ -213,15 +220,17 @@ class DomainProxy(object):
 			if grant_response['response']['responseCode'] == ResponseCodes.SUCCESS.value:
 				self._mergeConditionals(registration_request, conditional_registration_data)
 				cbsd_object = Cbsd(cbsd_id, registration_request,
-													 [grant_response['grantId']], [grant_request])
+						[grant_response['grantId']], [grant_request])
 				self.cbsd_objects[cbsd_id] = cbsd_object
 
-	def registerCbsdsAndRequestGrantsWithPpa(self,
-																					 registration_requests,
-																					 grant_requests,
-																					 ppa_record,
-																					 cluster_list,
-																					 conditional_registration_data=None):
+	def registerCbsdsAndRequestGrantsWithPpa(
+		self,
+		registration_requests,
+		grant_requests,
+		ppa_record,
+		cluster_list,
+		conditional_registration_data = None
+	):
 		"""Construct CBSD object based on the result of registration and
 		grant requests. Registers the CBSDs, injects the PPA, and requests grants.
 
@@ -249,7 +258,8 @@ class DomainProxy(object):
 		self.testcase.assertEqual(len(grant_requests), len(registration_requests))
 		try:
 			cbsd_ids = self._tryRegistrationWithMaximumBatchSize(
-					registration_requests, conditional_registration_data)
+				registration_requests, conditional_registration_data
+			)
 		except Exception:
 			logging.error(common_strings.EXPECTED_SUCCESSFUL_REGISTRATION)
 			raise
@@ -267,8 +277,7 @@ class DomainProxy(object):
 		# record so that the reference model will do the right thing.
 		ppa_record_with_reference_ids = copy.deepcopy(ppa_record)
 		def makeReferenceId(reg_request):
-			return 'cbsd/' + generateCbsdReferenceId(reg_request['fccId'],
-																							 reg_request['cbsdSerialNumber'])
+			return 'cbsd/' + generateCbsdReferenceId(reg_request['fccId'], reg_request['cbsdSerialNumber'])
 		reference_id_cluster_list = []
 		for i in cluster_list:
 			if not cbsd_ids[i]:
@@ -305,8 +314,7 @@ class DomainProxy(object):
 				actual_grant_requests, grant_responses, actual_registration_requests, actual_cbsd_ids):
 			if grant_response['response']['responseCode'] == ResponseCodes.SUCCESS.value:
 				self._mergeConditionals(registration_request, conditional_registration_data)
-				cbsd_object = Cbsd(cbsd_id, registration_request,
-													 [grant_response['grantId']], [grant_request])
+				cbsd_object = Cbsd(cbsd_id, registration_request, [grant_response['grantId']], [grant_request])
 				self.cbsd_objects[cbsd_id] = cbsd_object
 
 		return ppa_record_with_cbsd_ids, ppa_record_with_reference_ids
@@ -351,8 +359,7 @@ class DomainProxy(object):
 				grant_object = cbsd_object.grant_objects[heartbeat_request['grantId']]
 
 				# Update grant state based on the heartbeat response.
-				self._mapResponseCodeToGrantState(heartbeat_response['response']['responseCode'],
-																				 grant_object)
+				self._mapResponseCodeToGrantState(heartbeat_response['response']['responseCode'], grant_object)
 
 		return heartbeat_requests, heartbeat_responses
 
@@ -433,8 +440,8 @@ class DomainProxy(object):
 			# Validate the response of the relinquishment request.
 			for relinquishment_request, relinquishment_response in zip(
 					relinquishment_requests, relinquishment_responses):
-				self.testcase.assertEqual(relinquishment_response['response']['responseCode'],
-																	ResponseCodes.SUCCESS.value)
+				self.testcase.assertEqual(relinquishment_response['response']['responseCode'], 
+						ResponseCodes.SUCCESS.value)
 				self.testcase.assertEqual(relinquishment_response['cbsdId'], relinquishment_request['cbsdId'])
 				self.testcase.assertEqual(relinquishment_response['grantId'], relinquishment_request['grantId'])
 
@@ -478,18 +485,18 @@ class DomainProxy(object):
 		"""
 		maximum_batch_size = self.testcase._sas.maximum_batch_size
 		num_batches = int(math.ceil(len(requests) / float(maximum_batch_size)))
-		logging.info('Sending %i %s requests in batches of %i (%i batches)',
-								 len(requests), request_name, maximum_batch_size, num_batches)
+		logging.info('Sending %i %s requests in batches of %i (%i batches)', 
+				len(requests), request_name, maximum_batch_size, num_batches)
 		for iteration in range(0, num_batches):
-			batch_requests = requests[iteration * maximum_batch_size:(iteration + 1) *
-																maximum_batch_size]
+			batch_requests = requests[iteration * maximum_batch_size:(iteration + 1) * maximum_batch_size]
 			yield batch_requests
 
 	def _tryRegistration(self,
-									 registration_request,
-									 conditional_registration_data=None,
-									 cert=None,
-									 key=None):
+		registration_request,
+		conditional_registration_data = None,
+		cert = None,
+		key = None
+	):
 		"""Similar to |SasTestCase.assertRegistered|, but ignores errors."""
 		if not registration_request:
 			return []
@@ -525,8 +532,11 @@ class DomainProxy(object):
 		# Return list of cbsd_ids
 		return cbsd_ids
 
-	def _tryRegistrationWithMaximumBatchSize(self, registration_requests,
-																						conditional_registration_data):
+	def _tryRegistrationWithMaximumBatchSize(
+		self,
+		registration_requests,
+		conditional_registration_data
+	):
 		"""Sends registration requests in batches up to the maximum batch size.
 
 		Args:
@@ -546,13 +556,13 @@ class DomainProxy(object):
 				self.testcase._sas_admin.InjectFccId({'fccId': device['fccId']})
 				self.testcase._sas_admin.InjectUserId({'userId': device['userId']})
 			for data in self._withMaximumBatchSize(conditional_registration_data,
-																						 'PreloadRegistrationData'):
+					'PreloadRegistrationData'):
 				self.testcase._sas_admin.PreloadRegistrationData({
 						'registrationData': data
 				})
 		cbsd_ids = []
 		for requests in self._withMaximumBatchSize(registration_requests,
-																							 'Registration'):
+				'Registration'):
 			cbsd_ids.extend(
 					self._tryRegistration(requests, cert=self.ssl_cert, key=self.ssl_key))
 		return cbsd_ids
@@ -588,7 +598,7 @@ class DomainProxy(object):
 			heartbeat_requests_wrap = {'heartbeatRequest': requests}
 			heartbeat_responses.extend(
 					self.testcase._sas.Heartbeat(heartbeat_requests_wrap, self.ssl_cert,
-																			 self.ssl_key)['heartbeatResponse'])
+							self.ssl_key)['heartbeatResponse'])
 		return heartbeat_responses
 
 	def _relinquishmentRequestWithMaximumBatchSize(self, relinquishment_requests):
@@ -601,11 +611,12 @@ class DomainProxy(object):
 		"""
 		relinquishment_responses = []
 		for requests in self._withMaximumBatchSize(relinquishment_requests,
-																							 'Relinquishment'):
+				'Relinquishment'):
 			# Wrapped version of the grant requests.
 			relinquishment_requests_wrap = {'relinquishmentRequest': requests}
 			relinquishment_responses.extend(
-					self.testcase._sas.Relinquishment(
-							relinquishment_requests_wrap, self.ssl_cert,
-							self.ssl_key)['relinquishmentResponse'])
+				self.testcase._sas.Relinquishment(
+					relinquishment_requests_wrap, self.ssl_cert, self.ssl_key
+				)['relinquishmentResponse']
+			)
 		return relinquishment_responses
