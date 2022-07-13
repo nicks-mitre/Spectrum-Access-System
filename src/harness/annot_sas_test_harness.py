@@ -45,7 +45,11 @@ from six.moves import configparser
 import util
 import sas_interface
 
+import typing
 from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
+# type alias for CbsdData
+CbsdData = Dict
+Ppa_Record = Dict
 
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
@@ -61,6 +65,31 @@ CIPHERS = [
 	'ECDHE-ECDSA-AES256-GCM-SHA384',	# TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
 	'ECDHE-RSA-AES128-GCM-SHA256',		# TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 ]
+
+class SasHttpServer(HTTPServer):
+	"""
+	The class SasHttpServer overrides built-in HTTPServer and takes the
+	parameter base_path used to serve the files. This is needed to have SAS
+	test harnesses to server files from different directories.
+	"""
+	def __init__(
+		self,
+		base_path: str,
+		server_address: str,
+		RequestHandlerClass: typing.Type, # this may be the incorrect type hint
+		version_number: str
+	):
+		self.base_path = base_path
+		self.version_number = version_number
+		HTTPServer.__init__(self, server_address, RequestHandlerClass)
+
+	def readDumpFile(self, filename: str) -> Dict:
+		"""
+		Read the dump file with the given filename.
+		"""
+		dump_file_path = os.path.join(self.base_path, filename)
+		with open(dump_file_path) as dump_file:
+			return json.load(dump_file)
 
 class SasTestHarnessServer(threading.Thread):
 	"""
@@ -375,38 +404,13 @@ class SasTestHarnessServer(threading.Thread):
 				'The files are placed under the path:%s', self.getDumpFileDirectory())
 
 
-class SasHttpServer(HTTPServer):
-	"""
-	The class SasHttpServer overrides built-in HTTPServer and takes the
-	parameter base_path used to serve the files. This is needed to have SAS
-	test harnesses to server files from different directories.
-	"""
-	def __init__(
-		self,
-		base_path: str,
-		server_address: str,
-		RequestHandlerClass: typing.Type, # this may be the incorrect type hint
-		version_number: str
-	):
-		self.base_path = base_path
-		self.version_number = version_number
-		HTTPServer.__init__(self, server_address, RequestHandlerClass)
-
-	def readDumpFile(self, filename: str) -> Dict:
-		"""
-		Read the dump file with the given filename.
-		"""
-		dump_file_path = os.path.join(self.base_path, filename)
-		with open(dump_file_path) as dump_file:
-			return json.load(dump_file)
-
 class SasTestHarnessServerHandler(SimpleHTTPRequestHandler):
 	"""
 	SasTestHarnessServerHandler class inherits from SimpleHTTPRequestHandler
 	to serve a HTTP Response.
 	"""
 	
-	def translate_path(self, path: str): str:
+	def translate_path(self, path: str) -> str:
 		"""Translate URL paths into filepaths."""
 		url_encoded_id = path.split('/')[-1]
 		if url_encoded_id == 'dump':
