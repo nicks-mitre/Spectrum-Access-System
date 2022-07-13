@@ -313,12 +313,15 @@ def executeSelectedMenu(choice):
     MENU_ACTIONS[MENU_ID_MAIN_MENU]()
   return
 
+def call_exit():
+	exit()
+
 # Mapping menu items to handler functions.
 MENU_ACTIONS = {
     MENU_ID_MAIN_MENU: readInput,
     MENU_ID_REVOKE_CERT: revokeCertificate,
     MENU_ID_CRL_UPDATE_REGENERATE: updateCrlUrlAndRegenerateCertificates,
-    MENU_ID_QUIT: exit
+    MENU_ID_QUIT: call_exit
 }
 
 # Set the logger for CRL Server.
