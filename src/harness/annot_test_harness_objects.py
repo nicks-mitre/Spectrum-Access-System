@@ -11,9 +11,7 @@
 #	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #	See the License for the specific language governing permissions and
 #	limitations under the License.
-
-"""Implementation of multiple objects (Grant, Cbsd and DomainProxy).
-	 Mainly used in MCP and related test cases."""
+"""Implementation of multiple objects (Grant, Cbsd and DomainProxy). Mainly used in MCP and related test cases."""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -31,10 +29,20 @@ import common_strings
 from common_types import ResponseCodes
 from sas_test_harness import generateCbsdReferenceId
 
+import typing
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
+# type aliases
+FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
+OperationParam = Dict[str, Union[float, FrequencyRange]]
+
 class Grant(object):
 	"""Holds the Grant request parameters."""
-
-	def __init__(self, grant_id, grant_request):
+	
+	def __init__(
+		self,
+		grant_id: str,
+		grant_request: Dict
+	):
 		"""Store grant parameters and initialize state variables.
 
 		Args:
@@ -42,19 +50,19 @@ class Grant(object):
 			grant_request: A dictionary containing the grant request parameters.
 		"""
 		# Store the grant parameters.
-		self.grant_id = grant_id
-		self.grant_request = grant_request
-		self.authorized_in_last_heartbeat = False
-		self.is_terminated = False
+		self.grant_id: str = grant_id
+		self.grant_request: Dict = grant_request
+		self.authorized_in_last_heartbeat: bool = False
+		self.is_terminated: bool = False
 
-	def getGrantId(self):
+	def getGrantId(self) -> str:
 		return self.grant_id
 
-	def getGrantRequest(self):
+	def getGrantRequest(self) -> Dict:
 		return self.grant_request
 
-	def getRequestOperationParam(self):
-			return self.grant_request['operationParam']
+	def getRequestOperationParam(self) -> OperationParam:
+		return self.grant_request['operationParam']
 
 	def constructHeartbeatRequest(self):
 		"""Constructs heartbeat request for the grant object."""
@@ -66,17 +74,23 @@ class Grant(object):
 		}
 		return heartbeat_request
 
-	def isGrantAuthorizedInLastHeartbeat(self):
+	def isGrantAuthorizedInLastHeartbeat(self) -> bool:
 		return self.authorized_in_last_heartbeat
 
-	def isActive(self):
+	def isActive(self) -> bool:
 		return not self.is_terminated
 
 
 class Cbsd(object):
 	"""Holds the CBSD related parameters."""
 
-	def __init__(self, cbsd_id, registration_request, grant_ids, grant_requests):
+	def __init__(
+		self,
+		cbsd_id,
+		registration_request,
+		grant_ids,
+		grant_requests
+	):
 		"""Constructor to store the registration request parameters.
 
 		Args:
@@ -363,7 +377,11 @@ class DomainProxy(object):
 
 		return heartbeat_requests, heartbeat_responses
 
-	def _mapResponseCodeToGrantState(self, heartbeat_response_code, grant_object):
+	def _mapResponseCodeToGrantState(
+		self,
+		heartbeat_response_code,
+		grant_object
+	):
 		"""Maps the heartbeat response and update the grant state."""
 		if heartbeat_response_code == ResponseCodes.SUCCESS.value:
 			grant_object.authorized_in_last_heartbeat = True
@@ -376,7 +394,10 @@ class DomainProxy(object):
 			logging.error('Unknown code=%s received in Heartbeat Response',heartbeat_response_code)
 			raise Exception('Unknown code received in Heartbeat Response')
 
-	def _constructGrantRequest(self,heartbeat_response):
+	def _constructGrantRequest(
+		self,
+		heartbeat_response
+	):
 		"""Construct unwrapped version of grant request."""
 		grant_request = {
 			'cbsdId': heartbeat_response['cbsdId'],
@@ -474,7 +495,11 @@ class DomainProxy(object):
 				cbsd_objects.append(cbsd_object)
 		return cbsd_objects
 
-	def _withMaximumBatchSize(self, requests, request_name):
+	def _withMaximumBatchSize(
+		self,
+		requests,
+		request_name
+	):
 		"""Split the requests into batches and call the given function.
 
 		Args:
@@ -580,8 +605,12 @@ class DomainProxy(object):
 			# Wrapped version of the grant requests.
 			grant_requests_wrap = {'grantRequest': requests}
 			grant_responses.extend(
-					self.testcase._sas.Grant(grant_requests_wrap, self.ssl_cert,
-																	 self.ssl_key)['grantResponse'])
+				self.testcase._sas.Grant(
+					grant_requests_wrap,
+					self.ssl_cert,
+					self.ssl_key
+				)['grantResponse']
+			)
 		return grant_responses
 
 	def _heartbeatRequestWithMaximumBatchSize(self, heartbeat_requests):
@@ -601,7 +630,10 @@ class DomainProxy(object):
 							self.ssl_key)['heartbeatResponse'])
 		return heartbeat_responses
 
-	def _relinquishmentRequestWithMaximumBatchSize(self, relinquishment_requests):
+	def _relinquishmentRequestWithMaximumBatchSize(
+		self,
+		relinquishment_requests
+	):
 		"""Sends relinquishment requests in batches up to the maximum batch size.
 
 		Args:
