@@ -34,6 +34,10 @@ from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 # type aliases
 FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
 OperationParam = Dict[str, Union[float, FrequencyRange]]
+RegistrationRequest = Dict[str, str]
+MeasReport = Dict[str, int]
+GrantRequest = Dict[str, Union[str, OperationParam, MeasReport]]
+HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
 
 class Grant(object):
 	"""Holds the Grant request parameters."""
@@ -41,7 +45,7 @@ class Grant(object):
 	def __init__(
 		self,
 		grant_id: str,
-		grant_request: Dict
+		grant_request: GrantRequest
 	):
 		"""Store grant parameters and initialize state variables.
 
@@ -58,13 +62,13 @@ class Grant(object):
 	def getGrantId(self) -> str:
 		return self.grant_id
 
-	def getGrantRequest(self) -> Dict:
+	def getGrantRequest(self) -> GrantRequest:
 		return self.grant_request
 
 	def getRequestOperationParam(self) -> OperationParam:
 		return self.grant_request['operationParam']
 
-	def constructHeartbeatRequest(self):
+	def constructHeartbeatRequest(self) -> HeartbeatRequest:
 		"""Constructs heartbeat request for the grant object."""
 		heartbeat_request = {
 			'grantId': self.grant_id,
@@ -86,10 +90,10 @@ class Cbsd(object):
 
 	def __init__(
 		self,
-		cbsd_id,
-		registration_request,
-		grant_ids,
-		grant_requests
+		cbsd_id: str,
+		registration_request: RegistrationRequest,
+		grant_ids: List[str],
+		grant_requests: List[GrantRequest]
 	):
 		"""Constructor to store the registration request parameters.
 
@@ -97,7 +101,7 @@ class Cbsd(object):
 			cbsd_id: cbsd id of the device extracted from the registration response.
 			registration_request:A registrationRequest object as defined in the SAS-CBSD TS.
 			grant_ids: list of grant ids.
-			grant_requests:A list of dictionary containing the grant request parameters.
+			grant_requests: A list of dictionary containing the grant request parameters.
 		"""
 		if len(grant_requests) != len(grant_ids):
 			raise ValueError('Cbsd builder: invalid grant_ids number')
@@ -105,37 +109,37 @@ class Cbsd(object):
 		self.grant_objects = {}
 		for grant_id, grant_request in zip(grant_ids, grant_requests):
 			self.grant_objects[grant_id] = Grant(grant_id, grant_request)
-		self.registration_request = registration_request
+		self.registration_request: RegistrationRequest = registration_request
 
-	def getCbsdId(self):
+	def getCbsdId(self) -> str:
 		return self.cbsd_id
 
-	def getGrantObject(self, grant_id):
-			return self.grant_objects[grant_id]
+	def getGrantObject(self, grant_id: str) -> Grant:
+		return self.grant_objects[grant_id]
 
-	def getRegistrationRequest(self):
+	def getRegistrationRequest(self) -> RegistrationRequest:
 		return self.registration_request
 
-	def hasActiveGrant(self):
+	def hasActiveGrant(self) -> bool:
 		for grant_object in six.itervalues(self.grant_objects):
 			if grant_object.isActive():
 				return True
 		return False
 
-	def hasAuthorizedGrant(self):
+	def hasAuthorizedGrant(self) -> bool:
 		for grant_object in six.itervalues(self.grant_objects):
 			if grant_object.isGrantAuthorizedInLastHeartbeat():
 				return True
 		return False
 
-	def getAuthorizedGrants(self):
+	def getAuthorizedGrants(self) -> List[Grant]:
 		grants = []
 		for grant_object in six.itervalues(self.grant_objects):
 			if grant_object.isGrantAuthorizedInLastHeartbeat():
 				grants.append(grant_object)
 		return grants
 
-	def constructHeartbeatRequestForAllActiveGrants(self):
+	def constructHeartbeatRequestForAllActiveGrants(self) -> List[HeartbeatRequest]:
 		"""Construct list of heartbeat requests of all active grants."""
 		heartbeat_requests = []
 		for grant_object in	six.itervalues(self.grant_objects):
@@ -143,7 +147,7 @@ class Cbsd(object):
 				heartbeat_requests.append(grant_object.constructHeartbeatRequest())
 		return heartbeat_requests
 
-	def getOperationParamsOfAllAuthorizedGrants(self):
+	def getOperationParamsOfAllAuthorizedGrants(self) -> List[OperationParam]:
 		"""Returns the list of operation params of all authorized grants."""
 		operation_params = []
 		for grant_object in six.itervalues(self.grant_objects):
@@ -153,7 +157,8 @@ class Cbsd(object):
 
 
 class DomainProxy(object):
-	"""Performs Domain Proxy related operations.
+	"""
+	Performs Domain Proxy related operations.
 
 	This class stores Domain Proxy related information like the SSL certificate, key to be used and the set of
 	CBSD objects belonging to this Domain Proxy. Bulk operations like registration, grant and heartbeat
