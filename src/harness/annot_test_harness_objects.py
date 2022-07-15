@@ -37,19 +37,19 @@ OperationParam = Dict[str, Union[float, FrequencyRange]]
 # RegistrationRequest = Dict[str, str]
 StrDict = Dict[str, str]
 InstallationParam = Dict[str, Union[float, int, bool, str]]
-RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]
+RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
 MeasReport = Dict[str, float]
 GrantRequest = Dict[str, Union[str, OperationParam, MeasReport]]
 HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
 PpaInfo = Dict[str, Union[str, List[str]]]
-Response = Dict[str, Union[int, str]]"
+Response = Dict[str, Union[int, str]]
 HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
-GrantResponse = GrantResponse = Dict[str, Union[str, float, OperationParam, Response]]
+GrantResponse = Dict[str, Union[str, float, OperationParam, Response]]
 RelinquishmentResponse = Dict[str, Union[str, Response]]
 
 class Grant(object):
 	"""Holds the Grant request parameters."""
-	
+
 	def __init__(
 		self,
 		grant_id: str,
@@ -257,7 +257,7 @@ class DomainProxy(object):
 		ppa_record: PpaInfo,
 		cluster_list: List[int],
 		conditional_registration_data: Optional[RegistrationRequest] = None
-	) -> Tuple[PpaInfo]:
+	) -> Tuple[PpaInfo, PpaInfo]:
 		"""Construct CBSD object based on the result of registration and
 		grant requests. Registers the CBSDs, injects the PPA, and requests grants.
 
@@ -304,7 +304,7 @@ class DomainProxy(object):
 		# record so that the reference model will do the right thing.
 		ppa_record_with_reference_ids = copy.deepcopy(ppa_record)
 		def makeReferenceId(reg_request):
-			return 'cbsd/' + generateCbsdReferenceId(reg_request['fccId'], reg_request['cbsdSerialNumber'])
+			return "cbsd/" + generateCbsdReferenceId(reg_request['fccId'], reg_request['cbsdSerialNumber'])
 		reference_id_cluster_list = []
 		for i in cluster_list:
 			if not cbsd_ids[i]:
@@ -355,7 +355,8 @@ class DomainProxy(object):
 		if not conditionals:
 			return
 		for conditional in conditionals:
-			if conditional['fccId'] == registration_request['fccId'] and conditional['cbsdSerialNumber'] == registration_request['cbsdSerialNumber']:
+			if conditional['fccId'] == registration_request['fccId'] and \
+					conditional['cbsdSerialNumber'] == registration_request['cbsdSerialNumber']:
 				for key, value in six.iteritems(conditional):
 					if key not in registration_request:
 						registration_request[key] = value
@@ -449,11 +450,11 @@ class DomainProxy(object):
 		# Construct relinquishment and grant for the heartbeat response which have operation param.
 		for heartbeat_response, heartbeat_request in zip(heartbeat_responses, heartbeat_requests):
 				if heartbeat_response['response']['responseCode'] == ResponseCodes.TERMINATED_GRANT.value:
-					 if 'operationParam' in heartbeat_response:
-						 # Construct grant request for Terminated grants
-						 grant_requests.append(self._constructGrantRequest(heartbeat_response))
-					 # Delete the grant object
-					 del self.cbsd_objects[heartbeat_response['cbsdId']].grant_objects[heartbeat_response['grantId']]
+					if 'operationParam' in heartbeat_response:
+						# Construct grant request for Terminated grants
+						grant_requests.append(self._constructGrantRequest(heartbeat_response))
+					# Delete the grant object
+					del self.cbsd_objects[heartbeat_response['cbsdId']].grant_objects[heartbeat_response['grantId']]
 
 				elif heartbeat_response['response']['responseCode'] == ResponseCodes.SUSPENDED_GRANT.value:
 					# If any heartbeat contain suggested operation params,construct relinquishment requests.
