@@ -34,10 +34,18 @@ from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 # type aliases
 FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
 OperationParam = Dict[str, Union[float, FrequencyRange]]
-RegistrationRequest = Dict[str, str]
-MeasReport = Dict[str, int]
+# RegistrationRequest = Dict[str, str]
+StrDict = Dict[str, str]
+InstallationParam = Dict[str, Union[float, int, bool, str]]
+RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]
+MeasReport = Dict[str, float]
 GrantRequest = Dict[str, Union[str, OperationParam, MeasReport]]
 HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
+PpaInfo = Dict[str, Union[str, List[str]]]
+Response = Dict[str, Union[int, str]]"
+HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
+GrantResponse = GrantResponse = Dict[str, Union[str, float, OperationParam, Response]]
+RelinquishmentResponse = Dict[str, Union[str, Response]]
 
 class Grant(object):
 	"""Holds the Grant request parameters."""
@@ -99,7 +107,7 @@ class Cbsd(object):
 
 		Args:
 			cbsd_id: cbsd id of the device extracted from the registration response.
-			registration_request:A registrationRequest object as defined in the SAS-CBSD TS.
+			registration_request: A registrationRequest object as defined in the SAS-CBSD TS.
 			grant_ids: list of grant ids.
 			grant_requests: A list of dictionary containing the grant request parameters.
 		"""
@@ -167,8 +175,8 @@ class DomainProxy(object):
 	def __init__(
 		self,
 		testcase,
-		ssl_cert = None,
-		ssl_key = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	):
 		"""
 		Args:
@@ -178,14 +186,14 @@ class DomainProxy(object):
 		"""
 		self.ssl_cert = ssl_cert if ssl_cert else sas.GetDefaultDomainProxySSLCertPath()
 		self.ssl_key = ssl_key if ssl_key else sas.GetDefaultDomainProxySSLKeyPath()
-		self.cbsd_objects = {}
+		self.cbsd_objects: Dict[str, Cbsd] = {}
 		self.testcase = testcase
 
 	def registerCbsdsAndRequestGrants(
 		self,
-		registration_requests,
-		grant_requests,
-		conditional_registration_data = None
+		registration_requests: List[RegistrationRequest],
+		grant_requests: List[GrantRequest],
+		conditional_registration_data: Optional[RegistrationRequest] = None
 	):
 		"""Construct CBSD object based on the result of registration and
 		grant requests.
@@ -244,12 +252,12 @@ class DomainProxy(object):
 
 	def registerCbsdsAndRequestGrantsWithPpa(
 		self,
-		registration_requests,
-		grant_requests,
-		ppa_record,
-		cluster_list,
-		conditional_registration_data = None
-	):
+		registration_requests: List[RegistrationRequest],
+		grant_requests: List[GrantRequest],
+		ppa_record: PpaInfo,
+		cluster_list: List[int],
+		conditional_registration_data: Optional[RegistrationRequest] = None
+	) -> Tuple[PpaInfo]:
 		"""Construct CBSD object based on the result of registration and
 		grant requests. Registers the CBSDs, injects the PPA, and requests grants.
 
@@ -339,7 +347,11 @@ class DomainProxy(object):
 		return ppa_record_with_cbsd_ids, ppa_record_with_reference_ids
 
 
-	def _mergeConditionals(self, registration_request, conditionals):
+	def _mergeConditionals(
+		self,
+		registration_request: RegistrationRequest,
+		conditionals: Dict
+	) -> None:
 		if not conditionals:
 			return
 		for conditional in conditionals:
@@ -349,10 +361,12 @@ class DomainProxy(object):
 						registration_request[key] = value
 				break
 
-	def getCbsdObjectById(self, cbsd_id):
-			return self.cbsd_objects[cbsd_id]
+	def getCbsdObjectById(self, cbsd_id) -> Cbsd:
+		return self.cbsd_objects[cbsd_id]
 
-	def heartbeatForAllActiveGrants(self):
+	def heartbeatForAllActiveGrants(
+		self
+	) -> Tuple[List[HeartbeatRequest], List[HeartbeatResponse]]:
 		"""Performs heartbeat request for all grants of CBSD devices at once.
 
 		Returns:
@@ -384,9 +398,9 @@ class DomainProxy(object):
 
 	def _mapResponseCodeToGrantState(
 		self,
-		heartbeat_response_code,
-		grant_object
-	):
+		heartbeat_response_code: int,
+		grant_object: Grant
+	) -> None:
 		"""Maps the heartbeat response and update the grant state."""
 		if heartbeat_response_code == ResponseCodes.SUCCESS.value:
 			grant_object.authorized_in_last_heartbeat = True
@@ -401,8 +415,8 @@ class DomainProxy(object):
 
 	def _constructGrantRequest(
 		self,
-		heartbeat_response
-	):
+		heartbeat_response: HeartbeatResponse
+	) -> GrantRequest:
 		"""Construct unwrapped version of grant request."""
 		grant_request = {
 			'cbsdId': heartbeat_response['cbsdId'],
@@ -489,7 +503,7 @@ class DomainProxy(object):
 		# Perform Heartbeat request for all grants.
 		self.heartbeatForAllActiveGrants()
 
-	def getCbsdsWithAtLeastOneAuthorizedGrant(self):
+	def getCbsdsWithAtLeastOneAuthorizedGrant(self) -> List[Cbsd]:
 		"""This function returns a list of CBSD with authorized grants.
 
 		returns: list of CBSD objects.
@@ -522,11 +536,11 @@ class DomainProxy(object):
 			yield batch_requests
 
 	def _tryRegistration(self,
-		registration_request,
-		conditional_registration_data = None,
-		cert = None,
-		key = None
-	):
+		registration_request: RegistrationRequest,
+		conditional_registration_data: Optional[RegistrationRequest] = None,
+		cert: Optional[str] = None,
+		key: Optional[str] = None
+	) -> List[str]:
 		"""Similar to |SasTestCase.assertRegistered|, but ignores errors."""
 		if not registration_request:
 			return []
@@ -564,8 +578,8 @@ class DomainProxy(object):
 
 	def _tryRegistrationWithMaximumBatchSize(
 		self,
-		registration_requests,
-		conditional_registration_data
+		registration_requests: List[RegistrationRequest],
+		conditional_registration_data: Optional[RegistrationRequest] = None
 	):
 		"""Sends registration requests in batches up to the maximum batch size.
 
@@ -597,7 +611,10 @@ class DomainProxy(object):
 					self._tryRegistration(requests, cert=self.ssl_cert, key=self.ssl_key))
 		return cbsd_ids
 
-	def _grantRequestWithMaximumBatchSize(self, grant_requests):
+	def _grantRequestWithMaximumBatchSize(
+		self,
+		grant_requests: List[GrantRequest]
+	) -> List[GrantResponse]:
 		"""Sends grant requests in batches up to the maximum batch size.
 
 		Args:
@@ -618,7 +635,10 @@ class DomainProxy(object):
 			)
 		return grant_responses
 
-	def _heartbeatRequestWithMaximumBatchSize(self, heartbeat_requests):
+	def _heartbeatRequestWithMaximumBatchSize(
+		self,
+		heartbeat_requests: List[HeartbeatRequest]
+	) -> List[HeartbeatResponse]:
 		"""Sends heartbeat requests in batches up to the maximum batch size.
 
 		Args:
@@ -637,8 +657,8 @@ class DomainProxy(object):
 
 	def _relinquishmentRequestWithMaximumBatchSize(
 		self,
-		relinquishment_requests
-	):
+		relinquishment_requests: List[StrDict],
+	) -> List[RelinquishmentResponse]:
 		"""Sends relinquishment requests in batches up to the maximum batch size.
 
 		Args:
