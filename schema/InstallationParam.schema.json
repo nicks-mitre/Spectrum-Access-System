@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "Dict[str, Union[float, int, bool, str]]",
   "description": "Installation parameters provided for a CBSD",
   "type": "object",
   "properties": {

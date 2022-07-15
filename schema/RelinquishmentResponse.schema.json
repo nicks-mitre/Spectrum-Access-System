@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "RelinquishmentResponse = Dict[str, Union[str, Response]]",
   "description": "Relinquishment response provided to a CBSD",
   "type": "object",
   "required": [ "response" ],

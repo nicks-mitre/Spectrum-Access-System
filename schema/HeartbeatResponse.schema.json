@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]",
   "description": "Heartbeat response provided to a CBSD",
   "type": "object",
   "required": [ "transmitExpireTime", "response" ],

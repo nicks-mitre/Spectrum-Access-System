@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "Response = Dict[str, Union[int, str]]",
   "description": "Response data for SAS communications",
   "type": "object",
   "required": ["responseCode"],

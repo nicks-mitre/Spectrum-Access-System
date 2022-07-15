@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "Dict[str, Union[str, List[str], InstallationParam, Dict[str, str]]"
   "description": "Registration parameters provided for a CBSD",
   "type": "object",
   "required": [ "userId", "fccId", "cbsdSerialNumber" ],
@@ -14,7 +15,8 @@
                       "description": "A if the device is Category A; B if it is Category B" },
     "callSign": { "type": "string",
                   "description": "The call sign for the operator. Meaning and origin TBD" },
-    "measCapability": { "type": "array",
+    "measCapability": { "$comment": "List[str]",
+						"type": "array",
                         "description": "List of supported sensing capabilities of the device",
                         "items": { "enum": [ "RECEIVED_POWER_WITHOUT_GRANT", "RECEIVED_POWER_WITH_GRANT" ],
                                    "description": "Measurement capabilities of the CBSD." }

@@ -1,5 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$comment": "GrantData = Dict[str, Union[str, bool, OperationParam]]",
   	"description": "Describe the GrantData object",
     "type": "object",
   "required": [  

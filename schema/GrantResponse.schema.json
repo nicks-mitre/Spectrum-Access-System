@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "GrantResponse = Dict[str, Union[str, float, OperationParam, Response]]",
   "description": "Spectrum Grant response message to the CBSD.",
   "type": "object",
   "required": [ "response" ],
