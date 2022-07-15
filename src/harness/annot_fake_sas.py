@@ -272,7 +272,7 @@ class FakeSas(sas_interface.SasInterface):
 		ssl_cert: OptStr = None,
 		ssl_key: OptStr = None
 	) -> Dict:
-		empty_activity_dump_file_url = 	'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/master/schema/empty_activity_dump_file.json'
+		empty_activity_dump_file_url = 	'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/bb0da6dce0e42572cf364c8127cbfb7200e597e6/schema/empty_activity_dump_file.json'
 		
 		response = json.loads(
 			json.dumps(
