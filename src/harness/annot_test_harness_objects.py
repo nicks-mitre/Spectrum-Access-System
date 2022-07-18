@@ -30,7 +30,7 @@ from common_types import ResponseCodes
 from sas_test_harness import generateCbsdReferenceId
 
 import typing
-from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
 # type aliases
 FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
 OperationParam = Dict[str, Union[float, FrequencyRange]]
@@ -44,7 +44,8 @@ HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
 PpaInfo = Dict[str, Union[str, List[str]]]
 Response = Dict[str, Union[int, str]]
 HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
-GrantResponse = Dict[str, Union[str, float, OperationParam, Response]]
+# HeartbeatResponse and GrantResponse *do* have the same signature, but since we want to be able to automatically map the signature to the alias name programmatically, so we give GrantResponse the (nearly) equivalent alias (AnyStr == Union[str, bytes]): 
+GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
 RelinquishmentResponse = Dict[str, Union[str, Response]]
 
 class Grant(object):
