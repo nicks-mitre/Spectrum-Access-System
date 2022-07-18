@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "MeasReport = Dict[str, List[Dict[str, float]]]",
   "description": "Measurement report provided by a CBSD.",
   "type": "object",
   "additionalproperties": true,

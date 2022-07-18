@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "SpectrumInquiryReq = Dict[str, Union[str, List[FrequencyRange], MeasReport]]", 
   "description": "Spectrum Inquiry parameters provided by a CBSD",
   "type": "object",
   "required": [ "cbsdId", "inquiredSpectrum" ],
