@@ -36,47 +36,67 @@ import sas_testcase
 import util
 import request_handler
 
+import typing
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
+# Type alias to annotate that a param is of str type, but also optional
+# The "Optional" annotation is only necessary when the default is None
+OptStr = Optional[str]
+StrList = List[str]
+
+
 class CiphersOverload(object):
 	"""Overloads the ciphers and client certificate used by the SAS client.
 	Upon destruction, restores the original ciphers and certificate.
 	"""
-
-	def __init__(self, sas, ciphers, client_cert, client_key):
+	
+	# sas: sas.SasImpl ?
+	def __init__(self, sas, ciphers: List, client_cert: str, client_key:str):
 		self.sas = sas
-		self.ciphers = ciphers
-		self.client_cert = client_cert
-		self.client_key = client_key
-		self.original_ciphers = None
-		self.original_client_cert = None
-		self.original_client_key = None
+		self.ciphers: StrList = ciphers
+		self.client_cert: str = client_cert
+		self.client_key: str = client_key
+		self.original_ciphers: StrList = None
+		self.original_client_cert: str = None
+		self.original_client_key: str = None
 
 	def __enter__(self):
-		self.original_ciphers = self.sas._tls_config.ciphers
-		self.original_client_cert = self.sas._tls_config.client_cert
-		self.original_client_key = self.sas._tls_config.client_key
-		self.sas._tls_config.ciphers = self.ciphers
-		self.sas._tls_config.client_cert = self.client_cert
-		self.sas._tls_config.client_key = self.client_key
-
+		self.original_ciphers: StrList = self.sas._tls_config.ciphers
+		self.original_client_cert: str = self.sas._tls_config.client_cert
+		self.original_client_key: str = self.sas._tls_config.client_key
+		self.sas._tls_config.ciphers: StrList = self.ciphers
+		self.sas._tls_config.client_cert: str = self.client_cert
+		self.sas._tls_config.client_key: str = self.client_key
+	
 	def __exit__(self, type, value, traceback):
-		self.sas._tls_config.ciphers = self.original_ciphers
-		self.sas._tls_config.client_cert = self.original_client_cert
-		self.sas._tls_config.client_key = self.original_client_key
+		self.sas._tls_config.ciphers: StrList = self.original_ciphers
+		self.sas._tls_config.client_cert: str = self.original_client_cert
+		self.sas._tls_config.client_key: str = self.original_client_key
 
 
 class SecurityTestCase(sas_testcase.SasTestCase):
 
-	def setUp(self):
-		self._sas, self._sas_admin = sas.GetTestingSas()
+	def setUp(self) -> None:
+		"""
+		Set up the testing instances of sas and sas_admin
+		
 		# Note that we disable the admin.Reset(), to avoid 'unexpected' request
 		# to SAS UUT before a test really starts.
 		# Tests changing the SAS UUT state must explicitly call the SasReset()
+		"""
+		self._sas, self._sas_admin = sas.GetTestingSas()
 
-	def SasReset(self):
+	def SasReset(self) -> None:
 		"""Resets the SAS UUT to its initial state."""
 		self._sas_admin.Reset()
 
-	def doTlsHandshake(self, base_url, client_cert, client_key, ciphers, ssl_method):
+	def doTlsHandshake(
+		self,
+		base_url: str,
+		client_cert: str,
+		client_key: str,
+		ciphers: StrList,
+		ssl_method: int # OpenSSL uses module-level int consts for related vals, instead of enums...
+	) -> bool:
 		"""Reports the success or failure of a TLS handshake.
 
 		Args:
@@ -178,9 +198,15 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 
 		return handshake_ok
 
-	def assertTlsHandshakeSucceed(self, base_url, ciphers, client_cert, client_key):
+	def assertTlsHandshakeSucceed(
+		self,
+		base_url: str,
+		ciphers: StrList,
+		client_cert: str,
+		client_key: str
+	):
 		"""Checks that the TLS handshake succeed with the given parameters.
-
+		
 		Attempts to establish a TLS session with the given |base_url|, using the
 		given |ciphers| list and the given certificate key pair.
 		Checks that he SAS UUT response must satisfy all of the following conditions:
@@ -193,7 +219,12 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 						SSL.TLSv1_2_METHOD),
 				"Handshake failed unexpectedly")
 
-	def doCbsdTestCipher(self, cipher, client_cert, client_key):
+	def doCbsdTestCipher(
+		self,
+		cipher: str,
+		client_cert: str,
+		client_key: str
+	):
 		"""Does a cipher test as described in SCS/SDS tests 1 to 5 specification.
 
 		Args:
@@ -214,7 +245,13 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		with CiphersOverload(self._sas, [cipher], client_cert, client_key):
 			self.assertRegistered([device_a])
 
-	def doSasTestCipher(self, cipher, client_cert, client_key, client_url):
+	def doSasTestCipher(
+		self,
+		cipher: str,
+		client_cert: str,
+		client_key: str,
+		client_url: str
+	):
 		"""Does a cipher test as described in SSS tests 1 to 5 specification.
 
 		Args:
@@ -237,7 +274,14 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		with CiphersOverload(self._sas, [cipher], client_cert, client_key):
 			self._sas.GetFullActivityDump(client_cert, client_key)
 
-	def assertTlsHandshakeFailure(self, base_url, client_cert, client_key, ciphers=None, ssl_method=None):
+	def assertTlsHandshakeFailure(
+		self,
+		base_url: str,
+		client_cert: str,
+		client_key: str,
+		ciphers: OptStr = None,
+		ssl_method: Optional[int] = None
+	):
 		"""
 		Checks that the TLS handshake failure by varying the given parameters
 		Args:
@@ -262,7 +306,14 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 						ciphers, ssl_method),
 				"Handshake succeeded unexpectedly")
 
-	def assertTlsHandshakeFailureOrHttp403(self, client_cert, client_key, ciphers=None, ssl_method=None, is_sas=False):
+	def assertTlsHandshakeFailureOrHttp403(
+		self,
+		client_cert: str,
+		client_key: str,
+		ciphers: OptStr = None,
+		ssl_method: Optional[int] = None,
+		is_sas: bool = False
+	):
 		"""
 		Checks that the TLS handshake failure by varying the given parameters
 		if handshake not failed make sure the next https request return error code 403
@@ -298,7 +349,12 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 			else:
 				self.fail(msg="TLS Handshake and HTTPS request are success. but Expected: failure")
 
-	def createShortLivedCertificate(self, client_type, cert_name, cert_duration_minutes):
+	def createShortLivedCertificate(
+		self,
+		client_type: str,
+		cert_name: str,
+		cert_duration_minutes: int
+	):
 		"""Generates short lived certificate for SCS/SDS 17,18 & 19
 
 		The function uses the root ca, cbsd ca and proxy ca certificates generated by
