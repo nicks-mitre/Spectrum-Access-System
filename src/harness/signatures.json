@@ -35,51 +35,6 @@
     },
     "zip": null
   },
-  "test_harness_objects": {
-    "Cbsd": {
-      "__init__": "- __init__(cbsd_id, registration_request, grant_ids, grant_requests)",
-      "constructHeartbeatRequestForAllActiveGrants": "+ constructHeartbeatRequestForAllActiveGrants()",
-      "getAuthorizedGrants": "+ getAuthorizedGrants()",
-      "getCbsdId": "+ getCbsdId()",
-      "getGrantObject": "+ getGrantObject(grant_id)",
-      "getOperationParamsOfAllAuthorizedGrants": "+ getOperationParamsOfAllAuthorizedGrants()",
-      "getRegistrationRequest": "+ getRegistrationRequest()",
-      "hasActiveGrant": "+ hasActiveGrant()",
-      "hasAuthorizedGrant": "+ hasAuthorizedGrant()"
-    },
-    "DomainProxy": {
-      "__init__": "- __init__(testcase, ssl_cert=None, ssl_key=None)",
-      "_constructGrantRequest": "- _constructGrantRequest(heartbeat_response)",
-      "_grantRequestWithMaximumBatchSize": "- _grantRequestWithMaximumBatchSize(grant_requests)",
-      "_heartbeatRequestWithMaximumBatchSize": "- _heartbeatRequestWithMaximumBatchSize(heartbeat_requests)",
-      "_mapResponseCodeToGrantState": "- _mapResponseCodeToGrantState(heartbeat_response_code, grant_object)",
-      "_mergeConditionals": "- _mergeConditionals(registration_request, conditionals)",
-      "_relinquishmentRequestWithMaximumBatchSize": "- _relinquishmentRequestWithMaximumBatchSize(relinquishment_requests)",
-      "_tryRegistration": "- _tryRegistration(registration_request, conditional_registration_data=None, cert=None, key=None)",
-      "_tryRegistrationWithMaximumBatchSize": "- _tryRegistrationWithMaximumBatchSize(registration_requests, conditional_registration_data)",
-      "_withMaximumBatchSize": "- _withMaximumBatchSize(requests, request_name)",
-      "getCbsdObjectById": "+ getCbsdObjectById(cbsd_id)",
-      "getCbsdsWithAtLeastOneAuthorizedGrant": "+ getCbsdsWithAtLeastOneAuthorizedGrant()",
-      "heartbeatForAllActiveGrants": "+ heartbeatForAllActiveGrants()",
-      "performHeartbeatAndUpdateGrants": "+ performHeartbeatAndUpdateGrants()",
-      "registerCbsdsAndRequestGrants": "+ registerCbsdsAndRequestGrants(registration_requests, grant_requests, conditional_registration_data=None)",
-      "registerCbsdsAndRequestGrantsWithPpa": "+ registerCbsdsAndRequestGrantsWithPpa(registration_requests, grant_requests, ppa_record, cluster_list, conditional_registration_data=None)"
-    },
-    "Grant": {
-      "__init__": "- __init__(grant_id, grant_request)",
-      "constructHeartbeatRequest": "+ constructHeartbeatRequest()",
-      "getGrantId": "+ getGrantId()",
-      "getGrantRequest": "+ getGrantRequest()",
-      "getRequestOperationParam": "+ getRequestOperationParam()",
-      "isActive": "+ isActive()",
-      "isGrantAuthorizedInLastHeartbeat": "+ isGrantAuthorizedInLastHeartbeat()"
-    },
-    "ResponseCodes": {
-      "__new__": "- __new__(cls, value)",
-      "_generate_next_value_": "- _generate_next_value_(name, start, count, last_values)"
-    },
-    "zip": null
-  },
   "database": {
     "DatabaseHTTPServer": {
       "__init__": "- __init__(server_address, RequestHandlerClass, name, authorization)"
@@ -443,5 +398,49 @@
     "datetime": null,
     "defaultdict": null,
     "range": null
+  },
+  "annot_test_harness_objects": {
+    "Cbsd": {
+      "__init__": "- __init__(cbsd_id: str, registration_request: RegistrationRequest, grant_ids: List[str], grant_requests: List[GrantRequest])",
+      "constructHeartbeatRequestForAllActiveGrants": "+ constructHeartbeatRequestForAllActiveGrants(): List[HeartbeatRequest]",
+      "getAuthorizedGrants": "+ getAuthorizedGrants(): List[Grant]",
+      "getCbsdId": "+ getCbsdId(): str",
+      "getGrantObject": "+ getGrantObject(grant_id: str): Grant",
+      "getOperationParamsOfAllAuthorizedGrants": "+ getOperationParamsOfAllAuthorizedGrants(): List[OperationParam]",
+      "getRegistrationRequest": "+ getRegistrationRequest(): RegistrationRequest",
+      "hasActiveGrant": "+ hasActiveGrant(): bool",
+      "hasAuthorizedGrant": "+ hasAuthorizedGrant(): bool"
+    },
+    "DomainProxy": {
+      "__init__": "- __init__(testcase, ssl_cert: str = None, ssl_key: str = None)",
+      "_constructGrantRequest": "- _constructGrantRequest(heartbeat_response: HeartbeatResponse): GrantRequest",
+      "_grantRequestWithMaximumBatchSize": "- _grantRequestWithMaximumBatchSize(grant_requests: List[GrantRequest]): List[GrantResponse]",
+      "_heartbeatRequestWithMaximumBatchSize": "- _heartbeatRequestWithMaximumBatchSize(heartbeat_requests: List[HeartbeatRequest]): List[HeartbeatResponse]",
+      "_mapResponseCodeToGrantState": "- _mapResponseCodeToGrantState(heartbeat_response_code: int, grant_object: Grant): None",
+      "_mergeConditionals": "- _mergeConditionals(registration_request: RegistrationRequest, conditionals: Dict): None",
+      "_relinquishmentRequestWithMaximumBatchSize": "- _relinquishmentRequestWithMaximumBatchSize(relinquishment_requests: List[StrDict]): List[RelinquishmentResponse]",
+      "_tryRegistration": "- _tryRegistration(registration_request: RegistrationRequest, conditional_registration_data: RegistrationRequest = None, cert: str = None, key: str = None): List[str]",
+      "_tryRegistrationWithMaximumBatchSize": "- _tryRegistrationWithMaximumBatchSize(registration_requests: List[RegistrationRequest], conditional_registration_data: RegistrationRequest = None)",
+      "_withMaximumBatchSize": "- _withMaximumBatchSize(requests, request_name)",
+      "getCbsdObjectById": "+ getCbsdObjectById(cbsd_id): Cbsd",
+      "getCbsdsWithAtLeastOneAuthorizedGrant": "+ getCbsdsWithAtLeastOneAuthorizedGrant(): List[Cbsd]",
+      "heartbeatForAllActiveGrants": "+ heartbeatForAllActiveGrants(): Tuple[List[HeartbeatRequest], List[HeartbeatResponse]]",
+      "performHeartbeatAndUpdateGrants": "+ performHeartbeatAndUpdateGrants()",
+      "registerCbsdsAndRequestGrants": "+ registerCbsdsAndRequestGrants(registration_requests: List[RegistrationRequest], grant_requests: List[GrantRequest], conditional_registration_data: RegistrationRequest = None)",
+      "registerCbsdsAndRequestGrantsWithPpa": "+ registerCbsdsAndRequestGrantsWithPpa(registration_requests: List[RegistrationRequest], grant_requests: List[GrantRequest], ppa_record: PpaInfo, cluster_list: List[int], conditional_registration_data: RegistrationRequest = None): Tuple[PpaInfo, PpaInfo]"
+    },
+    "Grant": {
+      "__init__": "- __init__(grant_id: str, grant_request: GrantRequest)",
+      "constructHeartbeatRequest": "+ constructHeartbeatRequest(): HeartbeatRequest",
+      "getGrantId": "+ getGrantId(): str",
+      "getGrantRequest": "+ getGrantRequest(): GrantRequest",
+      "getRequestOperationParam": "+ getRequestOperationParam(): OperationParam",
+      "isActive": "+ isActive(): bool",
+      "isGrantAuthorizedInLastHeartbeat": "+ isGrantAuthorizedInLastHeartbeat(): bool"
+    },
+    "ResponseCodes": {
+      "__new__": "- __new__(cls, value)",
+      "_generate_next_value_": "- _generate_next_value_(name, start, count, last_values)"
+    }
   }
 }
