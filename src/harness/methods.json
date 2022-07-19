@@ -35,51 +35,6 @@
     ],
     "zip": []
   },
-  "test_harness_objects": {
-    "Cbsd": [
-      "__init__",
-      "constructHeartbeatRequestForAllActiveGrants",
-      "getAuthorizedGrants",
-      "getCbsdId",
-      "getGrantObject",
-      "getOperationParamsOfAllAuthorizedGrants",
-      "getRegistrationRequest",
-      "hasActiveGrant",
-      "hasAuthorizedGrant"
-    ],
-    "DomainProxy": [
-      "__init__",
-      "_constructGrantRequest",
-      "_grantRequestWithMaximumBatchSize",
-      "_heartbeatRequestWithMaximumBatchSize",
-      "_mapResponseCodeToGrantState",
-      "_mergeConditionals",
-      "_relinquishmentRequestWithMaximumBatchSize",
-      "_tryRegistration",
-      "_tryRegistrationWithMaximumBatchSize",
-      "_withMaximumBatchSize",
-      "getCbsdObjectById",
-      "getCbsdsWithAtLeastOneAuthorizedGrant",
-      "heartbeatForAllActiveGrants",
-      "performHeartbeatAndUpdateGrants",
-      "registerCbsdsAndRequestGrants",
-      "registerCbsdsAndRequestGrantsWithPpa"
-    ],
-    "Grant": [
-      "__init__",
-      "constructHeartbeatRequest",
-      "getGrantId",
-      "getGrantRequest",
-      "getRequestOperationParam",
-      "isActive",
-      "isGrantAuthorizedInLastHeartbeat"
-    ],
-    "ResponseCodes": [
-      "__new__",
-      "_generate_next_value_"
-    ],
-    "zip": []
-  },
   "database": {
     "DatabaseHTTPServer": [
       "__init__"
@@ -443,5 +398,68 @@
     "datetime": [],
     "defaultdict": [],
     "range": []
+  },
+  "annot_test_harness_objects": {
+    "Cbsd": [
+      "__init__",
+      "constructHeartbeatRequestForAllActiveGrants",
+      "getAuthorizedGrants",
+      "getCbsdId",
+      "getGrantObject",
+      "getOperationParamsOfAllAuthorizedGrants",
+      "getRegistrationRequest",
+      "hasActiveGrant",
+      "hasAuthorizedGrant"
+    ],
+    "DomainProxy": [
+      "__init__",
+      "_constructGrantRequest",
+      "_grantRequestWithMaximumBatchSize",
+      "_heartbeatRequestWithMaximumBatchSize",
+      "_mapResponseCodeToGrantState",
+      "_mergeConditionals",
+      "_relinquishmentRequestWithMaximumBatchSize",
+      "_tryRegistration",
+      "_tryRegistrationWithMaximumBatchSize",
+      "_withMaximumBatchSize",
+      "getCbsdObjectById",
+      "getCbsdsWithAtLeastOneAuthorizedGrant",
+      "heartbeatForAllActiveGrants",
+      "performHeartbeatAndUpdateGrants",
+      "registerCbsdsAndRequestGrants",
+      "registerCbsdsAndRequestGrantsWithPpa"
+    ],
+    "Grant": [
+      "__init__",
+      "constructHeartbeatRequest",
+      "getGrantId",
+      "getGrantRequest",
+      "getRequestOperationParam",
+      "isActive",
+      "isGrantAuthorizedInLastHeartbeat"
+    ],
+    "ResponseCodes": [
+      "__new__",
+      "_generate_next_value_"
+    ],
+    "zip": []
+  },
+  "annot_security_testcase": {
+    "CiphersOverload": [
+      "__enter__",
+      "__exit__",
+      "__init__"
+    ],
+    "SecurityTestCase": [
+      "SasReset",
+      "assertTlsHandshakeFailure",
+      "assertTlsHandshakeFailureOrHttp403",
+      "assertTlsHandshakeSucceed",
+      "createShortLivedCertificate",
+      "doCbsdTestCipher",
+      "doSasTestCipher",
+      "doTlsHandshake",
+      "setUp"
+    ]
   }
 }
