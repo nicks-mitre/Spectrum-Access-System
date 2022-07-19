@@ -93,14 +93,12 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		client = socket.create_connection((url.hostname, url.port or 443))
 
 		logging.debug("OPENSSL version: %s" % SSL.SSLeay_version(SSL.SSLEAY_VERSION))
-		logging.debug('TLS handshake: connecting to: %s:%d', url.hostname,
-									url.port or 443)
+		logging.debug('TLS handshake: connecting to: %s:%d', url.hostname, url.port or 443)
 		logging.debug('TLS handshake: ciphers=%s', ':'.join(ciphers))
 		logging.debug('TLS handshake: privatekey_file=%s', client_key)
 		logging.debug('TLS handshake: certificate_file=%s', client_cert)
-		logging.debug('TLS handshake: certificate_chain_file=%s',
-									self._sas._tls_config.ca_cert)
-
+		logging.debug('TLS handshake: certificate_chain_file=%s', self._sas._tls_config.ca_cert)
+		
 		ctx = SSL.Context(ssl_method)
 		ctx.set_cipher_list(six.ensure_binary(':'.join(ciphers)))
 		ctx.use_certificate_file(client_cert)
@@ -135,8 +133,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 			logging.debug('TLS handshake: succeed')
 			handshake_ok = True
 		except SSL.Error as e:
-			logging.error('TLS handshake: failed:\n%s\n%s', str(e),
-										'\n'.join(client_ssl_informations))
+			logging.error('TLS handshake: failed:\n%s\n%s', str(e), '\n'.join(client_ssl_informations))
 			handshake_ok = False
 		finally:
 			client_ssl.close()
@@ -156,12 +153,11 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 
 		if handshake_ok:
 			known_ssl_methods = {
-					SSL.TLSv1_1_METHOD: 'TLSv1.1',
-					SSL.TLSv1_2_METHOD: 'TLSv1.2',
+				SSL.TLSv1_1_METHOD: 'TLSv1.1',
+				SSL.TLSv1_2_METHOD: 'TLSv1.2',
 			}
-			self.assertEqual(client_ssl.get_protocol_version_name(),
-											 known_ssl_methods[ssl_method])
-
+			self.assertEqual(client_ssl.get_protocol_version_name(), known_ssl_methods[ssl_method])
+			
 			# tricky part: exact logged message depends of the version of openssl...
 			cipher_check_regex = re.compile(
 					r"change.cipher.spec", re.I)
@@ -190,12 +186,11 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		Checks that he SAS UUT response must satisfy all of the following conditions:
 		- The SAS UUT agrees to use a cipher specified in the |ciphers| list
 		- The SAS UUT agrees to use TLS Protocol Version 1.2
-		- Valid Finished message is returned by the SAS UUT immediately following
-			the ChangeCipherSpec message
+		- Valid Finished message is returned by the SAS UUT immediately following the ChangeCipherSpec message
 		"""
 		self.assertTrue(
 				self.doTlsHandshake(base_url, client_cert, client_key, ciphers,
-														SSL.TLSv1_2_METHOD),
+						SSL.TLSv1_2_METHOD),
 				"Handshake failed unexpectedly")
 
 	def doCbsdTestCipher(self, cipher, client_cert, client_key):
@@ -210,7 +205,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		self._sas.UpdateCbsdRequestUrl(cipher)
 		# Using pyOpenSSL low level API, does the SAS UUT server TLS session checks.
 		self.assertTlsHandshakeSucceed(self._sas.cbsd_sas_active_base_url, [cipher],
-																	 client_cert, client_key)
+				client_cert, client_key)
 
 		# Does a regular CBSD registration
 		self.SasReset()
@@ -234,10 +229,10 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		self.SasReset()
 		certificate_hash = util.getCertificateFingerprint(client_cert)
 		self._sas_admin.InjectPeerSas({'certificateHash': certificate_hash,
-																	 'url': client_url})
+				'url': client_url})
 		# Using pyOpenSSL low level API, does the SAS UUT server TLS session checks.
 		self.assertTlsHandshakeSucceed(self._sas.sas_sas_active_base_url, [cipher],
-																	 client_cert, client_key)
+				client_cert, client_key)
 		self._sas_admin.TriggerFullActivityDump()
 		with CiphersOverload(self._sas, [cipher], client_cert, client_key):
 			self._sas.GetFullActivityDump(client_cert, client_key)
@@ -264,7 +259,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 
 		self.assertFalse(
 				self.doTlsHandshake(base_url, client_cert, client_key,
-														ciphers, ssl_method),
+						ciphers, ssl_method),
 				"Handshake succeeded unexpectedly")
 
 	def assertTlsHandshakeFailureOrHttp403(self, client_cert, client_key, ciphers=None, ssl_method=None, is_sas=False):
@@ -288,7 +283,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 				# This uses the same base_url as Registration().
 				base_url = self._sas.cbsd_sas_active_base_url
 			self.assertTlsHandshakeFailure(base_url, client_cert, client_key,
-																		 ciphers, ssl_method)
+					ciphers, ssl_method)
 		except AssertionError as e:
 			try:
 				if is_sas:
@@ -319,17 +314,17 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 
 		# Get the harness directory
 		harness_dir = os.path.dirname(
-			os.path.abspath(inspect.getfile(inspect.currentframe())))
+				os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 		# Absolute path to the certs directory
 		cert_path = os.path.join(harness_dir, 'certs')
 
 		# Build short lived certificate command
-		command = "cd {0} && bash ./generate_short_lived_certs.sh {1} {2} {3}".format(cert_path, client_type,
-																																						 cert_name, str(cert_duration_minutes))
+		command = "cd {0} && bash ./generate_short_lived_certs.sh {1} {2} {3}".format(cert_path,
+				client_type, cert_name, str(cert_duration_minutes))
 		# Create the short lived certificate
 		command_exit_status = subprocess.call(command, shell=True)
 
 		# Assert the create short lived certificate command status
 		self.assertEqual(command_exit_status, 0, "short lived certificate creation failed:"
-																								"exit_code:%s" %(command_exit_status))
+				"exit_code:%s" %(command_exit_status))
