@@ -30,8 +30,6 @@ ListDictMsg = Dict[str, List[Dict]]
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
 OptStr = Optional[str]
-Opt = Optional
-U = Union
 
 
 class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
@@ -471,16 +469,9 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 		pass
 
 	@abc.abstractmethod
-	# We could just make dictionary ourselves with the fixed, typed kv pairs:
-	# def TriggerPpaCreation(
-		# self,
-		# cbsdIds: List[str],
-		# palIds: List[str],
-		# providedContour: Optional[GeoJSON]
-	# ) -> str:
 	def TriggerPpaCreation(
 		self,
-		request: Dict[str, U[List, Dict]]
+		request: Dict[str, Union[List, Dict]]
 	) -> Dict:
 		"""SAS admin interface to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
 
@@ -570,7 +561,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerDpaActivation(
 		self,
-		request: Dict[str, U[str, Dict]]
+		request: Dict[str, Union[str, Dict]]
 	) -> None:
 		"""SAS admin interface to activate specific DPA on specific channel
 		Args:
@@ -584,7 +575,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def TriggerDpaDeactivation(
 		self,
-		request: Dict[str, U[str, Dict]]
+		request: Dict[str, Union[str, Dict]]
 	) -> None:
 		"""SAS admin interface to deactivate specific DPA on specific channel
 		Args:
@@ -622,7 +613,7 @@ class SasAdminInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def QueryPropagationAndAntennaModel(
 		self,
-		request: Dict[str, U[float, Dict]]
+		request: Dict[str, Union[float, Dict]]
 	) -> Dict[str, float]:
 		"""SAS admin interface to query propagation and antenna gains for CBSD and FSS	or Provided PPA Contour
 
