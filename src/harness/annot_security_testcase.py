@@ -41,7 +41,7 @@ from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
 OptStr = Optional[str]
-StrList = List[str]
+# StrList = List[str]
 
 
 class CiphersOverload(object):
@@ -50,7 +50,7 @@ class CiphersOverload(object):
 	"""
 	
 	# sas: sas.SasImpl ?
-	def __init__(self, sas, ciphers: List, client_cert: str, client_key:str):
+	def __init__(self, sas, ciphers: StrList, client_cert: str, client_key:str):
 		self.sas = sas
 		self.ciphers: StrList = ciphers
 		self.client_cert: str = client_cert
@@ -279,7 +279,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		base_url: str,
 		client_cert: str,
 		client_key: str,
-		ciphers: Optional[str] = None,
+		cipher: Optional[str] = None,
 		ssl_method: Optional[int] = None
 	):
 		"""
@@ -289,28 +289,28 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 			client_cert: client certificate file in PEM format to use.
 			client_key: associated key file in PEM format to use with the
 				given |client_cert|.
-			ciphers: optional cipher method. TODO: Rename to 'cipher'.
+			cipher: optional cipher method.
 			ssl_method: optional ssl_method
 		"""
-		if ciphers is None:
-			ciphers = [self._sas._tls_config.ciphers[0]]
-			self.assertEqual(ciphers, ['AES128-GCM-SHA256'])
+		if cipher is None:
+			cipher = [self._sas._tls_config.cipher[0]]
+			self.assertEqual(cipher, ['AES128-GCM-SHA256'])
 		else:
-			ciphers = [ciphers]
+			cipher = [cipher]
 
 		if ssl_method is None:
 			ssl_method = SSL.TLSv1_2_METHOD
 
 		self.assertFalse(
 				self.doTlsHandshake(base_url, client_cert, client_key,
-						ciphers, ssl_method),
+						cipher, ssl_method),
 				"Handshake succeeded unexpectedly")
 
 	def assertTlsHandshakeFailureOrHttp403(
 		self,
 		client_cert: str,
 		client_key: str,
-		ciphers: Optional[str] = None,
+		cipher: Optional[str] = None,
 		ssl_method: Optional[int] = None,
 		is_sas: bool = False
 	):
@@ -322,7 +322,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 			client_cert: client certificate file in PEM format to use.
 			client_key: associated key file in PEM format to use with the
 				given |client_cert|.
-			ciphers: optional cipher method. TODO: Rename to 'cipher'.
+			cipher: optional cipher method.
 			ssl_method: optional ssl_method
 			is_sas: boolean to determine next request
 		"""
@@ -334,7 +334,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 				# This uses the same base_url as Registration().
 				base_url = self._sas.cbsd_sas_active_base_url
 			self.assertTlsHandshakeFailure(base_url, client_cert, client_key,
-					ciphers, ssl_method)
+					cipher, ssl_method)
 		except AssertionError as e:
 			try:
 				if is_sas:
