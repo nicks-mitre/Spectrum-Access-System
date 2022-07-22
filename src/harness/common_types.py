@@ -12,7 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Contains common types definitions used by test harness."""
+""" Contains common types definitions and type aliases (for type annotations) used by various modules. """
+
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
 
 from enum import Enum
 
@@ -25,12 +27,11 @@ class ResponseCodes(Enum):
     TERMINATED_GRANT = 500
     SUSPENDED_GRANT = 501
 
-# import typing
-from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
-# type aliases
+
+## type aliases
+
 FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
 OperationParam = Dict[str, Union[float, FrequencyRange]]
-# RegistrationRequest = Dict[str, str]
 StrDict = Dict[str, str]
 InstallationParam = Dict[str, Union[float, int, bool, str]]
 RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
@@ -47,4 +48,9 @@ RelinquishmentResponse = Dict[str, Union[str, Response]]
 # GroupParam = Dict[str, str]
 # CbsdInfoObj = Dict[str, str]
 # AirInterfaceObj = Dict[str, str]
-CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
+CbsdRecordData = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
+
+# from GrantRecord.schema
+GrantData = Dict[str, Union[str, bool, OperationParam]]
+
+CbsdData = Dict[str, Union[str, CbsdRecordData, List[GrantRecord]]
