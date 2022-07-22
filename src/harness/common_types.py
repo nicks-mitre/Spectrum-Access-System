@@ -24,3 +24,27 @@ class ResponseCodes(Enum):
     SUCCESS = 0
     TERMINATED_GRANT = 500
     SUSPENDED_GRANT = 501
+
+# import typing
+from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
+# type aliases
+FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
+OperationParam = Dict[str, Union[float, FrequencyRange]]
+# RegistrationRequest = Dict[str, str]
+StrDict = Dict[str, str]
+InstallationParam = Dict[str, Union[float, int, bool, str]]
+RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
+MeasReport = Dict[str, float]
+GrantRequest = Dict[str, Union[str, OperationParam, MeasReport]]
+HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
+PpaInfo = Dict[str, Union[str, List[str]]]
+Response = Dict[str, Union[int, str]]
+HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
+# HeartbeatResponse and GrantResponse *do* have the same signature, but since we want to be able to automatically map the signature to the alias name programmatically, so we give GrantResponse the (nearly) equivalent alias (AnyStr == Union[str, bytes]): 
+GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
+RelinquishmentResponse = Dict[str, Union[str, Response]]
+
+# GroupParam = Dict[str, str]
+# CbsdInfoObj = Dict[str, str]
+# AirInterfaceObj = Dict[str, str]
+CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
