@@ -16,12 +16,14 @@
 
 from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
 
-from enum import Enum
+from enum import Enum as _Enum
 
+# when importing from this module with "from common_types import *", these are the only objects that should be imported.
+__all__ = ['Response', 'GrantRequest', 'StrDict', 'Any', 'MeasReport', 'RelinquishmentResponse', 'GrantData', 'HeartbeatResponse', 'RegistrationRequest', 'HeartbeatRequest', 'FrequencyRange', 'CbsdRecord', 'CbsdData', 'Tuple', 'Optional', 'OperationParam', 'Dict', 'AnyStr', 'PpaInfo', 'List', 'Union', 'GrantResponse', 'InstallationParam', 'NoReturn', 'StrList', 'OptStr']
 
 # Define an enumeration class named ResponseCodes with members
 # 'SUCCESS',TERMINATED_GRANT', 'SUSPENDED_GRANT'.
-class ResponseCodes(Enum):
+class ResponseCodes(_Enum):
     """Contains response code."""
     SUCCESS = 0
     TERMINATED_GRANT = 500
@@ -29,6 +31,7 @@ class ResponseCodes(Enum):
 
 
 ## type aliases
+OptStr = Optional[str]
 
 FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
 OperationParam = Dict[str, Union[float, FrequencyRange]]
@@ -45,12 +48,13 @@ HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
 GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
 RelinquishmentResponse = Dict[str, Union[str, Response]]
 
-# GroupParam = Dict[str, str]
-# CbsdInfoObj = Dict[str, str]
-# AirInterfaceObj = Dict[str, str]
-CbsdRecordData = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
+# from CbsdRecordData.schema.json
+CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
 
-# from GrantRecord.schema
+# from GrantRecord.schema.json
 GrantData = Dict[str, Union[str, bool, OperationParam]]
 
-CbsdData = Dict[str, Union[str, CbsdRecordData, List[GrantRecord]]
+# from CbsdData.schema.json
+CbsdData = Dict[str, Union[str, CbsdRecord, List[GrantData]]]
+
+StrList = List[str]

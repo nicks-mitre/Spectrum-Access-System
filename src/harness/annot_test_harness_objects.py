@@ -26,27 +26,10 @@ from six.moves import zip
 
 import sas
 import common_strings
+from common_types import *
+# ResponseCodes is not included in common_types.__all__
 from common_types import ResponseCodes
 from sas_test_harness import generateCbsdReferenceId
-
-import typing
-from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn, AnyStr
-# type aliases
-FrequencyRange = Dict[str, int] # lowest and highest frequencies in the range in Hz
-OperationParam = Dict[str, Union[float, FrequencyRange]]
-# RegistrationRequest = Dict[str, str]
-StrDict = Dict[str, str]
-InstallationParam = Dict[str, Union[float, int, bool, str]]
-RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
-MeasReport = Dict[str, float]
-GrantRequest = Dict[str, Union[str, OperationParam, MeasReport]]
-HeartbeatRequest = Dict[str, Union[str, bool, MeasReport]]
-PpaInfo = Dict[str, Union[str, List[str]]]
-Response = Dict[str, Union[int, str]]
-HeartbeatResponse = Dict[str, Union[str, float, OperationParam, Response]]
-# HeartbeatResponse and GrantResponse *do* have the same signature, but since we want to be able to automatically map the signature to the alias name programmatically, so we give GrantResponse the (nearly) equivalent alias (AnyStr == Union[str, bytes]): 
-GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
-RelinquishmentResponse = Dict[str, Union[str, Response]]
 
 class Grant(object):
 	"""Holds the Grant request parameters."""

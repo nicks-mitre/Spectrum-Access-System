@@ -28,13 +28,14 @@ import sas
 import util
 from request_handler import HTTPError
 
-from typing import Dict, List, Tuple, Any, Optional, Union
+# from typing import Dict, List, Tuple, Any, Optional, Union
+from common_types import *
 
-# Type alias for the FrequencyRange type's structure: {"lowFrequency": int, "highFrequency": int}
-FreqRange = Dict[str, int]
-CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
-GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
-RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
+# # Type alias for the FrequencyRange type's structure: {"lowFrequency": int, "highFrequency": int}
+# FrequencyRange = Dict[str, int]
+# CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
+# GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
+# RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
 
 class SasTestCase(unittest.TestCase):
 
@@ -294,8 +295,8 @@ class SasTestCase(unittest.TestCase):
 
 	def assertChannelsContainFrequencyRange(
 		self,
-		channels: List[FreqRange],
-		frequency_range: FreqRange
+		channels: List[FrequencyRange],
+		frequency_range: FrequencyRange
 	):
 		channels.sort(
 				key = lambda ch: (ch['frequencyRange']['lowFrequency'],
@@ -318,8 +319,8 @@ class SasTestCase(unittest.TestCase):
 
 	def assertChannelsOverlapFrequencyRange(
 		self,
-		channels: List[FreqRange],
-		frequency_range: FreqRange,
+		channels: List[FrequencyRange],
+		frequency_range: FrequencyRange,
 		constrain_low: bool = False,
 		constrain_high: bool = False
 	):
@@ -372,8 +373,8 @@ class SasTestCase(unittest.TestCase):
 
 	def assertChannelIncludedInFrequencyRanges(
 		self,
-		channel: FreqRange,
-		frequency_ranges: List[FreqRange]
+		channel: FrequencyRange,
+		frequency_ranges: List[FrequencyRange]
 	):
 		"""Checks if the channel lies within the list of frequency ranges.
 
@@ -588,7 +589,7 @@ class SasTestCase(unittest.TestCase):
 
 	def InjectTestHarnessFccIds(
 		self,
-		cbsd_records: List[CbsdRecord]
+		cbsd_records: List[CbsdData]
 	):
 		logging.info('Injecting FCC IDs for CBSDs in the SAS test harness into the SAS UUT.')
 		for cbsd_record in cbsd_records:

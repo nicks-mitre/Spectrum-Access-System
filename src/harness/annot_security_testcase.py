@@ -36,12 +36,13 @@ import sas_testcase
 import util
 import request_handler
 
-import typing
-from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
+# import typing
+# from typing import Dict, List, Tuple, Any, Optional, Union, NoReturn
 # Type alias to annotate that a param is of str type, but also optional
 # The "Optional" annotation is only necessary when the default is None
-OptStr = Optional[str]
+# OptStr = Optional[str]
 # StrList = List[str]
+from common_types import *
 
 
 class CiphersOverload(object):
