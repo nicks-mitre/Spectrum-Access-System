@@ -76,8 +76,8 @@ class SasImpl(sas_interface.SasInterface):
 	def Registration(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD Registration interface implementation for SAS Certification testing.
 
@@ -102,8 +102,8 @@ class SasImpl(sas_interface.SasInterface):
 	def SpectrumInquiry(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD SpectrumInquiry interface implementation for SAS Certification testing.
 
@@ -128,8 +128,8 @@ class SasImpl(sas_interface.SasInterface):
 	def Grant(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD Grant interface implementation for SAS Certification testing.
 
@@ -152,8 +152,8 @@ class SasImpl(sas_interface.SasInterface):
 	def Heartbeat(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD Heartbeat interface implementation for SAS Certification testing.
 
@@ -178,8 +178,8 @@ class SasImpl(sas_interface.SasInterface):
 	def Relinquishment(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD Relinquishment interface implementation for SAS Certification testing.
 
@@ -204,8 +204,8 @@ class SasImpl(sas_interface.SasInterface):
 	def Deregistration(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-CBSD Deregistration interface implementation for SAS Certification testing.
 
@@ -230,8 +230,8 @@ class SasImpl(sas_interface.SasInterface):
 	def GetEscSensorRecord(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-SAS ESC Sensor Record Exchange interface implementation for SAS Certification testing.
 
@@ -249,8 +249,8 @@ class SasImpl(sas_interface.SasInterface):
 
 	def GetFullActivityDump(
 		self,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-SAS Full Activity Dump interface implementation for SAS Certification testing.
 
@@ -268,8 +268,8 @@ class SasImpl(sas_interface.SasInterface):
 		self,
 		method_name: str,
 		request: Optional[Dict],
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict: # Functions using _Request() return a dict repr. a JSON response
 		url = f'https://{self.sas_sas_active_base_url}/{self.sas_sas_version}/{method_name}'
 		
@@ -287,8 +287,8 @@ class SasImpl(sas_interface.SasInterface):
 		self,
 		method_name: str,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		url = f'https://{self.cbsd_sas_active_base_url}/{self.cbsd_sas_version}/{method_name}'
 		
@@ -302,8 +302,8 @@ class SasImpl(sas_interface.SasInterface):
 	def DownloadFile(
 		self,
 		url: str,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		""" SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:

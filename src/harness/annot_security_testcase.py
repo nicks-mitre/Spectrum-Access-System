@@ -279,7 +279,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		base_url: str,
 		client_cert: str,
 		client_key: str,
-		ciphers: OptStr = None,
+		ciphers: Optional[str] = None,
 		ssl_method: Optional[int] = None
 	):
 		"""
@@ -310,7 +310,7 @@ class SecurityTestCase(sas_testcase.SasTestCase):
 		self,
 		client_cert: str,
 		client_key: str,
-		ciphers: OptStr = None,
+		ciphers: Optional[str] = None,
 		ssl_method: Optional[int] = None,
 		is_sas: bool = False
 	):

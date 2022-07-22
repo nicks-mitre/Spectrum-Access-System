@@ -104,9 +104,9 @@ class SasTestHarnessServer(threading.Thread):
 		name: str,
 		host_name: str,
 		port: int,
-		cert_file: OptStr = None,
-		key_file: OptStr = None,
-		ca_cert_file: OptStr = None
+		cert_file: Optional[str] = None,
+		key_file: Optional[str] = None,
+		ca_cert_file: Optional[str] = None
 	):
 		"""
 		This constructor initializes the SasTestHarnessServer class with required information
@@ -540,29 +540,29 @@ class SasTestHarnessInterface(sas_interface.SasInterface):
 	def __init__(self, server):
 		self.server = server
 	
-	def Registration(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def Registration(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support Registration')
 
-	def SpectrumInquiry(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def SpectrumInquiry(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support SpectrumInquiry')
 
-	def Grant(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def Grant(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support Grant')
 
-	def Heartbeat(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def Heartbeat(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support Heartbeat')
 
-	def Relinquishment(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def Relinquishment(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support Relinquishment')
 
-	def Deregistration(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def Deregistration(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support Deregistration')
 
-	def GetEscSensorRecord(self, request, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> NoReturn:
+	def GetEscSensorRecord(self, request, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> NoReturn:
 		raise NotImplementedError('TestHarness does not support GetEscSensorRecord')
 
-	def GetFullActivityDump(self, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> Dict:
+	def GetFullActivityDump(self, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> Dict:
 		return self.server.readDumpFile('FAD.json')
 
-	def DownloadFile(self, url, ssl_cert: OptStr = None, ssl_key: OptStr = None) -> Dict:
+	def DownloadFile(self, url, ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None) -> Dict:
 		return self.server.readDumpFile(url.split('/')[-1])

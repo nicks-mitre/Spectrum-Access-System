@@ -43,8 +43,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Registration(
 		self, 
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Registration interface.
 
@@ -70,8 +70,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def SpectrumInquiry(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD SpectrumInquiry interface.
 
@@ -97,8 +97,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Grant(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Grant interface.
 
@@ -122,8 +122,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Heartbeat(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Heartbeat interface.
 
@@ -149,8 +149,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Relinquishment(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Relinquishment interface.
 
@@ -176,8 +176,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def Deregistration(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Deregistration interface.
 
@@ -203,8 +203,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def GetEscSensorRecord(
 		self,
 		request: str,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict: # Esc Sensor Data Msg object spec in WINNF-16-S-0096
 		"""SAS-SAS ESC Sensor Record Exchange interface
 
@@ -223,8 +223,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	@abc.abstractmethod
 	def GetFullActivityDump(
 		self,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-SAS Full Activity Dump interface.
 
@@ -242,8 +242,8 @@ class SasInterface(six.with_metaclass(abc.ABCMeta, object)):
 	def DownloadFile(
 		self,
 		url: str,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict: # The JSON data should probably be represented in a Python Dictionary
 		""" SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:

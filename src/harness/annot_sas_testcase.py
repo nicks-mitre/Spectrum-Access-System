@@ -32,7 +32,9 @@ from typing import Dict, List, Tuple, Any, Optional, Union
 
 # Type alias for the FrequencyRange type's structure: {"lowFrequency": int, "highFrequency": int}
 FreqRange = Dict[str, int]
-
+CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]
+GrantResponse = Dict[AnyStr, Union[float, str, OperationParam, Response]]
+RegistrationRequest = Dict[str, Union[str, StrDict, List[str], List[StrDict], InstallationParam]]
 
 class SasTestCase(unittest.TestCase):
 
@@ -60,7 +62,7 @@ class SasTestCase(unittest.TestCase):
 
 	def assertValidResponseFormatForApprovedGrant(
 		self,
-		grant_response: Dict
+		grant_response: GrantResponse
 	) -> None:
 		"""Validates an approved grant response.
 		
@@ -90,8 +92,8 @@ class SasTestCase(unittest.TestCase):
 
 	def assertRegistered(
 		self,
-		registration_request: List[Dict],
-		conditional_registration_data: Optional[List[Dict]] = None,
+		registration_request: List[RegistrationRequest],
+		conditional_registration_data: Optional[List[RegistrationRequest]] = None,
 		cert: Optional[str] = None,
 		key: Optional[str] = None
 	) -> List[str]:
@@ -144,9 +146,9 @@ class SasTestCase(unittest.TestCase):
 
 	def assertRegisteredAndGranted(
 		self,
-		registration_request: List[Dict],
-		grant_request: Dict[str, List[Dict]],
-		conditional_registration_data: Optional[Dict] = None,
+		registration_request: List[RegistrationRequest],
+		grant_request: Dict[str, List[RegistrationRequest]],
+		conditional_registration_data: Optional[RegistrationRequest] = None,
 		cert: Optional[str] = None,
 		key: Optional[str] = None
 	) -> Tuple[List[str], ...]:
@@ -586,7 +588,7 @@ class SasTestCase(unittest.TestCase):
 
 	def InjectTestHarnessFccIds(
 		self,
-		cbsd_records: List[Dict]
+		cbsd_records: List[CbsdRecord]
 	):
 		logging.info('Injecting FCC IDs for CBSDs in the SAS test harness into the SAS UUT.')
 		for cbsd_record in cbsd_records:

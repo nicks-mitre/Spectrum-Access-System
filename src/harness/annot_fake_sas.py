@@ -112,8 +112,8 @@ class FakeSas(sas_interface.SasInterface):
 	def Registration(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		"""SAS-CBSD Registration implementation.
 
@@ -150,8 +150,8 @@ class FakeSas(sas_interface.SasInterface):
 	def SpectrumInquiry(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		response = {'spectrumInquiryResponse': []}
 		for req in request['spectrumInquiryRequest']:
@@ -172,8 +172,8 @@ class FakeSas(sas_interface.SasInterface):
 	def Grant(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		response = {'grantResponse': []}
 		for req in request['grantRequest']:
@@ -200,8 +200,8 @@ class FakeSas(sas_interface.SasInterface):
 	def Heartbeat(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		response = {'heartbeatResponse': []}
 		for req in request['heartbeatRequest']:
@@ -218,8 +218,8 @@ class FakeSas(sas_interface.SasInterface):
 	def Relinquishment(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		response = {'relinquishmentResponse': []}
 		for req in request['relinquishmentRequest']:
@@ -233,8 +233,8 @@ class FakeSas(sas_interface.SasInterface):
 	def Deregistration(
 		self,
 		request: ListDictMsg,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> ListDictMsg:
 		response = {'deregistrationResponse': []}
 		for req in request['deregistrationRequest']:
@@ -252,8 +252,8 @@ class FakeSas(sas_interface.SasInterface):
 	def GetEscSensorRecord(
 		self,
 		request: str,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		# Get the Esc Sensor record
 		record_path = os.path.join('testcases', 'testdata', 'esc_sensor_record_0.json')
@@ -269,8 +269,8 @@ class FakeSas(sas_interface.SasInterface):
 	def GetFullActivityDump(
 		self,
 		version,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		empty_activity_dump_file_url = 	'https://raw.githubusercontent.com/Wireless-Innovation-Forum/Spectrum-Access-System/bb0da6dce0e42572cf364c8127cbfb7200e597e6/schema/empty_activity_dump_file.json'
 		
@@ -317,8 +317,8 @@ class FakeSas(sas_interface.SasInterface):
 	def DownloadFile(
 		self,
 		url: str,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> Dict:
 		"""SAS-SAS Get data from json files after generate the Full Activity Dump Message
 		Returns:
@@ -355,8 +355,8 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 	def InjectZoneData(
 		self,
 		request: Dict[str, Dict],
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	):
 		"""Inject PPA or NTIA zone information into SAS under test.
 
@@ -395,8 +395,8 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
 	def TriggerPpaCreation(
 		self,
 		request: Dict,
-		ssl_cert: OptStr = None,
-		ssl_key: OptStr = None
+		ssl_cert: Optional[str] = None,
+		ssl_key: Optional[str] = None
 	) -> str:
 		"""SAS admin interface implementation to trigger PPA creation based on the CBSD Ids, Pal Ids and Provided Contour
 
