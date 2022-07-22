@@ -447,17 +447,17 @@
     "CiphersOverload": {
       "__enter__": "- __enter__()",
       "__exit__": "- __exit__(type, value, traceback)",
-      "__init__": "- __init__(sas, ciphers: List, client_cert: str, client_key: str)"
+      "__init__": "- __init__(sas, ciphers: List, client_cert: OptStr, client_key: OptStr)"
     },
     "SecurityTestCase": {
       "SasReset": "+ SasReset(): None",
-      "assertTlsHandshakeFailure": "+ assertTlsHandshakeFailure(base_url: str, client_cert: str, client_key: str, ciphers: str = None, ssl_method: int = None)",
-      "assertTlsHandshakeFailureOrHttp403": "+ assertTlsHandshakeFailureOrHttp403(client_cert: str, client_key: str, ciphers: str = None, ssl_method: int = None, is_sas: bool = False)",
-      "assertTlsHandshakeSucceed": "+ assertTlsHandshakeSucceed(base_url: str, ciphers: List[str], client_cert: str, client_key: str)",
-      "createShortLivedCertificate": "+ createShortLivedCertificate(client_type: str, cert_name: str, cert_duration_minutes: int)",
-      "doCbsdTestCipher": "+ doCbsdTestCipher(cipher: str, client_cert: str, client_key: str)",
-      "doSasTestCipher": "+ doSasTestCipher(cipher: str, client_cert: str, client_key: str, client_url: str)",
-      "doTlsHandshake": "+ doTlsHandshake(base_url: str, client_cert: str, client_key: str, ciphers: List[str], ssl_method: int): bool",
+      "assertTlsHandshakeFailure": "+ assertTlsHandshakeFailure(base_url: OptStr, client_cert: OptStr, client_key: OptStr, ciphers: OptStr = None, ssl_method: int = None)",
+      "assertTlsHandshakeFailureOrHttp403": "+ assertTlsHandshakeFailureOrHttp403(client_cert: OptStr, client_key: OptStr, ciphers: OptStr = None, ssl_method: int = None, is_sas: bool = False)",
+      "assertTlsHandshakeSucceed": "+ assertTlsHandshakeSucceed(base_url: OptStr, ciphers: StrList, client_cert: OptStr, client_key: OptStr)",
+      "createShortLivedCertificate": "+ createShortLivedCertificate(client_type: OptStr, cert_name: OptStr, cert_duration_minutes: int)",
+      "doCbsdTestCipher": "+ doCbsdTestCipher(cipher: OptStr, client_cert: OptStr, client_key: OptStr)",
+      "doSasTestCipher": "+ doSasTestCipher(cipher: OptStr, client_cert: OptStr, client_key: OptStr, client_url: OptStr)",
+      "doTlsHandshake": "+ doTlsHandshake(base_url: OptStr, client_cert: OptStr, client_key: OptStr, ciphers: StrList, ssl_method: int): bool",
       "setUp": "+ setUp(): None"
     }
   }
