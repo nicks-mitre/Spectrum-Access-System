@@ -1,5 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$comment": "CbsdData = Dict[str, Union[str, CbsdRecordData, List[GrantData]]]",
   	"description": "Describe the CbsdData object",
 	"type": "object",
 	"required": [
