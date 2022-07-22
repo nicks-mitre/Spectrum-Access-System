@@ -282,20 +282,20 @@
       "__init__": "- __init__(error_code)"
     },
     "SasTestCase": {
-      "InjectTestHarnessFccIds": "+ InjectTestHarnessFccIds(cbsd_records: List[Dict])",
+      "InjectTestHarnessFccIds": "+ InjectTestHarnessFccIds(cbsd_records: List[CbsdData])",
       "ShutdownServers": "+ ShutdownServers()",
       "TriggerDailyActivitiesImmediatelyAndWaitUntilComplete": "+ TriggerDailyActivitiesImmediatelyAndWaitUntilComplete()",
       "TriggerFullActivityDumpAndWaitUntilComplete": "+ TriggerFullActivityDumpAndWaitUntilComplete(server_cert: str, server_key: str): Dict",
-      "assertChannelIncludedInFrequencyRanges": "+ assertChannelIncludedInFrequencyRanges(channel: FreqRange, frequency_ranges: List[FreqRange])",
-      "assertChannelsContainFrequencyRange": "+ assertChannelsContainFrequencyRange(channels: List[FreqRange], frequency_range: FreqRange)",
-      "assertChannelsOverlapFrequencyRange": "+ assertChannelsOverlapFrequencyRange(channels: List[FreqRange], frequency_range: FreqRange, constrain_low: bool = False, constrain_high: bool = False)",
+      "assertChannelIncludedInFrequencyRanges": "+ assertChannelIncludedInFrequencyRanges(channel: FrequencyRange, frequency_ranges: List[FrequencyRange])",
+      "assertChannelsContainFrequencyRange": "+ assertChannelsContainFrequencyRange(channels: List[FrequencyRange], frequency_range: FrequencyRange)",
+      "assertChannelsOverlapFrequencyRange": "+ assertChannelsOverlapFrequencyRange(channels: List[FrequencyRange], frequency_range: FrequencyRange, constrain_low: bool = False, constrain_high: bool = False)",
       "assertContainsRequiredFields": "+ assertContainsRequiredFields(schema_filename: str, response: Dict)",
-      "assertHeartbeatsSuccessful": "+ assertHeartbeatsSuccessful(cbsd_ids: List[str], grant_ids: List[str], operation_states: List[str]): List[str]",
+      "assertHeartbeatsSuccessful": "+ assertHeartbeatsSuccessful(cbsd_ids: StrList, grant_ids: StrList, operation_states: StrList): StrList",
       "assertPpaCreationFailure": "+ assertPpaCreationFailure(ppa_creation_request: Dict)",
-      "assertRegistered": "+ assertRegistered(registration_request: List[Dict], conditional_registration_data: OptList[Dict] = None, cert: Optstr = None, key: Optstr = None): List[str]",
-      "assertRegisteredAndGranted": "+ assertRegisteredAndGranted(registration_request: List[Dict], grant_request: ListDictMsg, conditional_registration_data: OptDict = None, cert: Optstr = None, key: Optstr = None): Tuple[List[str], ]",
+      "assertRegistered": "+ assertRegistered(registration_request: List[RegistrationRequest], conditional_registration_data: OptList[RegistrationRequest] = None, cert: OptStr = None, key: OptStr = None): StrList",
+      "assertRegisteredAndGranted": "+ assertRegisteredAndGranted(registration_request: List[RegistrationRequest], grant_request: Dict[str, List[RegistrationRequest]], conditional_registration_data: OptRegistrationRequest = None, cert: OptStr = None, key: OptStr = None): Tuple[StrList, ]",
       "assertValidConfig": "+ assertValidConfig(config: Dict, required_fields: Dict, optional_fields: OptDict = {})",
-      "assertValidResponseFormatForApprovedGrant": "+ assertValidResponseFormatForApprovedGrant(grant_response: Dict): None",
+      "assertValidResponseFormatForApprovedGrant": "+ assertValidResponseFormatForApprovedGrant(grant_response: GrantResponse): None",
       "setUp": "+ setUp()",
       "tearDown": "+ tearDown()",
       "triggerPpaCreationAndWaitUntilComplete": "+ triggerPpaCreationAndWaitUntilComplete(ppa_creation_request: Dict): str"
@@ -405,7 +405,7 @@
   },
   "annot_test_harness_objects": {
     "Cbsd": {
-      "__init__": "- __init__(cbsd_id: str, registration_request: RegistrationRequest, grant_ids: List[str], grant_requests: List[GrantRequest])",
+      "__init__": "- __init__(cbsd_id: str, registration_request: RegistrationRequest, grant_ids: StrList, grant_requests: List[GrantRequest])",
       "constructHeartbeatRequestForAllActiveGrants": "+ constructHeartbeatRequestForAllActiveGrants(): List[HeartbeatRequest]",
       "getAuthorizedGrants": "+ getAuthorizedGrants(): List[Grant]",
       "getCbsdId": "+ getCbsdId(): str",
@@ -416,14 +416,14 @@
       "hasAuthorizedGrant": "+ hasAuthorizedGrant(): bool"
     },
     "DomainProxy": {
-      "__init__": "- __init__(testcase, ssl_cert: Optstr = None, ssl_key: Optstr = None)",
+      "__init__": "- __init__(testcase, ssl_cert: OptStr = None, ssl_key: OptStr = None)",
       "_constructGrantRequest": "- _constructGrantRequest(heartbeat_response: HeartbeatResponse): GrantRequest",
       "_grantRequestWithMaximumBatchSize": "- _grantRequestWithMaximumBatchSize(grant_requests: List[GrantRequest]): List[GrantResponse]",
       "_heartbeatRequestWithMaximumBatchSize": "- _heartbeatRequestWithMaximumBatchSize(heartbeat_requests: List[HeartbeatRequest]): List[HeartbeatResponse]",
       "_mapResponseCodeToGrantState": "- _mapResponseCodeToGrantState(heartbeat_response_code: int, grant_object: Grant): None",
       "_mergeConditionals": "- _mergeConditionals(registration_request: RegistrationRequest, conditionals: Dict): None",
       "_relinquishmentRequestWithMaximumBatchSize": "- _relinquishmentRequestWithMaximumBatchSize(relinquishment_requests: List[StrDict]): List[RelinquishmentResponse]",
-      "_tryRegistration": "- _tryRegistration(registration_request: RegistrationRequest, conditional_registration_data: OptRegistrationRequest = None, cert: Optstr = None, key: Optstr = None): List[str]",
+      "_tryRegistration": "- _tryRegistration(registration_request: RegistrationRequest, conditional_registration_data: OptRegistrationRequest = None, cert: OptStr = None, key: OptStr = None): StrList",
       "_tryRegistrationWithMaximumBatchSize": "- _tryRegistrationWithMaximumBatchSize(registration_requests: List[RegistrationRequest], conditional_registration_data: OptRegistrationRequest = None)",
       "_withMaximumBatchSize": "- _withMaximumBatchSize(requests, request_name)",
       "getCbsdObjectById": "+ getCbsdObjectById(cbsd_id): Cbsd",
@@ -452,12 +452,12 @@
     "CiphersOverload": {
       "__enter__": "- __enter__()",
       "__exit__": "- __exit__(type, value, traceback)",
-      "__init__": "- __init__(sas, ciphers: List, client_cert: str, client_key: str)"
+      "__init__": "- __init__(sas, ciphers: StrList, client_cert: str, client_key: str)"
     },
     "SecurityTestCase": {
       "SasReset": "+ SasReset(): None",
-      "assertTlsHandshakeFailure": "+ assertTlsHandshakeFailure(base_url: str, client_cert: str, client_key: str, ciphers: OptStr = None, ssl_method: Optint = None)",
-      "assertTlsHandshakeFailureOrHttp403": "+ assertTlsHandshakeFailureOrHttp403(client_cert: str, client_key: str, ciphers: OptStr = None, ssl_method: Optint = None, is_sas: bool = False)",
+      "assertTlsHandshakeFailure": "+ assertTlsHandshakeFailure(base_url: str, client_cert: str, client_key: str, cipher: OptStr = None, ssl_method: Optint = None)",
+      "assertTlsHandshakeFailureOrHttp403": "+ assertTlsHandshakeFailureOrHttp403(client_cert: str, client_key: str, cipher: OptStr = None, ssl_method: Optint = None, is_sas: bool = False)",
       "assertTlsHandshakeSucceed": "+ assertTlsHandshakeSucceed(base_url: str, ciphers: StrList, client_cert: str, client_key: str)",
       "createShortLivedCertificate": "+ createShortLivedCertificate(client_type: str, cert_name: str, cert_duration_minutes: int)",
       "doCbsdTestCipher": "+ doCbsdTestCipher(cipher: str, client_cert: str, client_key: str)",
