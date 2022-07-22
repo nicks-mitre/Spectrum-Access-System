@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$comment": "CbsdRecord = Dict[str, Union[str, List[str], Dict[str, str], InstallationParam]]",
   "description": "Registration parameters provided for a CBSD",
   "type": "object",
   "required": [ "fccId", "cbsdCategory", "airInterface", "installationParam", "measCapability"],
