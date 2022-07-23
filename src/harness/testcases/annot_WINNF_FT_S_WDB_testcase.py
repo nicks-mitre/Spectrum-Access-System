@@ -11,6 +11,10 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
+"""
+WinnforumDatabaseUpdateTestcase contains two tests (test_WINNF_FT_S_WDB_1 tests the PAL Database Update, while test_WINNF_FT_S_WDB_2 tests the CPI Db update), two default-config-generation functions, a setUp method, and a teadDown method.
+"""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -21,6 +25,9 @@ import logging
 import os
 
 from six.moves import zip
+
+# import sys
+# sys.path.append('../')
 
 import sas
 import sas_testcase
