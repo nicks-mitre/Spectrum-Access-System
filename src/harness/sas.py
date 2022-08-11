@@ -28,6 +28,8 @@ import sas_interface
 
 def GetTestingSas():
   config_parser = configparser.RawConfigParser()
+  # curr_dir = os.getcwd()
+  # config_parser.read([f'{curr_dir}{os.path.sep}sas.cfg'])
   config_parser.read(['sas.cfg'])
   admin_api_base_url = config_parser.get('SasConfig', 'AdminApiBaseUrl')
   cbsd_sas_rsa_base_url = config_parser.get('SasConfig', 'CbsdSasRsaBaseUrl')

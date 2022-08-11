@@ -1,0 +1,64 @@
+Run this script from the directory containing the CBRS openssl.cnf file present in it. The openssl command must be present on the path.
+Usage: ./CACreationScript.sh
+Run this script with below arguments in order to generate CBSD EndEntity Certificate using pre define key/CSR
+Usage: ./CACreationScript.sh pkey cbsd_ee.pkey
+Usage: ./CACreationScript.sh csr cbsd_ee.csr
+rm: cannot remove 'cbsd_req.pkey': No such file or directory
+rm: cannot remove 'cbsd_req.csr': No such file or directory
+Generating a RSA private key
+.......................................++++
+....................................................++++
+writing new private key to 'root_ca.pkey'
+-----
+Error Loading request extension section sas_ca
+Using configuration from openssl.cnf
+140143449687360:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('src/harness/certs/index.txt','r')
+140143449687360:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+Error Loading request extension section sas_req
+Using configuration from openssl.cnf
+Can't open sas_ca.pkey for reading, No such file or directory
+140314524116288:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('sas_ca.pkey','r')
+140314524116288:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key
+Error Loading request extension section oper_ca
+Using configuration from openssl.cnf
+140557911635264:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('src/harness/certs/index.txt','r')
+140557911635264:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+Error Loading request extension section oper_req
+Using configuration from openssl.cnf
+Can't open oper_ca.pkey for reading, No such file or directory
+139937338066240:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('oper_ca.pkey','r')
+139937338066240:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key
+Error Loading request extension section pi_ca
+Using configuration from openssl.cnf
+139948299552064:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('src/harness/certs/index.txt','r')
+139948299552064:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+Error Loading request extension section pi_req
+Using configuration from openssl.cnf
+Can't open pi_ca.pkey for reading, No such file or directory
+139717443855680:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('pi_ca.pkey','r')
+139717443855680:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key
+Error Loading request extension section cbsd_ca
+Using configuration from openssl.cnf
+139625100715328:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('src/harness/certs/index.txt','r')
+139625100715328:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+Error Loading request extension section cbsd_req
+Using configuration from openssl.cnf
+Can't open cbsd_ca.pkey for reading, No such file or directory
+140192705660224:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('cbsd_ca.pkey','r')
+140192705660224:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key
+Error Loading request extension section cbsd_oem_ca
+Using configuration from openssl.cnf
+Can't open cbsd_ca.pkey for reading, No such file or directory
+139761363543360:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('cbsd_ca.pkey','r')
+139761363543360:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key
+Error Loading request extension section cbsd_oem_req
+Using configuration from openssl.cnf
+Can't open cbsd_oem_ca.pkey for reading, No such file or directory
+140002073834816:error:02001002:system library:fopen:No such file or directory:crypto/bio/bss_file.c:69:fopen('cbsd_oem_ca.pkey','r')
+140002073834816:error:2006D080:BIO routines:BIO_new_file:no such file:crypto/bio/bss_file.c:76:
+unable to load CA private key

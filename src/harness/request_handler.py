@@ -28,8 +28,8 @@ import six
 from six.moves import range
 import six.moves.urllib.parse as urlparse
 
-MAX_REQUEST_ATTEMPT_COUNT = 6
-REQUEST_ATTEMPT_DELAY_SECOND = 5
+MAX_REQUEST_ATTEMPT_COUNT = 1
+REQUEST_ATTEMPT_DELAY_SECOND = 0.25
 
 class HTTPError(Exception):
   """HTTP error, ie. any HTTP code not in range [200, 299].
@@ -61,7 +61,9 @@ class TlsConfig(object):
   """Holds all TLS/HTTPS parameters."""
 
   def __init__(self):
-    self.ssl_version = pycurl.Curl().SSLVERSION_TLSv1_2
+    # self.ssl_version = pycurl.Curl().SSLVERSION_TLSv1_2
+    self.ssl_version = pycurl.SSLVERSION_TLSv1_2
+    # self.ssl_version = pycurl.Curl().SSLVERSION_TLSv1_3
     self.ciphers = [
         'AES128-GCM-SHA256',  # TLS_RSA_WITH_AES_128_GCM_SHA256
         'AES256-GCM-SHA384',  # TLS_RSA_WITH_AES_256_GCM_SHA384
@@ -111,34 +113,39 @@ def _Request(url, request, config, is_post_method):
   """
   # manage case of request passed as byte
   try:
+    logging.info("request is bytes object. Decoding...")
     request = request.decode('utf-8')
   except (UnicodeDecodeError, AttributeError):
     pass
 
   response = six.BytesIO()
   conn = pycurl.Curl()
-  conn.setopt(conn.URL, url)
-  conn.setopt(conn.WRITEFUNCTION, response.write)
+  conn.setopt(pycurl.URL, url)
+  conn.setopt(pycurl.WRITEFUNCTION, response.write)
+  conn.setopt(pycurl.VERBOSE, True)
+  conn.setopt(pycurl.SSL_ENABLE_ALPN, True)
   header = [
       'Host: %s' % urlparse.urlparse(url).hostname,
+      # 'Host: %s' % urlparse.urlparse(url).netloc,
       'content-type: application/json'
   ]
-  conn.setopt(
-      conn.VERBOSE,
-      3  # Improve readability.
-      if logging.getLogger().isEnabledFor(logging.DEBUG) else False)
-  conn.setopt(conn.SSLVERSION, config.ssl_version)
-  conn.setopt(conn.SSLCERTTYPE, 'PEM')
-  conn.setopt(conn.SSLCERT, config.client_cert)
-  conn.setopt(conn.SSLKEY, config.client_key)
-  conn.setopt(conn.CAINFO, config.ca_cert)
-  conn.setopt(conn.HTTPHEADER, header)
-  conn.setopt(conn.SSL_CIPHER_LIST, ':'.join(config.ciphers))
-  conn.setopt(conn.TCP_KEEPALIVE, 1)
+  # conn.setopt(
+  #     conn.VERBOSE,
+  #     3  # Improve readability.
+  #     if logging.getLogger().isEnabledFor(logging.DEBUG) else False)
+  conn.setopt(pycurl.SSLVERSION, config.ssl_version)
+  conn.setopt(pycurl.SSLCERTTYPE, 'PEM')
+  conn.setopt(pycurl.SSLCERT, config.client_cert)
+  conn.setopt(pycurl.SSLKEY, config.client_key)
+  conn.setopt(pycurl.CAINFO, config.ca_cert)
+  conn.setopt(pycurl.HTTPHEADER, header)
+  conn.setopt(pycurl.SSL_CIPHER_LIST, ':'.join(config.ciphers))
+  conn.setopt(pycurl.TCP_KEEPALIVE, 1)
+  conn.setopt(pycurl.OPT_CERTINFO, 1)
   request = json.dumps(request) if request else ''
   if is_post_method:
-    conn.setopt(conn.POST, True)
-    conn.setopt(conn.POSTFIELDS, request)
+    conn.setopt(pycurl.POST, True)
+    conn.setopt(pycurl.POSTFIELDS, request)
     logging.debug('POST Request to URL %s :\n%s', url, request)
   else:
     logging.debug('GET Request to URL %s', url)

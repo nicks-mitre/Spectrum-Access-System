@@ -59,7 +59,7 @@ import tempfile
 import os
 from datetime import datetime, timedelta
 
-from six.moves.BaseHTTPServer import HTTPServer
+from six.moves.BaseHTTPServer import HTTPServer, ThreadingHTTPServer
 from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 from six.moves import configparser
 from OpenSSL import crypto
@@ -340,6 +340,11 @@ class FakeSasAdmin(sas_interface.SasAdminInterface):
     pass
 
 class FakeSasHandler(BaseHTTPRequestHandler):
+  # override; originally "HTTP/0.9"
+  default_request_version = "HTTP/1.1"
+  # override; originally "HTTP/1.0"
+  protocol_version = "HTTP/1.1"
+
   @classmethod
   def SetVersion(cls, cbsd_sas_version, sas_sas_version):
     cls.cbsd_sas_version = cbsd_sas_version
@@ -410,6 +415,7 @@ class FakeSasHandler(BaseHTTPRequestHandler):
                        '/admin/trigger/create_full_activity_dump',
                        '/admin/injectdata/database_url'):
       response = ''
+      print("fake_sas: 413 reached; should expect empty empty str response")
     else:
       self.send_response(404)
       return
@@ -444,7 +450,9 @@ def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
   if is_ecc:
     assert ssl.HAS_ECDH
   server = HTTPServer(('localhost', PORT), FakeSasHandler)
+  # server = ThreadingHTTPServer(('localhost', PORT), FakeSasHandler)
 
+  # ssl_context = ssl._create_unverified_context()
   ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
   ssl_context.options |= ssl.CERT_REQUIRED
 
@@ -462,7 +470,8 @@ def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
     # file, so we must convert it first.
     for f in crl_files:
       try:
-        with file(f) as handle:
+        with open(f) as handle:
+        # with file(f) as handle:
           der = handle.read()
           try:
             crl = crypto.load_crl(crypto.FILETYPE_ASN1, der)
