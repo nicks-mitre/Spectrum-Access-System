@@ -1,0 +1,23 @@
+[
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_10_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_11_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_12_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_13",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_14",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_16_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_6_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_7_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_8_0_default",
+  "testcases.WINNF_FT_S_SCS_testcase.SasCbsdSecurityTestcase.test_WINNF_FT_S_SCS_9_0_default",
+  "testcases.WINNF_FT_S_SSS_testcase.SasToSasSecurityTestcase.test_WINNF_FT_S_SSS_16_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_10_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_11_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_12_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_13",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_14",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_16_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_6_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_7_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_8_0_default",
+  "testcases.WINNF_FT_S_SDS_testcase.SasDomainProxySecurityTestcase.test_WINNF_FT_S_SDS_9_0_default"
+]

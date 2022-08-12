@@ -470,7 +470,7 @@ def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
     # file, so we must convert it first.
     for f in crl_files:
       try:
-        with open(f) as handle:
+        with open(f, 'rb') as handle:
         # with file(f) as handle:
           der = handle.read()
           try:

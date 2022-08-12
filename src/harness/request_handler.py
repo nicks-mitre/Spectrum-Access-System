@@ -31,6 +31,9 @@ import six.moves.urllib.parse as urlparse
 MAX_REQUEST_ATTEMPT_COUNT = 1
 REQUEST_ATTEMPT_DELAY_SECOND = 0.25
 
+# call the required libcurl global_init() function with SSL and WinSock support
+pycurl.global_init(pycurl.GLOBAL_ALL)
+
 class HTTPError(Exception):
   """HTTP error, ie. any HTTP code not in range [200, 299].
 
@@ -94,6 +97,21 @@ def RequestGet(url, config):
   return _Request(url, None, config, False)
 
 
+# Callback function invoked when --header-- debug data is ready
+# def debug_cb(buf):
+def debug_cb(*args, **kwargs):
+    # Print header data to stderr
+    # import sys
+    # Returning None implies that all bytes were written
+    # sys.stdout.write(buf.decode('UTF-8'))
+    # sys.stdout.flush()
+    print("debug_cb was called successfully")
+    print(f"args: {args}")
+    print(f"kwargs: {kwargs}")
+    with open("testfile.txt", "w") as fp:
+      fp.write(f"args: {args}\nkwargs: {kwargs}")
+
+
 def _Request(url, request, config, is_post_method):
   """Sends HTTPS request.
 
@@ -122,11 +140,13 @@ def _Request(url, request, config, is_post_method):
   conn = pycurl.Curl()
   conn.setopt(pycurl.URL, url)
   conn.setopt(pycurl.WRITEFUNCTION, response.write)
+  # conn.setopt(pycurl.DEBUGFUNCTION, test)
+  conn.setopt(pycurl.DEBUGFUNCTION, debug_cb)
   conn.setopt(pycurl.VERBOSE, True)
-  conn.setopt(pycurl.SSL_ENABLE_ALPN, True)
+  # conn.setopt(pycurl.SSL_ENABLE_ALPN, True)
   header = [
-      'Host: %s' % urlparse.urlparse(url).hostname,
-      # 'Host: %s' % urlparse.urlparse(url).netloc,
+      # 'Host: %s' % urlparse.urlparse(url).hostname,
+      'Host: %s' % urlparse.urlparse(url).netloc,
       'content-type: application/json'
   ]
   # conn.setopt(
@@ -146,9 +166,11 @@ def _Request(url, request, config, is_post_method):
   if is_post_method:
     conn.setopt(pycurl.POST, True)
     conn.setopt(pycurl.POSTFIELDS, request)
-    logging.debug('POST Request to URL %s :\n%s', url, request)
+    # logging.debug('POST Request to URL %s :\n%s', url, request)
+    logging.warning('POST Request to URL %s :\n%s', url, request)
   else:
-    logging.debug('GET Request to URL %s', url)
+    # logging.debug('GET Request to URL %s', url)
+    logging.warning('GET Request to URL %s', url)
 
   for attempt_count in range(MAX_REQUEST_ATTEMPT_COUNT):
     try:
