@@ -4,5 +4,6 @@
 *.key
 *.csr
 *.crl
+*.pem
 crl/
 db/
