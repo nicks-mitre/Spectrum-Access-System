@@ -22,6 +22,7 @@ import json
 import logging
 import os
 import time
+import datetime as dt
 
 import pycurl
 import six
@@ -97,19 +98,31 @@ def RequestGet(url, config):
   return _Request(url, None, config, False)
 
 
-# Callback function invoked when --header-- debug data is ready
-# def debug_cb(buf):
-def debug_cb(*args, **kwargs):
-    # Print header data to stderr
-    # import sys
-    # Returning None implies that all bytes were written
-    # sys.stdout.write(buf.decode('UTF-8'))
-    # sys.stdout.flush()
-    print("debug_cb was called successfully")
-    print(f"args: {args}")
-    print(f"kwargs: {kwargs}")
-    with open("testfile.txt", "w") as fp:
-      fp.write(f"args: {args}\nkwargs: {kwargs}")
+def debug_cb(p1, p2, *, file_name='debug_cb_output.txt', file_open_mode='a', emit_other_fds = False):
+  """
+  A callback function that is set on a Curl object using:
+  self.setopt(pycurl.DEBUGFUNCTION, debug_cb)
+  Write everything libcurl receives and sends to the given file,
+  with the UTC ISO-formatted timestamp prepended to the line
+
+  So far, all dbg/info messages from libcurl have had p1 as 0, and all bytestrings (e.g. the binary data of certs)
+  have had p1 > 2, so I'm assuming that p1 is a file/socket descriptor passed by libcurl
+  Therefore, if emit_other_fds is False, we return None when we this function is called with
+  p1 set as anything but 0, 1, or 2.
+  """
+  # Returning None implies that all bytes were written
+  # print("debug_cb was called successfully")
+  # print(f"args: {args}")
+  if not emit_other_fds:
+    if int(p1) not in (0,1,2):
+      return
+    else:
+      out = f"{dt.datetime.utcnow().isoformat()}: {p2}\n"
+  else:
+    out = f"{dt.datetime.utcnow().isoformat()}: ({p1}, {p2})\n"
+
+  with open(file_name, file_open_mode) as fp:
+    fp.write(out)
 
 
 def _Request(url, request, config, is_post_method):
@@ -140,10 +153,8 @@ def _Request(url, request, config, is_post_method):
   conn = pycurl.Curl()
   conn.setopt(pycurl.URL, url)
   conn.setopt(pycurl.WRITEFUNCTION, response.write)
-  # conn.setopt(pycurl.DEBUGFUNCTION, test)
   conn.setopt(pycurl.DEBUGFUNCTION, debug_cb)
   conn.setopt(pycurl.VERBOSE, True)
-  # conn.setopt(pycurl.SSL_ENABLE_ALPN, True)
   header = [
       # 'Host: %s' % urlparse.urlparse(url).hostname,
       'Host: %s' % urlparse.urlparse(url).netloc,

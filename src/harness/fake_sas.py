@@ -66,6 +66,9 @@ from OpenSSL import crypto
 
 import sas_interface
 
+# only necessary on Python <3.8
+import sslkeylog
+
 # Fake SAS server configurations.
 PORT = 9000
 CERT_FILE = 'certs/server.cert'
@@ -85,7 +88,6 @@ ECC_CIPHERS = [
 
 MISSING_PARAM = 102
 INVALID_PARAM = 103
-
 
 class FakeSas(sas_interface.SasInterface):
   """A fake implementation of SasInterface.
@@ -452,6 +454,8 @@ def RunFakeServer(cbsd_sas_version, sas_sas_version, is_ecc, crl_index):
   server = HTTPServer(('localhost', PORT), FakeSasHandler)
   # server = ThreadingHTTPServer(('localhost', PORT), FakeSasHandler)
 
+  # sslkeylog.set_keylog(os.environ.get('SSLKEYLOGFILE'))
+  sslkeylog.set_keylog('/home/nstegman/Documents/ssl_secrets.keys')
   # ssl_context = ssl._create_unverified_context()
   ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
   ssl_context.options |= ssl.CERT_REQUIRED
