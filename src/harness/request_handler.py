@@ -17,17 +17,22 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import inspect
+
 import copy
 import json
 import logging
 import os
 import time
 import datetime as dt
+import re
 
 import pycurl
 import six
 from six.moves import range
 import six.moves.urllib.parse as urlparse
+
+from typing import List
 
 MAX_REQUEST_ATTEMPT_COUNT = 1
 REQUEST_ATTEMPT_DELAY_SECOND = 0.25
@@ -97,8 +102,67 @@ def RequestPost(url, request, config):
 def RequestGet(url, config):
   return _Request(url, None, config, False)
 
+def called_me(stack_lvl: int = 1, all_callers: bool = False, with_stk: bool = False):
+  """
+  return the filename and function name of the caller of this function,
+  or if stack_lvl > 1, then the nth caller of this function (e.g. if stack_lvl == 2,
+  then it returns the filename and function name of the caller that called the caller of this function.
+  """
+  if all_callers:
+    caller_frame = inspect.stack()
+    ret_str = "\n".join([f"{i.filename}:{i.function}" for i in caller_frame])
+  else:
+    caller_frame = inspect.stack()[stack_lvl]
+    ret_str = f"{caller_frame.filename}:{caller_frame.function}"
+  # print(ret_str)
+  if with_stk:
+    return ret_str, caller_frame
+  return ret_str
 
-def debug_cb(p1, p2, *, file_name='debug_cb_output.txt', file_open_mode='a', emit_other_fds = False):
+
+def find_frameinfo_w_var_from_stk(
+  stk: List[inspect.FrameInfo],
+  local_var_name: str = 'test'
+):
+  """
+  Given a list of FrameInfo objects (such as returned by inspect.stack(),
+  returns the FrameInfo object corresponding to the first one that contains the given string
+  ('testMethod' by default) in its locals dictionary's keys (FrameInfo.frame.f_locals.keys()).
+  In other words, this function returns the first stack frame (starting from the top of the stack,
+  which is indexed at 0) that contains a local variable with the given name.
+  """
+  if not all([isinstance(i, inspect.FrameInfo) for i in stk]):
+    raise TypeError(f"stk must be a list of FrameInfo objects, e.g. as returned by inspect.stack()")
+  for frameinfo in stk:
+    if local_var_name in frameinfo.frame.f_locals.keys():
+      # return the first FrameInfo object that has a local variable named <local_var_name>
+      return frameinfo
+
+def get_calling_testmethod_name(stk, searchFor: str = 'testMethod'):
+  """
+  Returns the name of the test method that called a function, that in turn, produced a list of stack frames,
+  (e.g., via inspect.stack() or called_me(all_callers=True))
+  """
+  frameinfo = find_frameinfo_w_var_from_stk(stk, searchFor)
+  frame_locals = frameinfo.frame.f_locals
+  t_method = frame_locals[searchFor]
+  # if the test method happens to be a decorated/wrapped function, then get its real name
+  # the inner getattr call returns t_method if t_method.__wrapped__ is not found
+  name = getattr(getattr(t_method, '__wrapped__', t_method), '__name__')
+  if name == "decorated_testcase":
+    return getattr(getattr(t_method, '__self__'), '_testMethodName')
+  return name
+
+calls = {}
+all_calls = []
+stacks = []
+def debug_cb(
+  p1, p2, *,
+  file_name: str = 'debug_cb_output.txt',
+  file_open_mode: str ='a',
+  emit_other_fds: bool = False,
+  nth_caller_to_log: int = 5
+):
   """
   A callback function that is set on a Curl object using:
   self.setopt(pycurl.DEBUGFUNCTION, debug_cb)
@@ -109,17 +173,45 @@ def debug_cb(p1, p2, *, file_name='debug_cb_output.txt', file_open_mode='a', emi
   have had p1 > 2, so I'm assuming that p1 is a file/socket descriptor passed by libcurl
   Therefore, if emit_other_fds is False, we return None when we this function is called with
   p1 set as anything but 0, 1, or 2.
+
+  This function is called by _Request(), which is called by RequestPost() or RequestGet(),
+  both of which is called by some function/method in sas.py, which is called by a function in
+  either a testcase or directly using a SasImpl or SasAdmin object. Therefore, if we want to log
+  the filename, line number, and name of the testmethod or other callable that caused the execution
+  of this callback, we need to use the called_me() with an argument of 5, to get the fifth-level caller.
+  The nth_caller_to_log parameter controls which caller to log, and its default is set to 5 for the reason
+  above.
   """
-  # Returning None implies that all bytes were written
-  # print("debug_cb was called successfully")
-  # print(f"args: {args}")
+  global calls
+  global all_calls
+  global stacks
+  caller = called_me(nth_caller_to_log)
+  all_callers,stk = called_me(all_callers=True, with_stk=True)
+  all_callers = all_callers.split('\n')
+  caller_regex = re.compile(r'.*Spectrum-Access-System/src/harness/')
+  trimmed_caller = caller_regex.sub('', caller)
+  all_callers = [caller_regex.sub('', i) for i in all_callers]
+
+  if trimmed_caller in calls.keys():
+    calls[trimmed_caller] += 1
+  else:
+    calls[trimmed_caller] = 1
+    all_calls.extend(all_callers)
+    stacks.append(stk)
+  # print(called_me(4))
+  fname_regx = re.compile(r'.*\.py:')
+  tstamp = dt.datetime.utcnow().isoformat()
+
   if not emit_other_fds:
     if int(p1) not in (0,1,2):
+      # Returning None implies that all bytes were written
       return
     else:
-      out = f"{dt.datetime.utcnow().isoformat()}: {p2}\n"
+      # out = f"{tstamp}: {trimmed_caller}: {p2}\n"
+      out = f"{tstamp}: {all_callers[nth_caller_to_log]}:{fname_regx.sub('', all_callers[nth_caller_to_log-1])}: {p2}\n"
   else:
-    out = f"{dt.datetime.utcnow().isoformat()}: ({p1}, {p2})\n"
+    # out = f"{tstamp}: {trimmed_caller}: ({p1}, {p2})\n"
+    out = f"{tstamp}: {all_callers[nth_caller_to_log]}:{fname_regx.sub('', all_callers[nth_caller_to_log-1])}: ({p1}, {p2})\n"
 
   with open(file_name, file_open_mode) as fp:
     fp.write(out)
