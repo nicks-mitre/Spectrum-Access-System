@@ -122,7 +122,8 @@ def called_me(stack_lvl: int = 1, all_callers: bool = False, with_stk: bool = Fa
 
 def find_frameinfo_w_var_from_stk(
   stk: List[inspect.FrameInfo],
-  local_var_name: str = 'test'
+  local_var_name: str = 'test',
+  include_index: bool = False
 ):
   """
   Given a list of FrameInfo objects (such as returned by inspect.stack(),
@@ -133,26 +134,36 @@ def find_frameinfo_w_var_from_stk(
   """
   if not all([isinstance(i, inspect.FrameInfo) for i in stk]):
     raise TypeError(f"stk must be a list of FrameInfo objects, e.g. as returned by inspect.stack()")
-  for frameinfo in stk:
+  for index, frameinfo in list(enumerate(stk)):
     if local_var_name in frameinfo.frame.f_locals.keys():
       # return the first FrameInfo object that has a local variable named <local_var_name>
-      return frameinfo
+      if include_index:
+        return frameinfo, index
+      else:
+        return frameinfo
 
-def get_calling_testmethod_name(stk, searchFor: str = 'testMethod'):
+def get_calling_testmethod_name(
+  stk,
+  searchFor: str = 'testMethod',
+  include_frame_num: bool = False
+):
   """
   Returns the name of the test method that called a function, that in turn, produced a list of stack frames,
   (e.g., via inspect.stack() or called_me(all_callers=True))
   """
-  frameinfo = find_frameinfo_w_var_from_stk(stk, searchFor)
+  frameinfo, frame_num = find_frameinfo_w_var_from_stk(stk, searchFor, True)
   frame_locals = frameinfo.frame.f_locals
   t_method = frame_locals[searchFor]
   # if the test method happens to be a decorated/wrapped function, then get its real name
   # the inner getattr call returns t_method if t_method.__wrapped__ is not found
   name = getattr(getattr(t_method, '__wrapped__', t_method), '__name__')
   if name == "decorated_testcase":
-    return getattr(getattr(t_method, '__self__'), '_testMethodName')
-  return name
+    # redefine name in case the testmethod was decorated without using functools.wraps
+    # (as is the case for testcases decorated with "winnforum_testcase")
+    name = getattr(getattr(t_method, '__self__'), '_testMethodName')
+  return name, frame_num if include_frame_num else name
 
+# sorry, I know that using/modifying global vars is gross
 calls = {}
 all_calls = []
 stacks = []
@@ -186,8 +197,9 @@ def debug_cb(
   global all_calls
   global stacks
   caller = called_me(nth_caller_to_log)
-  all_callers,stk = called_me(all_callers=True, with_stk=True)
+  all_callers, stk = called_me(all_callers=True, with_stk=True)
   all_callers = all_callers.split('\n')
+  # trim off the leading file path, leaving 'testcases/' alone
   caller_regex = re.compile(r'.*Spectrum-Access-System/src/harness/')
   trimmed_caller = caller_regex.sub('', caller)
   all_callers = [caller_regex.sub('', i) for i in all_callers]
@@ -198,20 +210,41 @@ def debug_cb(
     calls[trimmed_caller] = 1
     all_calls.extend(all_callers)
     stacks.append(stk)
-  # print(called_me(4))
-  fname_regx = re.compile(r'.*\.py:')
-  tstamp = dt.datetime.utcnow().isoformat()
 
-  if not emit_other_fds:
-    if int(p1) not in (0,1,2):
-      # Returning None implies that all bytes were written
-      return
-    else:
-      # out = f"{tstamp}: {trimmed_caller}: {p2}\n"
-      out = f"{tstamp}: {all_callers[nth_caller_to_log]}:{fname_regx.sub('', all_callers[nth_caller_to_log-1])}: {p2}\n"
-  else:
+  filename_regx = re.compile(r'.*\.py:')
+  tstamp = dt.datetime.utcnow().isoformat()
+  tmethod_name, frame_num = get_calling_testmethod_name(stk, include_frame_num=True)
+
+  # nth_caller = filename_regx.sub('', all_callers[nth_caller_to_log])
+  # nmin1_caller = filename_regx.sub('', all_callers[nth_caller_to_log - 1])
+
+  def get_nth_caller_name(n):
+    return filename_regx.sub('', all_callers[n])
+
+  nth_caller = get_nth_caller_name(nth_caller_to_log)
+  nmin1_caller = get_nth_caller_name(nth_caller_to_log-1)
+
+  base_out = f"{tstamp}: {tmethod_name}:"
+  # get the call tree and concatenate the entries together with a colon separating callers
+  middle = ':'.join([get_nth_caller_name(n) for n in range(frame_num-1, 1, -1)])
+  # print(''.join([base_out, middle, end_out]))
+
+  if emit_other_fds:
     # out = f"{tstamp}: {trimmed_caller}: ({p1}, {p2})\n"
-    out = f"{tstamp}: {all_callers[nth_caller_to_log]}:{fname_regx.sub('', all_callers[nth_caller_to_log-1])}: ({p1}, {p2})\n"
+    # out = f"{tstamp}: {tmethod_name}:{all_callers[nth_caller_to_log]}:{filename_regx.sub('', all_callers[nth_caller_to_log-1])}: ({p1}, {p2})\n"
+    # out = f"{tstamp}: {tmethod_name}:{nth_caller}:{nmin1_caller}: ({p1}, {p2})\n"
+    end_out = f" ({p1}, {p2})\n"
+    out = ''.join([base_out, middle, end_out])
+  # emit_other_fds is False, so check that we care about the message
+  elif int(p1) in (0,1,2):
+    # out = f"{tstamp}: {trimmed_caller}: {p2}\n"
+    # out = f"{tstamp}: {tmethod_name}:{all_callers[nth_caller_to_log]}:{filename_regx.sub('', all_callers[nth_caller_to_log - 1])}: {p2}\n"
+    # out = f"{tstamp}: {tmethod_name}:{nth_caller}:{nmin1_caller}: {p2}\n"
+    end_out = f" {p2}\n"
+    out = ''.join([base_out, middle, end_out])
+  else:
+    # Returning None implies that all bytes were written
+     return
 
   with open(file_name, file_open_mode) as fp:
     fp.write(out)
@@ -236,8 +269,8 @@ def _Request(url, request, config, is_post_method):
   """
   # manage case of request passed as byte
   try:
-    logging.info("request is bytes object. Decoding...")
     request = request.decode('utf-8')
+    logging.info("request is bytes object. Decoding...")
   except (UnicodeDecodeError, AttributeError):
     pass
 
